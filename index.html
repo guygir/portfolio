@@ -1,85 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Guy Girmonsky - Engineer & Game Maker</title>
-<meta name="description" content="Personal site of Guy Girmonsky: LLM infrastructure work, browser games, and side projects.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Guy Girmonsky</title>
+    <meta name="description" content="Work, games, and projects by Guy Girmonsky." />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <aside>
+        <a class="identity" href="#top">
+          <img src="images/profile/guy-girmonsky.jpg" alt="" width="48" height="48" />
+          <span>
+            <strong>Guy Girmonsky</strong>
+            <small>Research &amp; games</small>
+          </span>
+        </a>
+        <p class="lede">
+          I build systems that make complex things usable—from distributed AI
+          infrastructure to small games.
+        </p>
+        <nav>
+          <button type="button" data-filter="current" class="on">Current</button>
+          <button type="button" data-filter="work">Work</button>
+          <button type="button" data-filter="games">Games</button>
+          <button type="button" data-filter="projects">Projects</button>
+          <a href="#about">About</a>
+        </nav>
+      </aside>
 
-<header class="site-nav">
-  <a class="brand" href="#top">Guy Girmonsky</a>
-  <nav>
-    <a href="#work" data-filter-link="games">Games</a>
-    <a href="#work" data-filter-link="projects">Projects</a>
-    <a href="#about">About</a>
-  </nav>
-  <a class="nav-cta" href="https://github.com/guygir" target="_blank" rel="noopener">GitHub</a>
-</header>
+      <main id="top">
+        <div id="gallery"></div>
 
-<section class="hero" id="top">
-  <div class="hero-inner">
-    <p class="hero-kicker">Engineer // Game maker</p>
-    <h1>GUY<br>GIRMONSKY</h1>
-    <p class="hero-sub">I build AI systems by day, and small games and web toys by night.</p>
-    <div class="hero-cta">
-      <a class="btn btn-solid" href="#work">See the work</a>
-      <a class="btn btn-ghost" href="https://github.com/guygir" target="_blank" rel="noopener">github.com/guygir</a>
+        <section id="about">
+          <div>
+            <h2>About</h2>
+            <p>
+              Research engineer on AI platforms at IBM, previously hybrid-cloud
+              storage. M.Sc. student. Before that I shipped Unity games for Club
+              Tech.
+            </p>
+            <p>
+              I collect Riftbound. The binder is on
+              <a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a>.
+            </p>
+          </div>
+          <ul>
+            <li><a href="https://github.com/zipnn/zipnn">ZipNN</a>, IEEE CLOUD 2025</li>
+            <li><a href="https://arxiv.org/abs/2502.20818">SkyStore</a>, VLDB 2025</li>
+            <li><a href="https://www.llm-d.ai">llm-d</a></li>
+            <li><a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a></li>
+            <li><a href="https://github.com/guygir">GitHub</a></li>
+            <li><a href="https://guygir.itch.io">itch.io</a></li>
+            <li><a href="https://huggingface.co/Guygir">Hugging Face</a></li>
+            <li><a href="mailto:guygir@gmail.com">guygir@gmail.com</a></li>
+          </ul>
+        </section>
+
+        <footer>
+          Research systems, playable ideas and a growing Riftbound binder.
+        </footer>
+      </main>
     </div>
-  </div>
-  <div class="hero-edge" aria-hidden="true"></div>
-</section>
 
-<main>
-<section class="work" id="work">
-  <div class="section-head">
-    <h2>What I make</h2>
-    <span class="accent-bar" aria-hidden="true"></span>
-    <p>Games, tools, and experiments. Each one has its own world.</p>
-  </div>
-
-  <div class="work-toolbar">
-    <p class="work-count"><span id="project-count">0</span> selected works</p>
-    <div class="filters" role="tablist" aria-label="Project filters">
-      <button class="filter is-active" data-filter="all" role="tab" aria-selected="true">Everything</button>
-      <button class="filter" data-filter="games" role="tab" aria-selected="false">Games</button>
-      <button class="filter" data-filter="projects" role="tab" aria-selected="false">Projects</button>
-      <button class="filter" data-filter="archived" role="tab" aria-selected="false">Archive</button>
-    </div>
-  </div>
-
-  <ol class="project-grid" id="project-grid" aria-live="polite"></ol>
-</section>
-
-<section class="about" id="about">
-  <div class="section-head">
-    <h2>About</h2>
-    <span class="accent-bar" aria-hidden="true"></span>
-  </div>
-  <div class="about-grid">
-    <div class="about-photo" aria-hidden="true"><span>GG</span></div>
-    <div class="about-text">
-      <p>Hi! I'm <strong>Guy</strong>.</p>
-      <p>I'm an AI engineer and researcher, and I spend my free time building small games, puzzles, and tools for the communities I'm part of - basketball sims, card games, TCG trading, and friendly competitions.</p>
-      <p>Most of what I build is live and playable in the browser. If something here made you smile, I'd love to hear about it.</p>
-      <p class="about-links">
-        <a href="https://github.com/guygir" target="_blank" rel="noopener">GitHub</a>
-      </p>
-    </div>
-  </div>
-</section>
-</main>
-
-<footer class="site-footer">
-  <p>&copy; <span id="year"></span> Guy Girmonsky. Built with too much coffee.</p>
-</footer>
-
-<script src="data.js"></script>
-<script src="app.js"></script>
-</body>
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+  </body>
 </html>
