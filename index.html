@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guy Girmonsky - Engineer & Game Maker</title>
+<meta name="description" content="Personal site of Guy Girmonsky: LLM infrastructure work, browser games, and side projects.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-nav">
+  <a class="brand" href="#top">Guy Girmonsky</a>
+  <nav>
+    <a href="#work" data-filter-link="games">Games</a>
+    <a href="#work" data-filter-link="projects">Projects</a>
+    <a href="#about">About</a>
+  </nav>
+  <a class="nav-cta" href="https://github.com/guygir" target="_blank" rel="noopener">GitHub</a>
+</header>
+
+<section class="hero" id="top">
+  <div class="hero-inner">
+    <p class="hero-kicker">Engineer // Game maker</p>
+    <h1>GUY<br>GIRMONSKY</h1>
+    <p class="hero-sub">I build AI systems by day, and small games and web toys by night.</p>
+    <div class="hero-cta">
+      <a class="btn btn-solid" href="#work">See the work</a>
+      <a class="btn btn-ghost" href="https://github.com/guygir" target="_blank" rel="noopener">github.com/guygir</a>
+    </div>
+  </div>
+  <div class="hero-edge" aria-hidden="true"></div>
+</section>
+
+<main>
+<section class="work" id="work">
+  <div class="section-head">
+    <h2>What I make</h2>
+    <span class="accent-bar" aria-hidden="true"></span>
+    <p>Games, tools, and experiments. Each one has its own world.</p>
+  </div>
+
+  <div class="work-toolbar">
+    <p class="work-count"><span id="project-count">0</span> selected works</p>
+    <div class="filters" role="tablist" aria-label="Project filters">
+      <button class="filter is-active" data-filter="all" role="tab" aria-selected="true">Everything</button>
+      <button class="filter" data-filter="games" role="tab" aria-selected="false">Games</button>
+      <button class="filter" data-filter="projects" role="tab" aria-selected="false">Projects</button>
+      <button class="filter" data-filter="archived" role="tab" aria-selected="false">Archive</button>
+    </div>
+  </div>
+
+  <ol class="project-grid" id="project-grid" aria-live="polite"></ol>
+</section>
+
+<section class="about" id="about">
+  <div class="section-head">
+    <h2>About</h2>
+    <span class="accent-bar" aria-hidden="true"></span>
+  </div>
+  <div class="about-grid">
+    <div class="about-photo" aria-hidden="true"><span>GG</span></div>
+    <div class="about-text">
+      <p>Hi! I'm <strong>Guy</strong>.</p>
+      <p>I'm an AI engineer and researcher, and I spend my free time building small games, puzzles, and tools for the communities I'm part of - basketball sims, card games, TCG trading, and friendly competitions.</p>
+      <p>Most of what I build is live and playable in the browser. If something here made you smile, I'd love to hear about it.</p>
+      <p class="about-links">
+        <a href="https://github.com/guygir" target="_blank" rel="noopener">GitHub</a>
+      </p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="site-footer">
+  <p>&copy; <span id="year"></span> Guy Girmonsky. Built with too much coffee.</p>
+</footer>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

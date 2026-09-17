@@ -1,0 +1,25 @@
+// Portfolio content grounded in Guy's public GitHub repositories on 2026-09-17.
+// Only non-fork repositories with a clear project purpose are included.
+const PROJECTS = [
+  { id:'klafi', name:'Klafi', category:'games', status:'live', year:'2026', tagline:'Hebrew civic card game', cover:'assets/covers/klafi.png', link:'https://klafi.vercel.app', repo:'https://github.com/guygir/klafi' },
+  { id:'bb-fantasy', name:'BB Fantasy & U21dle', category:'games', status:'live', year:'2026', tagline:'Fantasy league and daily puzzle for BuzzerBeater U21', cover:'assets/covers/bb-fantasy.png', link:'https://bb-fantasy.vercel.app', repo:'https://github.com/guygir/bb_fantasy' },
+  { id:'holdemle', name:"Hold'emle", category:'games', status:'live', year:'2026', tagline:'Daily poker puzzle, Wordle-style', cover:'assets/covers/holdemle.png', link:'https://holdemle.vercel.app', repo:'https://github.com/guygir/Holdemle' },
+  { id:'conveyor-race', name:'Conveyor Race', category:'games', status:'live', year:'2026', tagline:'Board-game competition entry', cover:'assets/covers/conveyor-race.png', link:'https://conveyor-race.vercel.app', repo:'https://github.com/guygir/conveyor-race' },
+  { id:'u20bb', name:'U20 Basketball Manager', category:'games', status:'live', year:'2026', tagline:'Single-player basketball management sim', cover:'assets/covers/u20bb.png', link:'https://u20-basketball-manager.vercel.app', repo:'https://github.com/guygir/u20-basketball-manager' },
+  { id:'sethunter', name:'Set Hunter', category:'games', status:'live', year:'2026', tagline:'TCG collector roguelike', cover:'assets/covers/packrat.png', link:'https://pack-rat-game.vercel.app', repo:'https://github.com/guygir/set-hunter' },
+  { id:'arrows', name:"Arrow's Theorem", category:'games', status:'archived', year:'2023', tagline:'A game about the impossibility theorem', cover:'assets/covers/arrows.png', repo:'https://github.com/guygir/Arrows_Theorem' },
+  { id:'matching', name:'Matching', category:'games', status:'archived', year:'2023', tagline:'A matching game built for Club Tech', cover:'assets/covers/matching.png', repo:'https://github.com/guygir/Matching' },
+  { id:'emotions', name:'Emotions', category:'games', status:'archived', year:'2023', tagline:'A game built for Club Tech', cover:'assets/covers/emotions.png', repo:'https://github.com/guygir/Emotions' },
+
+  { id:'riftrade', name:'RifTrade', category:'projects', status:'live', year:'2026', tagline:'Community card-swap directory for Riftbound TCG', cover:'assets/covers/riftrade.png', link:'https://rif-trade.vercel.app', repo:'https://github.com/guygir/RifTrade' },
+  { id:'gamerev', name:'GameRev', category:'projects', status:'live', year:'2026', tagline:'Game reviews blog', cover:'assets/covers/gamerev.png', link:'https://game-rev.vercel.app', repo:'https://github.com/guygir/GameRev' },
+  { id:'wc26', name:'WC26 Group Bet', category:'projects', status:'live', year:'2026', tagline:'World Cup 2026 friendly group betting pool', cover:'assets/covers/wc26.png', link:'https://wc26-group-bet.vercel.app', repo:'https://github.com/guygir/wc26-group-bet' },
+  { id:'classmatch', name:'Class Matching', category:'projects', status:'live', year:'2026', tagline:'Student-class assignment optimizer', cover:'assets/covers/classmatch.png', link:'https://class-matching-nine.vercel.app', repo:'https://github.com/guygir/class-matching' },
+  { id:'aidigest', name:'AI Daily Digest', category:'projects', status:'archived', year:'2026', tagline:'AI news aggregator with personalized filtering', cover:'assets/covers/aidigest.png', repo:'https://github.com/guygir/ai-daily-digest' },
+  { id:'chores', name:'Chores Manager', category:'projects', status:'archived', year:'2026', tagline:'Mobile-friendly recurring home-chores tracker', cover:'assets/covers/chores.png', repo:'https://github.com/guygir/chores-manager' },
+  { id:'japan', name:'Japan Travel Planner', category:'projects', status:'archived', year:'2026', tagline:'AI-powered travel planner for couples', cover:'assets/covers/japan.png', repo:'https://github.com/guygir/japan-travel-planner' },
+  { id:'seam', name:'Seam Carving', category:'projects', status:'archived', year:'2023', tagline:'Content-aware image resizing algorithm', cover:'assets/covers/seam.png', repo:'https://github.com/guygir/Seam_Carving' },
+  { id:'people', name:'People Analytics', category:'projects', status:'archived', year:'2023', tagline:'University data science project', cover:'assets/covers/people.png', repo:'https://github.com/guygir/People_Analytics_Data_Science_Project' },
+  { id:'checker', name:'Computational Models HW Checker', category:'projects', status:'archived', year:'2023', tagline:'Homework checker for computational models', cover:'assets/covers/checker.png', repo:'https://github.com/guygir/Computational_Models_HW_Checker' },
+  { id:'hrcc', name:'HRCC', category:'projects', status:'archived', year:'2023', tagline:'Matching research with consistent couples', cover:'assets/covers/hrcc.png', repo:'https://github.com/guygir/HRCC' }
+];
