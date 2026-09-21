@@ -134,16 +134,18 @@
     const gal = (main || document.body).getBoundingClientRect();
     const pulseBox = pulse ? pulse.getBoundingClientRect() : { bottom: 8 };
     const tiles = [...document.querySelectorAll("#gallery .tile")].filter(inView);
+    const head = document.querySelector("#gallery .section-head");
+    const top = tiles.length
+      ? Math.min(...tiles.map((tile) => tile.getBoundingClientRect().top))
+      : gal.top + 80;
     let y;
-    if (tiles.length) {
-      const top = Math.min(...tiles.map((tile) => tile.getBoundingClientRect().top));
-      if (compact.matches) {
-        y = Math.max(pulseBox.bottom + 10, Math.min(top - 16, pulseBox.bottom + 18));
-      } else {
-        y = top - 18;
-      }
+    if (compact.matches) {
+      y = pulseBox.bottom + Math.max(12, Math.min(28, (top - pulseBox.bottom) / 2));
+    } else if (head) {
+      const box = head.getBoundingClientRect();
+      y = Math.min(box.top + box.height / 2, top - 28);
     } else {
-      y = compact.matches ? pulseBox.bottom + 16 : gal.top + 20;
+      y = top - 36;
     }
     return {
       x: Math.max(12, Math.min(window.innerWidth - 12, gal.left + gal.width / 2)),
@@ -162,7 +164,11 @@
     return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
   }
   function route(from, tile, side) {
-    return [from, hubPoint(), sidePoint(tile, side), midPoint(tile)];
+    const hub = hubPoint();
+    const pts = [from];
+    if (Math.abs(from.y - hub.y) > 20) pts.push({ x: from.x, y: hub.y });
+    pts.push(hub, sidePoint(tile, side), midPoint(tile));
+    return pts;
   }
   function dist(a, b) {
     return Math.hypot(b.x - a.x, b.y - a.y);
