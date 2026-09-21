@@ -26,11 +26,16 @@ button { font: inherit; color: inherit; }
   min-height: 100vh;
 }
 
-aside {
+.rail {
   position: sticky;
   top: 0;
   align-self: start;
   padding: 40px 16px 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+aside {
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -350,9 +355,8 @@ footer {
 }
 @media (max-width: 780px) {
   .page { grid-template-columns: 1fr; }
+  .rail { display: contents; }
   aside {
-    position: static;
-    height: auto;
     padding: 22px 20px 8px;
     gap: 16px;
   }
@@ -390,6 +394,7 @@ footer {
     margin: 0 -20px;
     padding: 10px 20px 12px;
     background: var(--paper);
+    box-shadow: 0 1px 0 rgb(17 17 17 / 0.08);
   }
   .pulse p { max-width: none; }
   .pulse-lane { stroke: rgb(17 17 17 / 0.28); stroke-width: 1.35; }
