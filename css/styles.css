@@ -283,11 +283,12 @@ main { padding: 28px 40px 96px 12px; }
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 6px 8px;
+  gap: 0 7px;
   color: var(--mute);
   font-size: 12px;
 }
 .filings time {
+  margin-right: 2px;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
@@ -507,10 +508,13 @@ footer {
   z-index: 1;
   width: min(440px, 100%);
   padding: 22px 22px 18px;
+  border: 1px solid rgb(17 17 17 / 0.12);
   background:
-    linear-gradient(180deg, #fffdf8, #f6f1e6);
+    linear-gradient(180deg, #fffdf8 0 28px, transparent 28px),
+    linear-gradient(180deg, #fffdf8, #f4efe4);
   box-shadow: 0 24px 60px rgb(17 17 17 / 0.28);
   color: var(--ink);
+  transform: rotate(-0.6deg);
 }
 .sheet-file {
   margin: 0 72px 10px 0;

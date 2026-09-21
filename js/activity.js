@@ -69,7 +69,21 @@ window.normalizeEvents = function normalizeEvents(events) {
 
 window.mergeCalendar = function mergeCalendar(baseDays, liveDays) {
   const byDate = {};
-  (baseDays || []).concat(liveDays || []).forEach((day) => { byDate[day.date] = day; });
+  (baseDays || []).concat(liveDays || []).forEach((day) => {
+    const prev = byDate[day.date];
+    if (!prev) {
+      byDate[day.date] = day;
+      return;
+    }
+    byDate[day.date] = {
+      date: day.date,
+      count: day.count != null ? day.count : prev.count,
+      level: day.level != null ? day.level : prev.level,
+      commits: day.commits != null ? day.commits : prev.commits,
+      prs: day.prs != null ? day.prs : prev.prs,
+      repos: Object.assign({}, prev.repos || {}, day.repos || {}),
+    };
+  });
   return Object.keys(byDate).sort().map((key) => byDate[key]);
 };
 
@@ -77,7 +91,7 @@ window.loadActivity = function loadActivity() {
   const calendar = window.CONTRIBUTIONS_SNAPSHOT;
   const events = window.ACTIVITY_SNAPSHOT;
   try {
-    const cached = sessionStorage.getItem("gg-activity-v3");
+    const cached = sessionStorage.getItem("gg-activity-v4");
     if (cached) return Promise.resolve(JSON.parse(cached));
   } catch (err) {}
 
@@ -103,7 +117,7 @@ window.loadActivity = function loadActivity() {
       events: window.mergeCalendar(events.days, parts[1]),
       total: calendar.total,
     };
-    try { sessionStorage.setItem("gg-activity-v3", JSON.stringify(next)); } catch (err) {}
+    try { sessionStorage.setItem("gg-activity-v4", JSON.stringify(next)); } catch (err) {}
     return next;
   });
 };

@@ -114,7 +114,7 @@
       rows.push(
         "<li>" +
           "<time datetime=\"" + day.date + "\">" + label + "</time>" +
-          names.map((row) => '<button type="button" data-open="' + row.id + '">' + row.title + "</button>").join("") +
+          names.map((row) => '<button type="button" data-open="' + row.id + '">' + row.title + "</button>").join('<span aria-hidden="true">·</span>') +
         "</li>"
       );
     });
