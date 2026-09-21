@@ -348,31 +348,6 @@ main { padding: 28px 40px 96px 12px; }
 }
 .feature-main .meta strong { font-size: 15px; }
 
-.index-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-top: 1px solid rgb(17 17 17 / 0.08);
-}
-.index-list li { border-bottom: 1px solid rgb(17 17 17 / 0.08); }
-.index-list a {
-  display: grid;
-  grid-template-columns: 1.6em 1fr auto;
-  align-items: baseline;
-  gap: 12px;
-  padding: 10px 2px;
-  text-decoration: none;
-}
-.index-list a:hover strong { text-decoration: underline; text-underline-offset: 3px; }
-.index-num {
-  color: var(--mute);
-  font-size: 11px;
-  font-variant-numeric: tabular-nums;
-}
-.index-venue {
-  color: var(--mute);
-  font-size: 12px;
-}
 .timeline {
   margin: 16px 0 0;
   padding: 0;

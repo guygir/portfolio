@@ -1,12 +1,7 @@
 (function () {
   const gallery = document.getElementById("gallery");
   const buttons = document.querySelectorAll("nav button");
-  const featuredIds = ["zipnn", "klafi", "riftrade"];
-  const papers = [
-    { title: "ZipNN", venue: "IEEE CLOUD 2025", href: "https://github.com/zipnn/zipnn" },
-    { title: "SkyStore", venue: "VLDB 2025", href: "https://arxiv.org/abs/2502.20818" },
-    { title: "llm-d", venue: "Distributed inference", href: "https://www.llm-d.ai" },
-  ];
+  const featuredIds = ["klafi", "holdemle", "riftrade"];
   let filter = "current";
 
   function visibleItems() {
@@ -16,9 +11,8 @@
   }
   function actionOf(item) {
     if (item.status === "archive") return "Archive";
-    if (/arxiv|ieee|vldb/i.test((item.detail || "") + item.href)) return "Paper";
     if (item.section === "games") return "Play";
-    if (item.section === "work") return "Site";
+    if (item.section === "work") return "Work";
     return "Open";
   }
   function padNum(n) {
@@ -59,38 +53,20 @@
     );
   }
 
-  function papersHTML() {
-    return (
-      '<section class="gallery-section papers">' +
-        '<header class="section-head"><h2>Papers &amp; systems</h2><p>Venues first, then the thing you can open.</p></header>' +
-        '<ol class="index-list">' +
-          papers.map((row, i) =>
-            '<li><a href="' + row.href + '" target="_blank" rel="noopener noreferrer">' +
-              '<span class="index-num">' + padNum(i + 1) + "</span>" +
-              "<strong>" + row.title + "</strong>" +
-              '<span class="index-venue">' + row.venue + "</span>" +
-            "</a></li>"
-          ).join("") +
-        "</ol>" +
-      "</section>"
-    );
-  }
-
   function currentHTML(items) {
     const featured = featuredIds.map((id) => items.find((item) => item.id === id)).filter(Boolean);
     const rest = items.filter((item) => !featuredIds.includes(item.id));
     return (
       '<section class="gallery-section selected">' +
-        '<header class="section-head"><h2>Selected</h2><p>One system, one game, one useful thing.</p></header>' +
+        '<header class="section-head"><h2>On the table</h2><p>Two things you can play, one you can use.</p></header>' +
         '<div class="featured-grid">' +
           tileHTML(featured[0], "feature-main", 1) +
           '<div class="featured-stack">' + featured.slice(1).map((item, i) => tileHTML(item, "", i + 2)).join("") + '</div>' +
         '</div>' +
       '</section>' +
-      sectionHTML("Research", rest.filter((item) => item.section === "work"), "Published systems and current infrastructure work.") +
-      papersHTML() +
-      sectionHTML("Games", rest.filter((item) => item.section === "games"), "Playable experiments, puzzles and tabletop ideas.") +
-      sectionHTML("Tools", rest.filter((item) => item.section === "projects"), "Small utilities for real groups and communities.")
+      sectionHTML("Games", rest.filter((item) => item.section === "games"), "Puzzles, print-and-play, and older itch.io pieces.") +
+      sectionHTML("Tools", rest.filter((item) => item.section === "projects"), "Small utilities for real groups and communities.") +
+      sectionHTML("Work", rest.filter((item) => item.section === "work"), "Research systems. The other shelf.")
     );
   }
 
@@ -106,9 +82,8 @@
       const active = items.filter((item) => item.status === "active");
       const archive = items.filter((item) => item.status === "archive");
       gallery.innerHTML =
-        (filter === "work" ? papersHTML() : "") +
-        sectionHTML(filter === "work" ? "Research" : filter === "games" ? "Games" : "Tools", active) +
-        sectionHTML("Archive", archive, "Older work, still part of the story.");
+        sectionHTML(filter === "work" ? "Work" : filter === "games" ? "Games" : "Tools", active) +
+        sectionHTML("Archive", archive, "Older pieces, still part of the story.");
     }
     bindTiles();
     if (window.Pulse) window.Pulse.refresh();
