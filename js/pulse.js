@@ -111,7 +111,7 @@
     return document.querySelector('.tile[data-item="' + id + '"]');
   }
   function clipTop() {
-    if (!pulse) return 8;
+    if (!compact.matches || !pulse) return 8;
     const box = pulse.getBoundingClientRect();
     return Math.max(8, box.bottom + 6);
   }
