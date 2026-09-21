@@ -28,13 +28,23 @@
           <button type="button" data-filter="projects">Projects</button>
           <a href="#about">About</a>
         </nav>
-        <section class="pulse" aria-label="Recent GitHub activity">
+        <section class="pulse" aria-label="GitHub contribution calendar">
           <h2>Now</h2>
-          <p>Last twelve weeks. Busier days send more couriers to the repo.</p>
-          <div class="pulse-board" id="pulse-board"></div>
+          <p>Last year on GitHub. Green is contribution heat; outlined days have pull requests.</p>
+          <p class="pulse-total" id="pulse-total"></p>
+          <div class="pulse-cal">
+            <div class="pulse-months" id="pulse-months"></div>
+            <div class="pulse-board" id="pulse-board"></div>
+          </div>
           <p class="pulse-key">
-            <span><i class="pulse-swatch is-commit"></i>commit</span>
-            <span><i class="pulse-swatch is-pr"></i>pull request</span>
+            <span>Less</span>
+            <i class="pulse-swatch lv-0"></i>
+            <i class="pulse-swatch lv-1"></i>
+            <i class="pulse-swatch lv-2"></i>
+            <i class="pulse-swatch lv-3"></i>
+            <i class="pulse-swatch lv-4"></i>
+            <span>More</span>
+            <span class="pulse-key-pr"><i class="pulse-swatch is-pr"></i>pull request</span>
           </p>
         </section>
       </aside>

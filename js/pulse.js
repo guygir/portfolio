@@ -1,15 +1,20 @@
 (function () {
-  const WEEKS = 12;
+  const WEEKS = 53;
   const MAX_WORKERS = 4;
-  const CELL = 8;
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   const compact = window.matchMedia("(max-width: 780px)");
 
   const board = document.getElementById("pulse-board");
+  const months = document.getElementById("pulse-months");
+  const totalEl = document.getElementById("pulse-total");
   const sky = document.getElementById("pulse-sky");
   if (!board || !sky) return;
 
-  let activity = window.ACTIVITY_SNAPSHOT;
+  let activity = {
+    contributions: (window.CONTRIBUTIONS_SNAPSHOT && window.CONTRIBUTIONS_SNAPSHOT.days) || [],
+    events: (window.ACTIVITY_SNAPSHOT && window.ACTIVITY_SNAPSHOT.days) || [],
+    total: window.CONTRIBUTIONS_SNAPSHOT && window.CONTRIBUTIONS_SNAPSHOT.total,
+  };
   let cells = [];
   let workers = [];
   let timer = 0;
@@ -26,13 +31,6 @@
     next.setDate(next.getDate() - next.getDay());
     return next;
   }
-  function level(total) {
-    if (total >= 8) return 4;
-    if (total >= 4) return 3;
-    if (total >= 2) return 2;
-    if (total >= 1) return 1;
-    return 0;
-  }
   function monthLabel(date) {
     return date.toLocaleString("en", { month: "short", day: "numeric" });
   }
@@ -41,8 +39,10 @@
   }
 
   function calendar(source) {
-    const byDate = {};
-    (source.days || []).forEach((day) => { byDate[day.date] = day; });
+    const heat = {};
+    (source.contributions || []).forEach((day) => { heat[day.date] = day; });
+    const routed = {};
+    (source.events || []).forEach((day) => { routed[day.date] = day; });
     const start = sundayOf(new Date());
     start.setDate(start.getDate() - (WEEKS - 1) * 7);
     const list = [];
@@ -50,12 +50,15 @@
       const date = new Date(start);
       date.setDate(start.getDate() + i);
       const key = iso(date);
-      const rec = byDate[key] || { date: key, commits: 0, prs: 0, repos: {} };
+      const rec = heat[key] || {};
+      const ev = routed[key] || {};
       list.push({
         date: key,
-        commits: rec.commits || 0,
-        prs: rec.prs || 0,
-        repos: rec.repos || {},
+        count: rec.count || 0,
+        level: rec.level || 0,
+        commits: ev.commits || 0,
+        prs: ev.prs || 0,
+        repos: ev.repos || {},
       });
     }
     return list;
@@ -63,18 +66,28 @@
 
   function renderBoard() {
     cells = calendar(activity);
+    if (totalEl) {
+      const sum = activity.total || cells.reduce((n, cell) => n + cell.count, 0);
+      totalEl.textContent = sum ? sum.toLocaleString("en") + " contributions" : "";
+    }
+    if (months) {
+      let last = "";
+      months.innerHTML = cells.filter((_, i) => i % 7 === 0).map((cell) => {
+        const label = new Date(cell.date + "T12:00:00").toLocaleString("en", { month: "short" });
+        const show = label !== last;
+        last = label;
+        return "<span>" + (show ? label : "") + "</span>";
+      }).join("");
+    }
     board.innerHTML = cells.map((cell, index) => {
-      const total = cell.commits + cell.prs;
-      const classes = ["pulse-cell", "lv-" + level(total)];
-      if (cell.commits) classes.push("is-commit");
+      const classes = ["pulse-cell", "lv-" + cell.level];
       if (cell.prs) classes.push("is-pr");
       const bits = [];
-      if (cell.commits) bits.push(cell.commits + (cell.commits === 1 ? " commit" : " commits"));
+      if (cell.count) bits.push(cell.count + (cell.count === 1 ? " contribution" : " contributions"));
+      else bits.push("No contributions");
       if (cell.prs) bits.push(cell.prs + (cell.prs === 1 ? " pull request" : " pull requests"));
       const names = Object.keys(cell.repos).map((repo) => repo.split("/")[1]).join(", ");
-      const title = bits.length
-        ? monthLabel(new Date(cell.date + "T12:00:00")) + " · " + bits.join(", ") + (names ? " · " + names : "")
-        : monthLabel(new Date(cell.date + "T12:00:00"));
+      const title = monthLabel(new Date(cell.date + "T12:00:00")) + " · " + bits.join(" · ") + (names ? " · " + names : "");
       return '<span class="' + classes.join(" ") + '" data-i="' + index + '" title="' + title + '"></span>';
     }).join("");
   }
