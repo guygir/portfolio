@@ -1,6 +1,5 @@
 (function () {
   const WEEKS = 53;
-  const MAX_WORKERS = 4;
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
   const compact = window.matchMedia("(max-width: 780px)");
 
@@ -99,39 +98,54 @@
   function destPoint(tile) {
     const frame = tile.querySelector(".frame") || tile;
     const box = frame.getBoundingClientRect();
+    if (compact.matches) return { x: box.left + box.width / 2, y: box.top + 8 };
     return { x: box.left + 10, y: box.top + box.height / 2 };
   }
-  function visibleTile(id) {
-    const tile = document.querySelector('.tile[data-item="' + id + '"]');
-    if (!tile) return null;
+  function tileFor(id) {
+    return document.querySelector('.tile[data-item="' + id + '"]');
+  }
+  function inView(tile) {
     const box = tile.getBoundingClientRect();
-    if (box.bottom < 80 || box.top > window.innerHeight - 20) return null;
-    return tile;
+    const top = compact.matches ? 8 : 80;
+    const slack = compact.matches ? 220 : 20;
+    return box.bottom > top && box.top < window.innerHeight + slack;
+  }
+  function curve(a, b) {
+    if (Math.abs(b.y - a.y) > Math.abs(b.x - a.x)) {
+      const midY = a.y + (b.y - a.y) * 0.46;
+      return { c1: { x: a.x, y: midY }, c2: { x: b.x, y: midY } };
+    }
+    const midX = a.x + (b.x - a.x) * 0.48;
+    return { c1: { x: midX, y: a.y }, c2: { x: midX, y: b.y } };
   }
   function point(t, a, b) {
     const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-    const midX = a.x + (b.x - a.x) * 0.48;
+    const c = curve(a, b);
     const u = 1 - ease;
     return {
-      x: u * u * u * a.x + 3 * u * u * ease * midX + 3 * u * ease * ease * midX + ease * ease * ease * b.x,
-      y: u * u * u * a.y + 3 * u * u * ease * a.y + 3 * u * ease * ease * b.y + ease * ease * ease * b.y,
+      x: u * u * u * a.x + 3 * u * u * ease * c.c1.x + 3 * u * ease * ease * c.c2.x + ease * ease * ease * b.x,
+      y: u * u * u * a.y + 3 * u * u * ease * c.c1.y + 3 * u * ease * ease * c.c2.y + ease * ease * ease * b.y,
     };
   }
   function lane(a, b) {
-    const midX = a.x + (b.x - a.x) * 0.48;
-    return "M " + a.x + " " + a.y + " C " + midX + " " + a.y + ", " + midX + " " + b.y + ", " + b.x + " " + b.y;
+    const c = curve(a, b);
+    return "M " + a.x + " " + a.y + " C " + c.c1.x + " " + c.c1.y + ", " + c.c2.x + " " + c.c2.y + ", " + b.x + " " + b.y;
   }
 
   function weightedChoices() {
-    const choices = [];
+    const seen = [];
+    const nearby = [];
     cells.forEach((cell, index) => {
       Object.keys(cell.repos).forEach((repo) => {
         const id = itemForRepo(repo);
-        if (!id || !visibleTile(id)) return;
-        choices.push({ index: index, item: id, kind: cell.prs >= cell.commits ? "pr" : "commit", weight: cell.repos[repo] });
+        const tile = id && tileFor(id);
+        if (!tile) return;
+        const row = { index: index, item: id, kind: cell.prs >= cell.commits ? "pr" : "commit", weight: cell.repos[repo] };
+        seen.push(row);
+        if (inView(tile)) nearby.push(row);
       });
     });
-    return choices;
+    return nearby.length ? nearby : seen;
   }
   function pick(choices) {
     const total = choices.reduce((sum, row) => sum + row.weight, 0);
@@ -143,8 +157,11 @@
     return choices[choices.length - 1];
   }
 
+  function cap() {
+    return compact.matches ? 3 : 4;
+  }
   function spawn() {
-    if (reduce.matches || compact.matches || workers.length >= MAX_WORKERS) return;
+    if (reduce.matches || workers.length >= cap()) return;
     const choices = weightedChoices();
     if (!choices.length) return;
     const choice = pick(choices);
@@ -155,7 +172,7 @@
       kind: choice.kind,
       from: el,
       t: 0,
-      dur: 2400 + Math.random() * 1200,
+      dur: (compact.matches ? 2000 : 2400) + Math.random() * 1100,
     });
   }
 
@@ -172,12 +189,12 @@
     const dt = last ? now - last : 16;
     last = now;
     timer += dt;
-    if (timer > 2100) {
+    if (timer > (compact.matches ? 1400 : 2100)) {
       timer = 0;
       spawn();
     }
     workers = workers.filter((worker) => {
-      if (!visibleTile(worker.item)) return false;
+      if (!tileFor(worker.item)) return false;
       worker.t += dt / worker.dur;
       if (worker.t >= 1) {
         mark(worker.item);
@@ -186,9 +203,10 @@
       return true;
     });
 
+    const size = compact.matches ? 7 : 6;
     const parts = [];
     workers.forEach((worker) => {
-      const tile = visibleTile(worker.item);
+      const tile = tileFor(worker.item);
       if (!tile) return;
       const a = center(worker.from);
       const b = destPoint(tile);
@@ -196,8 +214,8 @@
       const fade = worker.t < 0.12 ? worker.t / 0.12 : worker.t > 0.86 ? (1 - worker.t) / 0.14 : 1;
       parts.push('<path d="' + lane(a, b) + '" class="pulse-lane" />');
       parts.push(
-        '<rect class="pulse-courier is-' + worker.kind + '" x="' + (p.x - 3) + '" y="' + (p.y - 3) +
-        '" width="6" height="6" rx="1" opacity="' + fade.toFixed(2) + '" />'
+        '<rect class="pulse-courier is-' + worker.kind + '" x="' + (p.x - size / 2) + '" y="' + (p.y - size / 2) +
+        '" width="' + size + '" height="' + size + '" rx="1" opacity="' + fade.toFixed(2) + '" />'
       );
     });
     sky.setAttribute("viewBox", "0 0 " + window.innerWidth + " " + window.innerHeight);
@@ -221,12 +239,13 @@
 
   window.Pulse = {
     refresh: function () {
-      if (reduce.matches || compact.matches) stop();
-      else start();
+      stop();
+      if (!reduce.matches) start();
     },
   };
 
   renderBoard();
+  window.Pulse.refresh();
   window.loadActivity().then((data) => {
     activity = data;
     renderBoard();
