@@ -4,17 +4,17 @@ window.ACTIVITY_SNAPSHOT = {
   user: "guygir",
   fetched: "2026-09-21T14:57:47Z",
   days: [
-    { date: "2026-08-24", commits: 1, prs: 2, repos: { "guygir/bb_fantasy": 3 } },
-    { date: "2026-09-01", commits: 0, prs: 1, repos: { "guygir/Holdemle": 1 } },
-    { date: "2026-09-02", commits: 1, prs: 1, repos: { "guygir/Holdemle": 2 } },
-    { date: "2026-09-14", commits: 6, prs: 1, repos: { "guygir/llm-d-inference-scheduler": 6, "llm-d/llm-d-router": 1 } },
-    { date: "2026-09-15", commits: 5, prs: 1, repos: { "guygir/klafi": 5, "guygir/llm-d-inference-scheduler": 1 } },
-    { date: "2026-09-16", commits: 1, prs: 2, repos: { "guygir/klafi": 3 } },
-    { date: "2026-09-17", commits: 4, prs: 7, repos: { "guygir/portfolio": 2, "guygir/klafi": 9 } },
-    { date: "2026-09-18", commits: 2, prs: 4, repos: { "guygir/klafi": 6 } },
-    { date: "2026-09-19", commits: 2, prs: 4, repos: { "guygir/klafi": 6 } },
-    { date: "2026-09-20", commits: 0, prs: 12, repos: { "guygir/klafi": 10, "guygir/llm-d-kv-cache-manager": 2 } },
-    { date: "2026-09-21", commits: 1, prs: 6, repos: { "guygir/klafi": 7 } },
+    { date: "2026-08-24", commits: 1, prs: 2, repos: { "guygir/bb_fantasy": { commits: 1, prs: 2 } } },
+    { date: "2026-09-01", commits: 0, prs: 1, repos: { "guygir/Holdemle": { commits: 0, prs: 1 } } },
+    { date: "2026-09-02", commits: 1, prs: 1, repos: { "guygir/Holdemle": { commits: 1, prs: 1 } } },
+    { date: "2026-09-14", commits: 6, prs: 1, repos: { "guygir/llm-d-inference-scheduler": { commits: 6, prs: 0 }, "llm-d/llm-d-router": { commits: 0, prs: 1 } } },
+    { date: "2026-09-15", commits: 5, prs: 1, repos: { "guygir/klafi": { commits: 5, prs: 0 }, "guygir/llm-d-inference-scheduler": { commits: 0, prs: 1 } } },
+    { date: "2026-09-16", commits: 1, prs: 2, repos: { "guygir/klafi": { commits: 1, prs: 2 } } },
+    { date: "2026-09-17", commits: 4, prs: 7, repos: { "guygir/portfolio": { commits: 2, prs: 0 }, "guygir/klafi": { commits: 2, prs: 7 } } },
+    { date: "2026-09-18", commits: 2, prs: 4, repos: { "guygir/klafi": { commits: 2, prs: 4 } } },
+    { date: "2026-09-19", commits: 2, prs: 4, repos: { "guygir/klafi": { commits: 2, prs: 4 } } },
+    { date: "2026-09-20", commits: 0, prs: 12, repos: { "guygir/klafi": { commits: 0, prs: 10 }, "guygir/llm-d-kv-cache-manager": { commits: 0, prs: 2 } } },
+    { date: "2026-09-21", commits: 1, prs: 6, repos: { "guygir/klafi": { commits: 1, prs: 6 } } },
   ],
 };
 
@@ -54,13 +54,14 @@ window.normalizeEvents = function normalizeEvents(events) {
     const date = (event.created_at || "").slice(0, 10);
     if (!repo || !date) return;
     const rec = days[date] || (days[date] = { date: date, commits: 0, prs: 0, repos: {} });
+    const slot = rec.repos[repo] || (rec.repos[repo] = { commits: 0, prs: 0 });
     if (event.type === "PushEvent") {
       const n = ((event.payload && event.payload.commits) || []).length || 1;
       rec.commits += n;
-      rec.repos[repo] = (rec.repos[repo] || 0) + n;
+      slot.commits += n;
     } else if (event.type === "PullRequestEvent") {
       rec.prs += 1;
-      rec.repos[repo] = (rec.repos[repo] || 0) + 1;
+      slot.prs += 1;
     }
   });
   return Object.keys(days).sort().map((key) => days[key]);
@@ -76,7 +77,7 @@ window.loadActivity = function loadActivity() {
   const calendar = window.CONTRIBUTIONS_SNAPSHOT;
   const events = window.ACTIVITY_SNAPSHOT;
   try {
-    const cached = sessionStorage.getItem("gg-activity-v2");
+    const cached = sessionStorage.getItem("gg-activity-v3");
     if (cached) return Promise.resolve(JSON.parse(cached));
   } catch (err) {}
 
@@ -102,7 +103,7 @@ window.loadActivity = function loadActivity() {
       events: window.mergeCalendar(events.days, parts[1]),
       total: calendar.total,
     };
-    try { sessionStorage.setItem("gg-activity-v2", JSON.stringify(next)); } catch (err) {}
+    try { sessionStorage.setItem("gg-activity-v3", JSON.stringify(next)); } catch (err) {}
     return next;
   });
 };

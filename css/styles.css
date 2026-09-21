@@ -169,6 +169,14 @@ nav button.on { text-decoration: underline; text-underline-offset: 4px; }
   background: #9be9a8;
   box-shadow: inset 0 0 0 1px var(--ink);
 }
+.pulse-swatch-commit {
+  background: #40c463;
+  box-shadow: inset 0 0 0 1px #216e39;
+}
+.pulse-swatch.pulse-swatch-worker {
+  background: #fff;
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
 .pulse-sky {
   position: fixed;
   inset: 0;
@@ -182,7 +190,11 @@ nav button.on { text-decoration: underline; text-underline-offset: 4px; }
   stroke: rgb(17 17 17 / 0.22);
   stroke-width: 1.15;
 }
-.pulse-courier,
+.pulse-courier.is-commit {
+  fill: #40c463;
+  stroke: #216e39;
+  stroke-width: 1.15;
+}
 .pulse-courier.is-pr {
   fill: #fff;
   stroke: var(--ink);
