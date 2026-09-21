@@ -92,6 +92,13 @@ nav button.on,
 nav a:hover,
 nav button:hover { color: var(--ink); }
 nav button.on { text-decoration: underline; text-underline-offset: 4px; }
+nav button small {
+  margin-left: 6px;
+  color: var(--mute);
+  font-size: 11px;
+  font-weight: 400;
+  text-decoration: none;
+}
 
 .pulse h2 {
   margin: 0 0 4px;
@@ -265,6 +272,17 @@ main { padding: 28px 40px 96px 12px; }
   border-radius: 2px;
   transition: transform 220ms ease;
 }
+.tile-index {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 2;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 8px rgb(0 0 0 / 0.45);
+}
 .frame img {
   position: absolute;
   inset: 0;
@@ -329,6 +347,49 @@ main { padding: 28px 40px 96px 12px; }
   white-space: nowrap;
 }
 .feature-main .meta strong { font-size: 15px; }
+
+.index-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid rgb(17 17 17 / 0.08);
+}
+.index-list li { border-bottom: 1px solid rgb(17 17 17 / 0.08); }
+.index-list a {
+  display: grid;
+  grid-template-columns: 1.6em 1fr auto;
+  align-items: baseline;
+  gap: 12px;
+  padding: 10px 2px;
+  text-decoration: none;
+}
+.index-list a:hover strong { text-decoration: underline; text-underline-offset: 3px; }
+.index-num {
+  color: var(--mute);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.index-venue {
+  color: var(--mute);
+  font-size: 12px;
+}
+.timeline {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.timeline li {
+  display: grid;
+  grid-template-columns: 4.2em 1fr;
+  gap: 12px;
+  padding: 5px 0;
+  color: var(--mute);
+}
+.timeline span {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+}
 
 #about {
   display: grid;
