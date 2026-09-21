@@ -1,8 +1,12 @@
 (function () {
   const gallery = document.getElementById("gallery");
   const buttons = document.querySelectorAll("nav button");
+  const filingsEl = document.getElementById("filings");
+  const inspectEl = document.getElementById("inspect");
   const featuredIds = ["klafi", "holdemle", "riftrade"];
   let filter = "current";
+  let stack = [];
+  let cursor = 0;
 
   function visibleItems() {
     return window.ITEMS.filter((item) =>
@@ -15,29 +19,47 @@
     if (item.section === "work") return "Work";
     return "Open";
   }
+  function stampOf(item) {
+    if (item.status === "archive") return "SHELF";
+    if (item.section === "games") {
+      if (/daily/i.test(item.detail || item.blurb || "")) return "DAILY";
+      if (/print/i.test(item.detail || item.blurb || "")) return "PRINT";
+      return "PLAY";
+    }
+    if (item.section === "work") return "WORK";
+    return "TOOL";
+  }
+  function kindOf(item) {
+    if (item.section === "games") return "Game";
+    if (item.section === "work") return "Work";
+    return "Tool";
+  }
   function padNum(n) {
     return String(n).padStart(2, "0");
   }
+  function itemById(id) {
+    return window.ITEMS.find((item) => item.id === id);
+  }
 
   function tileHTML(item, extraClass, index) {
-    const note = actionOf(item);
     const mark = index ? '<span class="tile-index">' + padNum(index) + "</span>" : "";
     return (
-      '<a class="tile ' + (extraClass || "") + '" data-item="' + item.id + '" href="' + item.href + '" target="_blank" rel="noopener noreferrer">' +
+      '<button type="button" class="tile ' + (extraClass || "") + '" data-item="' + item.id + '">' +
         '<span class="frame">' +
           mark +
+          '<span class="stamp">' + stampOf(item) + "</span>" +
           '<img class="a" src="' + item.cover + '" alt="' + item.title + '" width="1600" height="1000">' +
           '<img class="b" src="' + item.hover + '" alt="" width="1600" height="1000">' +
-          '<span class="reveal">' + item.blurb + '</span>' +
-        '</span>' +
+          '<span class="reveal">' + item.blurb + "</span>" +
+        "</span>" +
         '<span class="meta">' +
           '<span class="project-text">' +
-            '<strong>' + item.title + '</strong>' +
-            '<small>' + (item.detail || item.blurb) + '</small>' +
-          '</span>' +
-          '<span>' + note + '</span>' +
-        '</span>' +
-      '</a>'
+            "<strong>" + item.title + "</strong>" +
+            "<small>" + (item.detail || item.blurb) + "</small>" +
+          "</span>" +
+          "<span>Inspect</span>" +
+        "</span>" +
+      "</button>"
     );
   }
 
@@ -45,11 +67,11 @@
     if (!items.length) return "";
     return (
       '<section class="gallery-section">' +
-        '<header class="section-head"><h2>' + title + '</h2>' +
-          (note ? '<p>' + note + '</p>' : '') +
-        '</header>' +
-        '<div class="project-grid">' + items.map((item) => tileHTML(item)).join("") + '</div>' +
-      '</section>'
+        '<header class="section-head"><h2>' + title + "</h2>" +
+          (note ? "<p>" + note + "</p>" : "") +
+        "</header>" +
+        '<div class="project-grid">' + items.map((item) => tileHTML(item)).join("") + "</div>" +
+      "</section>"
     );
   }
 
@@ -58,16 +80,45 @@
     const rest = items.filter((item) => !featuredIds.includes(item.id));
     return (
       '<section class="gallery-section selected">' +
-        '<header class="section-head"><h2>On the table</h2><p>Two things you can play, one you can use.</p></header>' +
-        '<div class="featured-grid">' +
-          tileHTML(featured[0], "feature-main", 1) +
-          '<div class="featured-stack">' + featured.slice(1).map((item, i) => tileHTML(item, "", i + 2)).join("") + '</div>' +
-        '</div>' +
-      '</section>' +
+        '<header class="section-head"><h2>On the table</h2><p>Pick a piece up. Inspect it. Then play it.</p></header>' +
+        '<div class="table">' +
+          '<div class="featured-grid">' +
+            tileHTML(featured[0], "feature-main", 1) +
+            '<div class="featured-stack">' + featured.slice(1).map((item, i) => tileHTML(item, "", i + 2)).join("") + "</div>" +
+          "</div>" +
+        "</div>" +
+      "</section>" +
       sectionHTML("Games", rest.filter((item) => item.section === "games"), "Puzzles, print-and-play, and older itch.io pieces.") +
       sectionHTML("Tools", rest.filter((item) => item.section === "projects"), "Small utilities for real groups and communities.") +
       sectionHTML("Work", rest.filter((item) => item.section === "work"), "Research systems. The other shelf.")
     );
+  }
+
+  function renderFilings(source) {
+    if (!filingsEl) return;
+    const raw = (source && source.events) || (window.ACTIVITY_SNAPSHOT && window.ACTIVITY_SNAPSHOT.days) || [];
+    const days = raw.slice().reverse();
+    const rows = [];
+    days.forEach((day) => {
+      const seen = {};
+      const names = [];
+      Object.keys(day.repos || {}).forEach((repo) => {
+        const id = window.REPO_TO_ITEM[repo];
+        const item = id && itemById(id);
+        if (!item || seen[id]) return;
+        seen[id] = true;
+        names.push({ id: id, title: item.title });
+      });
+      if (!names.length) return;
+      const label = new Date(day.date + "T12:00:00").toLocaleString("en", { month: "short", day: "numeric" });
+      rows.push(
+        "<li>" +
+          "<time datetime=\"" + day.date + "\">" + label + "</time>" +
+          names.map((row) => '<button type="button" data-open="' + row.id + '">' + row.title + "</button>").join("") +
+        "</li>"
+      );
+    });
+    filingsEl.innerHTML = rows.slice(0, 6).join("");
   }
 
   function render() {
@@ -90,25 +141,98 @@
   }
 
   function bindTiles() {
-    const coarse = window.matchMedia("(hover: none)");
     gallery.querySelectorAll(".tile").forEach((tile) => {
-      tile.addEventListener("click", (event) => {
-        if (!coarse.matches) return;
-        if (!tile.classList.contains("is-flipped")) {
-          event.preventDefault();
-          gallery.querySelectorAll(".tile").forEach((t) => t.classList.remove("is-flipped"));
-          tile.classList.add("is-flipped");
-        }
+      tile.addEventListener("click", () => {
+        const ids = [...gallery.querySelectorAll(".tile")].map((el) => el.dataset.item);
+        openInspect(tile.dataset.item, ids);
       });
     });
   }
 
+  function fillSheet(item) {
+    document.getElementById("sheet-file").textContent =
+      "FILE / " + kindOf(item).toUpperCase() + " / " + padNum(cursor + 1);
+    document.getElementById("sheet-stamp").textContent = stampOf(item);
+    const img = document.getElementById("sheet-img");
+    img.src = item.cover;
+    img.alt = item.title;
+    document.getElementById("sheet-title").textContent = item.title;
+    document.getElementById("sheet-detail").textContent = item.detail || kindOf(item);
+    document.getElementById("sheet-story").textContent = item.story || item.blurb;
+    const enter = document.getElementById("sheet-enter");
+    enter.href = item.href;
+    enter.textContent = actionOf(item);
+    document.getElementById("sheet-prev").disabled = stack.length < 2;
+    document.getElementById("sheet-next").disabled = stack.length < 2;
+  }
+
+  function openInspect(id, ids) {
+    const item = itemById(id);
+    if (!item || !inspectEl) return;
+    stack = (ids && ids.length ? ids : [id]).filter((key) => itemById(key));
+    cursor = stack.indexOf(id);
+    if (cursor < 0) {
+      stack = [id];
+      cursor = 0;
+    }
+    fillSheet(itemById(stack[cursor]));
+    inspectEl.hidden = false;
+    document.body.classList.add("inspect-open");
+    document.getElementById("sheet-enter").focus();
+  }
+
+  function closeInspect() {
+    if (!inspectEl || inspectEl.hidden) return;
+    inspectEl.hidden = true;
+    document.body.classList.remove("inspect-open");
+  }
+
+  function step(delta) {
+    if (stack.length < 2) return;
+    cursor = (cursor + delta + stack.length) % stack.length;
+    fillSheet(itemById(stack[cursor]));
+    document.getElementById("sheet-enter").focus();
+  }
+
   function apply(next) {
+    closeInspect();
     filter = next;
     buttons.forEach((b) => b.classList.toggle("on", b.dataset.filter === filter));
     render();
   }
 
   buttons.forEach((btn) => btn.addEventListener("click", () => apply(btn.dataset.filter)));
+  if (filingsEl) {
+    filingsEl.addEventListener("click", (event) => {
+      const btn = event.target.closest("[data-open]");
+      if (!btn) return;
+      const id = btn.dataset.open;
+      const ids = [...filingsEl.querySelectorAll("[data-open]")].map((el) => el.dataset.open);
+      openInspect(id, [...new Set(ids)]);
+    });
+  }
+  if (inspectEl) {
+    inspectEl.addEventListener("click", (event) => {
+      if (event.target.closest("[data-close]")) closeInspect();
+    });
+    document.getElementById("sheet-prev").addEventListener("click", () => step(-1));
+    document.getElementById("sheet-next").addEventListener("click", () => step(1));
+  }
+  document.addEventListener("keydown", (event) => {
+    if (inspectEl.hidden) return;
+    if (event.key === "Escape") closeInspect();
+    if (event.key === "ArrowLeft") step(-1);
+    if (event.key === "ArrowRight") step(1);
+  });
+
+  window.Desk = {
+    inspect: openInspect,
+    close: closeInspect,
+  };
+
+  renderFilings();
   apply("current");
+  if (window.loadActivity) {
+    window.loadActivity().then(renderFilings);
+  }
 })();

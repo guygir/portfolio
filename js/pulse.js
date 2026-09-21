@@ -92,6 +92,8 @@
     board.innerHTML = cells.map((cell, index) => {
       const classes = ["pulse-cell", "lv-" + cell.level];
       if (cell.prs) classes.push("is-pr");
+      const filed = Object.keys(cell.repos || {}).some((repo) => itemForRepo(repo));
+      if (filed) classes.push("is-file");
       const bits = [];
       if (cell.count) bits.push(cell.count + (cell.count === 1 ? " contribution" : " contributions"));
       else bits.push("No contributions");
@@ -289,6 +291,18 @@
     },
   };
 
+  board.addEventListener("click", (event) => {
+    const el = event.target.closest(".pulse-cell");
+    if (!el || !window.Desk) return;
+    const cell = cells[Number(el.dataset.i)];
+    if (!cell) return;
+    const ids = [];
+    Object.keys(cell.repos || {}).forEach((repo) => {
+      const id = itemForRepo(repo);
+      if (id && window.ITEMS.some((item) => item.id === id) && ids.indexOf(id) === -1) ids.push(id);
+    });
+    if (ids.length) window.Desk.inspect(ids[0], ids);
+  });
   renderBoard();
   window.Pulse.refresh();
   window.loadActivity().then((data) => {
