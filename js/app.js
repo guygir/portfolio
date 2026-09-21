@@ -13,7 +13,7 @@
   function tileHTML(item, extraClass) {
     const note = item.status === "archive" ? "Archive" : item.tag;
     return (
-      '<a class="tile ' + (extraClass || "") + '" href="' + item.href + '" target="_blank" rel="noopener noreferrer">' +
+      '<a class="tile ' + (extraClass || "") + '" data-item="' + item.id + '" href="' + item.href + '" target="_blank" rel="noopener noreferrer">' +
         '<span class="frame">' +
           '<img class="a" src="' + item.cover + '" alt="' + item.title + '" width="1600" height="1000">' +
           '<img class="b" src="' + item.hover + '" alt="" width="1600" height="1000">' +
@@ -71,6 +71,7 @@
         sectionHTML("Archive", archive, "Older work, still part of the story.");
     }
     bindTiles();
+    if (window.Pulse) window.Pulse.refresh();
   }
 
   function bindTiles() {

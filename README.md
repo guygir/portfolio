@@ -14,6 +14,8 @@ Open http://127.0.0.1:4173
 
 - `index.html` — one page: selected work, filters, about
 - `js/data.js` — curated records from GitHub, itch.io, and papers
+- `js/activity.js` — recent commit/PR snapshot, refreshed from GitHub when the network allows
+- `js/pulse.js` — left-rail contribution board and couriers toward active repos
 - `css/styles.css` — white gallery, sticky left rail
 - `images/covers` + `images/hover` — two pictures per tile; hover or focus changes the image
 - `images/profile` — identity portrait

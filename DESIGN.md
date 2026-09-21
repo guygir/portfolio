@@ -2,7 +2,7 @@
 
 Proof of concept. Designed before implementation.
 
-Shipped shape: sticky left rail, selected trio (ZipNN / Klafi / RifTrade), sectioned gallery, tap-to-flip on coarse pointers. Research, itch.io games, and live tools use composed photography. Parked GitHub work without photography uses designed posters in Archive.
+Shipped shape: sticky left rail, selected trio (ZipNN / Klafi / RifTrade), sectioned gallery, tap-to-flip on coarse pointers. The rail also carries a twelve-week commit/PR board; busier squares send a few quiet courier marks toward the matching repo tile. Research, itch.io games, and live tools use composed photography. Parked GitHub work without photography uses designed posters in Archive.
 References: [tovbar.com](https://tovbar.com), [sharkbombs.com](https://www.sharkbombs.com/index.html).
 Source inventory: GitHub `guygir`, itch.io `guygir`, IBM Research publications.
 
