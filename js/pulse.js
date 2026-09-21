@@ -140,7 +140,8 @@
       : gal.top + 80;
     let y;
     if (compact.matches) {
-      y = pulseBox.bottom + Math.max(12, Math.min(28, (top - pulseBox.bottom) / 2));
+      const gap = top - pulseBox.bottom;
+      y = pulseBox.bottom + Math.max(18, Math.min(gap * 0.5, gap - 18));
     } else if (head) {
       const box = head.getBoundingClientRect();
       y = Math.min(box.top + box.height / 2, top - 28);
@@ -165,9 +166,18 @@
   }
   function route(from, tile, side) {
     const hub = hubPoint();
+    const edge = sidePoint(tile, side);
+    const mid = midPoint(tile);
     const pts = [from];
-    if (Math.abs(from.y - hub.y) > 20) pts.push({ x: from.x, y: hub.y });
-    pts.push(hub, sidePoint(tile, side), midPoint(tile));
+    function add(p) {
+      const last = pts[pts.length - 1];
+      if (!last || dist(last, p) > 8) pts.push(p);
+    }
+    if (!compact.matches && Math.abs(from.y - hub.y) > 20) add({ x: from.x, y: hub.y });
+    add(hub);
+    add({ x: edge.x, y: hub.y });
+    add(edge);
+    add(mid);
     return pts;
   }
   function dist(a, b) {
