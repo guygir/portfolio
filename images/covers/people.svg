@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <style>
+      .d { font-family: "Fraunces", "Times New Roman", serif; }
+      .u { font-family: "Figtree", "Helvetica Neue", sans-serif; }
+    </style>
+  </defs>
+  
+  <rect width="800" height="600" fill="#242028"/>
+  
+  <rect x="36" y="36" width="728" height="528" fill="none" stroke="#C0A8C8" stroke-opacity="0.45" stroke-width="1.25"/>
+  <text x="56" y="88" class="u" fill="#C0A8C8" font-size="13" letter-spacing="3.2">PROJECT</text>
+  <text x="56" y="168" class="d" fill="#F3EEE4" font-size="64" font-weight="500">People Data</text>
+  <text x="56" y="430" class="u" fill="#F3EEE4" fill-opacity="0.72" font-size="18">People-analytics course.</text>
+<text x="56" y="456" class="u" fill="#F3EEE4" fill-opacity="0.72" font-size="18">Python notebooks. Coursework.</text>
+
+
+</svg>

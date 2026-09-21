@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <style>
+      .d { font-family: "Fraunces", "Times New Roman", serif; }
+      .u { font-family: "Figtree", "Helvetica Neue", sans-serif; }
+    </style>
+  </defs>
+  
+  <rect width="800" height="600" fill="#F6F1E6"/>
+  <rect x="56" y="56" width="688" height="360" rx="12" fill="#1A1612"/>
+  <text x="88" y="140" class="u" fill="#C2410C" font-size="13" letter-spacing="3">OPEN THE THING</text>
+  <text x="88" y="210" class="d" fill="#F3EEE4" font-size="56">People Data</text>
+  <text x="56" y="480" class="d" fill="#1A1612" font-size="36">People Data</text>
+  <text x="56" y="524" class="u" fill="#C2410C" font-size="18">coursework</text>
+
+</svg>
