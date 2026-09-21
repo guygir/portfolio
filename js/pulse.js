@@ -126,30 +126,82 @@
     if (box.width > window.innerWidth * 0.68) return "left";
     return box.left + box.width / 2 < window.innerWidth / 2 ? "left" : "right";
   }
-  function destPoint(tile, side) {
-    const frame = tile.querySelector(".frame") || tile;
-    const box = frame.getBoundingClientRect();
-    const y = compact.matches ? box.top + 10 : box.top + box.height / 2;
-    return side === "right" ? { x: box.right - 8, y: y } : { x: box.left + 8, y: y };
+  function frameBox(tile) {
+    return (tile.querySelector(".frame") || tile).getBoundingClientRect();
   }
-  function curve(a, b, side) {
-    const gutter = side === "right"
-      ? Math.max(b.x, window.innerWidth - 20)
-      : compact.matches ? Math.min(a.x, b.x, 20) : Math.min(b.x, Math.max(a.x + 12, 20));
-    return { c1: { x: gutter, y: a.y }, c2: { x: gutter, y: b.y } };
-  }
-  function point(t, a, b, side) {
-    const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-    const c = curve(a, b, side);
-    const u = 1 - ease;
+  function hubPoint() {
+    const main = document.querySelector("main");
+    const gal = (main || document.body).getBoundingClientRect();
+    const pulseBox = pulse ? pulse.getBoundingClientRect() : { bottom: 8 };
+    const tiles = [...document.querySelectorAll("#gallery .tile")].filter(inView);
+    let y;
+    if (tiles.length) {
+      const top = Math.min(...tiles.map((tile) => tile.getBoundingClientRect().top));
+      if (compact.matches) {
+        y = Math.max(pulseBox.bottom + 10, Math.min(top - 16, pulseBox.bottom + 18));
+      } else {
+        y = top - 18;
+      }
+    } else {
+      y = compact.matches ? pulseBox.bottom + 16 : gal.top + 20;
+    }
     return {
-      x: u * u * u * a.x + 3 * u * u * ease * c.c1.x + 3 * u * ease * ease * c.c2.x + ease * ease * ease * b.x,
-      y: u * u * u * a.y + 3 * u * u * ease * c.c1.y + 3 * u * ease * ease * c.c2.y + ease * ease * ease * b.y,
+      x: Math.max(12, Math.min(window.innerWidth - 12, gal.left + gal.width / 2)),
+      y: Math.max(clipTop() + 8, Math.min(window.innerHeight - 12, y)),
     };
   }
-  function lane(a, b, side) {
-    const c = curve(a, b, side);
-    return "M " + a.x + " " + a.y + " C " + c.c1.x + " " + c.c1.y + ", " + c.c2.x + " " + c.c2.y + ", " + b.x + " " + b.y;
+  function sidePoint(tile, side) {
+    const box = frameBox(tile);
+    return {
+      x: side === "right" ? box.right : box.left,
+      y: box.top + box.height / 2,
+    };
+  }
+  function midPoint(tile) {
+    const box = frameBox(tile);
+    return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
+  }
+  function route(from, tile, side) {
+    return [from, hubPoint(), sidePoint(tile, side), midPoint(tile)];
+  }
+  function dist(a, b) {
+    return Math.hypot(b.x - a.x, b.y - a.y);
+  }
+  function lerp(a, b, t) {
+    return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+  }
+  function along(pts, t) {
+    const n = pts.length - 1;
+    if (n <= 0) return pts[0];
+    const clamped = Math.max(0, Math.min(0.9999, t));
+    const scaled = clamped * n;
+    const i = Math.min(n - 1, Math.floor(scaled));
+    const u = scaled - i;
+    const ease = u * u * (3 - 2 * u);
+    return lerp(pts[i], pts[i + 1], ease);
+  }
+  function lane(pts) {
+    if (pts.length < 2) return "";
+    const radius = compact.matches ? 10 : 14;
+    let d = "M " + pts[0].x + " " + pts[0].y;
+    for (let i = 1; i < pts.length - 1; i += 1) {
+      const prev = pts[i - 1];
+      const curr = pts[i];
+      const next = pts[i + 1];
+      const d1 = dist(prev, curr);
+      const d2 = dist(curr, next);
+      const r = Math.min(radius, d1 / 2, d2 / 2);
+      if (r < 1) {
+        d += " L " + curr.x + " " + curr.y;
+        continue;
+      }
+      const a = lerp(curr, prev, r / d1);
+      const b = lerp(curr, next, r / d2);
+      d += " L " + a.x + " " + a.y + " Q " + curr.x + " " + curr.y + " " + b.x + " " + b.y;
+    }
+    const last = pts[pts.length - 1];
+    d += " L " + last.x + " " + last.y;
+    return d;
   }
 
   function weightedChoices() {
@@ -217,7 +269,7 @@
       side: choice.side,
       from: el,
       t: 0,
-      dur: (compact.matches ? 2000 : 2400) + Math.random() * 1100,
+      dur: (compact.matches ? 2400 : 3000) + Math.random() * 800,
     });
   }
 
@@ -255,11 +307,10 @@
     workers.forEach((worker) => {
       const tile = tileFor(worker.item);
       if (!tile || !inView(tile)) return;
-      const a = center(worker.from);
-      const b = destPoint(tile, worker.side);
-      const p = point(worker.t, a, b, worker.side);
-      const fade = worker.t < 0.12 ? worker.t / 0.12 : worker.t > 0.86 ? (1 - worker.t) / 0.14 : 1;
-      parts.push('<path d="' + lane(a, b, worker.side) + '" class="pulse-lane is-' + worker.kind + '" />');
+      const pts = route(center(worker.from), tile, worker.side);
+      const p = along(pts, worker.t);
+      const fade = worker.t < 0.08 ? worker.t / 0.08 : worker.t > 0.9 ? (1 - worker.t) / 0.1 : 1;
+      parts.push('<path d="' + lane(pts) + '" class="pulse-lane is-' + worker.kind + '" />');
       parts.push(
         '<rect class="pulse-courier is-' + worker.kind + '" x="' + (p.x - size / 2) + '" y="' + (p.y - size / 2) +
         '" width="' + size + '" height="' + size + '" rx="1" opacity="' + fade.toFixed(2) + '" />'
