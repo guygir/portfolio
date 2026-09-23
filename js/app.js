@@ -70,7 +70,7 @@
 
   function posterGrid(items) {
     if (!items.length) return "";
-    return '<div class="poster-grid">' + leadFirst(items).map((item, i) => cardHTML(item, i)).join("") + "</div>";
+    return '<div class="poster-grid">' + leadFirst(items).map((item) => cardHTML(item)).join("") + "</div>";
   }
 
   function sectionHTML(title, items, note) {

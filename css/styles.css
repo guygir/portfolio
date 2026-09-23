@@ -307,7 +307,7 @@ main { padding: 28px 40px 96px 12px; }
 
 .poster-row,
 .poster-grid {
-  --card: 156px;
+  --card: 200px;
 }
 .poster-row {
   display: flex;
@@ -328,19 +328,24 @@ main { padding: 28px 40px 96px 12px; }
   perspective: 800px;
   scroll-snap-align: start;
 }
-.poster-card.is-lead { flex-basis: 176px; width: 176px; }
+.poster-card.is-lead { flex-basis: 228px; width: 228px; }
 .poster-card .frame {
   overflow: hidden;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 16 / 10;
   border-radius: 8px;
-  background: var(--wash);
+  background: #f6f3ec;
   box-shadow:
     0 8px 0 0 #d8d3cb,
     0 18px 26px rgb(17 17 17 / 0.12);
   transform: rotateX(14deg);
   transform-origin: 50% 88%;
 }
-.poster-card .frame img { border-radius: inherit; }
+.poster-card .frame img {
+  border-radius: inherit;
+  object-fit: contain;
+  object-position: center;
+  background: #f6f3ec;
+}
 .poster-name {
   display: block;
   margin-top: 10px;
@@ -358,12 +363,6 @@ main { padding: 28px 40px 96px 12px; }
 .poster-card:focus-visible,
 .poster-card.is-receiving {
   z-index: 3;
-}
-.poster-card:hover .frame,
-.poster-card:focus-visible .frame,
-.poster-card.is-receiving .frame {
-  transform: rotateX(4deg) translateY(-6px);
-  box-shadow: 0 18px 32px rgb(17 17 17 / 0.16);
 }
 
 .tile {
@@ -449,7 +448,8 @@ main { padding: 28px 40px 96px 12px; }
 .poster-card:hover .frame,
 .poster-card:focus-visible .frame,
 .poster-card.is-receiving .frame {
-  transform: rotateX(4deg) translateY(-6px);
+  transform: rotateX(6deg) translateY(-5px);
+  box-shadow: 0 18px 32px rgb(17 17 17 / 0.16);
 }
 .tile:hover .reveal,
 .tile:focus-visible .reveal,
@@ -702,8 +702,8 @@ body.inspect-open { overflow: hidden; }
     margin-bottom: 20px;
   }
   .poster-row,
-  .poster-grid { --card: 132px; }
-  .poster-card.is-lead { flex-basis: 148px; width: 148px; }
+  .poster-grid { --card: 188px; }
+  .poster-card.is-lead { flex-basis: 212px; width: 212px; }
   .poster-name { font-size: 12px; margin-top: 8px; }
   .sheet { padding: 18px 16px 14px; }
 }
