@@ -41,25 +41,35 @@
     return window.ITEMS.find((item) => item.id === id);
   }
 
-  function tileHTML(item, extraClass, index) {
-    const mark = index ? '<span class="tile-index">' + padNum(index) + "</span>" : "";
+  function cardHTML(item, index) {
+    const tilt = ((index * 17) % 9) - 4;
+    const lead = featuredIds.includes(item.id) ? " is-lead" : "";
     return (
-      '<button type="button" class="tile ' + (extraClass || "") + '" data-item="' + item.id + '">' +
+      '<button type="button" class="tile poster-card' + lead + '" data-item="' + item.id + '" style="--tilt:' + tilt + 'deg">' +
         '<span class="frame">' +
-          mark +
           '<span class="stamp">' + stampOf(item) + "</span>" +
           '<img class="a" src="' + item.cover + '" alt="' + item.title + '" width="1600" height="1000">' +
           '<img class="b" src="' + item.hover + '" alt="" width="1600" height="1000">' +
-          '<span class="reveal">' + item.blurb + "</span>" +
-        "</span>" +
-        '<span class="meta">' +
-          '<span class="project-text">' +
-            "<strong>" + item.title + "</strong>" +
-            "<small>" + (item.detail || item.blurb) + "</small>" +
-          "</span>" +
-          "<span>Inspect</span>" +
+          '<span class="poster-name">' + item.title + "</span>" +
         "</span>" +
       "</button>"
+    );
+  }
+
+  function posterHTML(items) {
+    if (!items.length) return "";
+    const compact = window.matchMedia("(max-width: 780px)").matches;
+    const cols = compact
+      ? (items.length > 8 ? 4 : 3)
+      : (items.length > 10 ? 5 : items.length > 6 ? 4 : 3);
+    return (
+      '<div class="poster">' +
+        '<div class="poster-stage">' +
+          '<div class="poster-board" style="--cols:' + cols + '">' +
+            items.map((item, i) => cardHTML(item, i)).join("") +
+          "</div>" +
+        "</div>" +
+      "</div>"
     );
   }
 
@@ -70,7 +80,7 @@
         '<header class="section-head"><h2>' + title + "</h2>" +
           (note ? "<p>" + note + "</p>" : "") +
         "</header>" +
-        '<div class="project-grid">' + items.map((item) => tileHTML(item)).join("") + "</div>" +
+        posterHTML(items) +
       "</section>"
     );
   }
@@ -78,19 +88,16 @@
   function currentHTML(items) {
     const featured = featuredIds.map((id) => items.find((item) => item.id === id)).filter(Boolean);
     const rest = items.filter((item) => !featuredIds.includes(item.id));
+    const ordered = featured.concat(
+      rest.filter((item) => item.section === "games"),
+      rest.filter((item) => item.section === "projects"),
+      rest.filter((item) => item.section === "work")
+    );
     return (
       '<section class="gallery-section selected">' +
-        '<header class="section-head"><h2>On the table</h2><p>Pick a piece up. Inspect it. Then play it.</p></header>' +
-        '<div class="table">' +
-          '<div class="featured-grid">' +
-            tileHTML(featured[0], "feature-main", 1) +
-            '<div class="featured-stack">' + featured.slice(1).map((item, i) => tileHTML(item, "", i + 2)).join("") + "</div>" +
-          "</div>" +
-        "</div>" +
-      "</section>" +
-      sectionHTML("Games", rest.filter((item) => item.section === "games"), "Puzzles, print-and-play, and older itch.io pieces.") +
-      sectionHTML("Tools", rest.filter((item) => item.section === "projects"), "Small utilities for real groups and communities.") +
-      sectionHTML("Work", rest.filter((item) => item.section === "work"), "Research systems. The other shelf.")
+        '<header class="section-head"><h2>On the table</h2><p>The shelf as a poster. Pick a card up.</p></header>' +
+        posterHTML(ordered) +
+      "</section>"
     );
   }
 
