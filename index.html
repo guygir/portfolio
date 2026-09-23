@@ -4,33 +4,35 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Guy Girmonsky</title>
-    <meta name="description" content="Work, games, and projects by Guy Girmonsky." />
+    <meta name="description" content="Games, tools, and a bit of research by Guy Girmonsky." />
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
     <div class="page">
-      <aside>
-        <a class="identity" href="#top">
-          <img src="images/profile/guy-girmonsky.jpg" alt="" width="48" height="48" />
-          <span>
+      <div class="rail">
+        <aside>
+          <a class="identity" href="#top">
+            <img src="images/profile/guy-girmonsky.jpg" alt="" width="48" height="48" />
+            <span>
             <strong>Guy Girmonsky</strong>
-            <small>Research &amp; games</small>
-          </span>
-        </a>
-        <p class="lede">
-          I build systems that make complex things usable—from distributed AI
-          infrastructure to small games.
-        </p>
-        <nav>
-          <button type="button" data-filter="current" class="on">Current</button>
-          <button type="button" data-filter="work">Work</button>
-          <button type="button" data-filter="games">Games</button>
-          <button type="button" data-filter="projects">Projects</button>
-          <a href="#about">About</a>
-        </nav>
+            <small>Games &amp; tools</small>
+            </span>
+          </a>
+          <p class="lede">
+            I make card games, daily puzzles, and small tools for people I know.
+            Some days I also ship research systems.
+          </p>
+          <nav>
+            <button type="button" data-filter="current" class="on">Now</button>
+            <button type="button" data-filter="games">Games <small data-count="games"></small></button>
+            <button type="button" data-filter="projects">Tools <small data-count="projects"></small></button>
+            <button type="button" data-filter="work">Work <small data-count="work"></small></button>
+            <a href="#about">About</a>
+          </nav>
+        </aside>
         <section class="pulse" aria-label="GitHub contribution calendar">
           <h2>Now</h2>
-          <p>Last year on GitHub. Green is contribution heat; outlined days have pull requests.</p>
+          <p>Last year on GitHub. Green is heat; an outline is a PR day. Click a marked day to inspect that filing. Workers gather above the work, take the near side, and enter the middle.</p>
           <p class="pulse-total" id="pulse-total"></p>
           <div class="pulse-cal">
             <div class="pulse-months" id="pulse-months"></div>
@@ -44,45 +46,71 @@
             <i class="pulse-swatch lv-3"></i>
             <i class="pulse-swatch lv-4"></i>
             <span>More</span>
-            <span class="pulse-key-pr"><i class="pulse-swatch is-pr"></i>pull request</span>
+            <span class="pulse-key-pr"><i class="pulse-swatch is-pr"></i>PR day</span>
+            <span class="pulse-key-pr"><i class="pulse-swatch pulse-swatch-commit"></i>commit</span>
+            <span class="pulse-key-pr"><i class="pulse-swatch is-pr pulse-swatch-worker"></i>PR</span>
           </p>
         </section>
-      </aside>
+      </div>
 
       <main id="top">
+        <section class="filings" aria-label="Recent filings">
+          <h2>Filings</h2>
+          <ol id="filings"></ol>
+        </section>
         <div id="gallery"></div>
 
         <section id="about">
           <div>
             <h2>About</h2>
             <p>
-              Research engineer on AI platforms at IBM, previously hybrid-cloud
-              storage. M.Sc. student. Before that I shipped Unity games for Club
-              Tech.
+              I like making things you can play with—card games, puzzles, and
+              tools for a group of friends. Research systems are the other
+              shelf.
             </p>
-            <p>
-              I collect Riftbound. The binder is on
-              <a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a>.
-            </p>
+            <ol class="timeline">
+              <li><span>Play</span> Klafi, Hold'emle, and a pile of itch.io experiments.</li>
+              <li><span>Tools</span> RifTrade, fantasy basketball, World Cup bets.</li>
+              <li><span>Work</span> AI platforms at IBM. M.Sc. student. Club Tech before that.</li>
+              <li><span>Else</span> Riftbound binder on <a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a>.</li>
+            </ol>
           </div>
-          <ul>
-            <li><a href="https://github.com/zipnn/zipnn">ZipNN</a>, IEEE CLOUD 2025</li>
-            <li><a href="https://arxiv.org/abs/2502.20818">SkyStore</a>, VLDB 2025</li>
-            <li><a href="https://www.llm-d.ai">llm-d</a></li>
-            <li><a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a></li>
-            <li><a href="https://github.com/guygir">GitHub</a></li>
-            <li><a href="https://guygir.itch.io">itch.io</a></li>
-            <li><a href="https://huggingface.co/Guygir">Hugging Face</a></li>
-            <li><a href="mailto:guygir@gmail.com">guygir@gmail.com</a></li>
-          </ul>
+          <div>
+            <h2>Elsewhere</h2>
+            <ul>
+              <li><a href="https://guygir.itch.io">itch.io</a></li>
+              <li><a href="https://klafi.vercel.app">Klafi</a></li>
+              <li><a href="https://github.com/guygir">GitHub</a></li>
+              <li><a href="mailto:guygir@gmail.com">guygir@gmail.com</a></li>
+            </ul>
+          </div>
         </section>
 
         <footer>
-          Research systems, playable ideas and a growing Riftbound binder.
+          Playable ideas, a few tools, and a growing Riftbound binder.
         </footer>
       </main>
     </div>
     <svg class="pulse-sky" id="pulse-sky" aria-hidden="true"></svg>
+    <div class="inspect" id="inspect" hidden>
+      <button type="button" class="inspect-dim" data-close tabindex="-1" aria-label="Put back"></button>
+      <article class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+        <p class="sheet-file" id="sheet-file"></p>
+        <span class="sheet-stamp" id="sheet-stamp"></span>
+        <figure class="sheet-frame">
+          <img id="sheet-img" alt="" width="1600" height="1000" />
+        </figure>
+        <h2 id="sheet-title"></h2>
+        <p class="sheet-detail" id="sheet-detail"></p>
+        <p class="sheet-story" id="sheet-story"></p>
+        <div class="sheet-bar">
+          <button type="button" id="sheet-prev">Prev</button>
+          <a id="sheet-enter" target="_blank" rel="noopener noreferrer">Play</a>
+          <button type="button" id="sheet-next">Next</button>
+        </div>
+        <button type="button" class="sheet-close" data-close>Put back</button>
+      </article>
+    </div>
 
     <script src="js/data.js"></script>
     <script src="js/activity.js"></script>

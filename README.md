@@ -1,6 +1,6 @@
 # Guy Girmonsky
 
-Personal site: research systems, playable games, and small tools.
+Personal site: playable games, small tools, and a bit of research.
 
 ## Run locally
 
@@ -12,8 +12,8 @@ Open http://127.0.0.1:4173
 
 ## Layout
 
-- `index.html` — one page: selected work, filters, about
-- `js/data.js` — curated records from GitHub, itch.io, and papers
+- `index.html` — one page: selected games and tools, filters, about
+- `js/data.js` — curated records from games, itch.io, tools, and work
 - `js/activity.js` — last-year GitHub contribution calendar plus recent commit/PR routing
 - `js/pulse.js` — left-rail contribution board and couriers toward active repos
 - `css/styles.css` — white gallery, sticky left rail
@@ -23,8 +23,8 @@ Open http://127.0.0.1:4173
 
 ## Curation
 
-The gallery is picture-first. Live research, games, and tools use composed brand/key art. Older GitHub work without photography uses designed posters and lives in Archive.
+The gallery is picture-first. Games and tools lead; IBM research sits later as Work. Older GitHub work without photography uses designed posters and lives in Archive.
 
-Included: IBM research (ZipNN, SkyStore, llm-d), live web games and tools, itch.io games, and parked GitHub projects with a clear purpose.
+Included: live web games and tools, itch.io pieces, parked GitHub projects with a clear purpose, and IBM research (ZipNN, SkyStore, llm-d).
 
 Omitted: fork noise (`vllm`, template repos, empty test repos) and generated website-chrome screenshots.
