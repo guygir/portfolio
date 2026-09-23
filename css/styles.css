@@ -307,11 +307,12 @@ main { padding: 28px 40px 96px 12px; }
 
 .poster {
   overflow: hidden;
-  height: min(58vh, 540px);
+  height: min(62vh, 560px);
   background:
     radial-gradient(120% 80% at 50% 0%, #1d1d1d, #0b0b0b 70%);
   border-radius: 4px;
 }
+.poster.is-short { height: min(44vh, 400px); }
 .poster-stage {
   display: grid;
   place-items: center;
@@ -322,18 +323,16 @@ main { padding: 28px 40px 96px 12px; }
 .poster-board {
   --cols: 5;
   display: grid;
-  grid-template-columns: repeat(var(--cols), 124px);
-  gap: 22px 26px;
-  transform: rotateX(58deg) rotateZ(-20deg);
+  grid-template-columns: repeat(var(--cols), 120px);
+  gap: 28px 32px;
+  transform: rotateX(56deg) rotateZ(-18deg) scale(0.9);
   transform-style: preserve-3d;
 }
 .poster-card {
-  width: 124px;
+  width: 120px;
   transform: rotate(var(--tilt, 0deg));
   transform-style: preserve-3d;
 }
-.poster-card.is-lead { width: 148px; }
-.poster-card.is-lead .frame { aspect-ratio: 3 / 4; }
 .poster .frame {
   aspect-ratio: 3 / 4;
   overflow: visible;
@@ -715,14 +714,14 @@ body.inspect-open { overflow: hidden; }
     gap: 8px;
     margin-bottom: 20px;
   }
-  .poster { height: min(54vh, 420px); }
+  .poster { height: min(58vh, 480px); }
+  .poster.is-short { height: min(40vh, 340px); }
   .poster-board {
-    grid-template-columns: repeat(var(--cols), 86px);
-    gap: 14px 16px;
-    transform: rotateX(56deg) rotateZ(-16deg) scale(0.96);
+    grid-template-columns: repeat(var(--cols), 90px);
+    gap: 18px 20px;
+    transform: rotateX(54deg) rotateZ(-16deg) scale(0.86);
   }
-  .poster-card { width: 86px; }
-  .poster-card.is-lead { width: 104px; }
+  .poster-card { width: 90px; }
   .poster-name { font-size: 8px; right: 5px; bottom: 5px; left: 5px; }
   .sheet { padding: 18px 16px 14px; }
 }

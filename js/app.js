@@ -63,7 +63,7 @@
       ? (items.length > 8 ? 4 : 3)
       : (items.length > 10 ? 5 : items.length > 6 ? 4 : 3);
     return (
-      '<div class="poster">' +
+      '<div class="poster' + (items.length <= 6 ? " is-short" : "") + '">' +
         '<div class="poster-stage">' +
           '<div class="poster-board" style="--cols:' + cols + '">' +
             items.map((item, i) => cardHTML(item, i)).join("") +
