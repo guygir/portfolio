@@ -41,36 +41,36 @@
     return window.ITEMS.find((item) => item.id === id);
   }
 
-  function cardHTML(item, index) {
-    const tilt = ((index * 17) % 9) - 4;
+  function cardHTML(item) {
     const lead = featuredIds.includes(item.id) ? " is-lead" : "";
     return (
-      '<button type="button" class="tile poster-card' + lead + '" data-item="' + item.id + '" style="--tilt:' + tilt + 'deg">' +
+      '<button type="button" class="tile poster-card' + lead + '" data-item="' + item.id + '">' +
         '<span class="frame">' +
           '<span class="stamp">' + stampOf(item) + "</span>" +
           '<img class="a" src="' + item.cover + '" alt="' + item.title + '" width="1600" height="1000">' +
           '<img class="b" src="' + item.hover + '" alt="" width="1600" height="1000">' +
-          '<span class="poster-name">' + item.title + "</span>" +
         "</span>" +
+        '<span class="poster-name">' + item.title + "</span>" +
       "</button>"
     );
   }
 
-  function posterHTML(items) {
+  function leadFirst(items) {
+    return items.slice().sort((a, b) => {
+      const av = featuredIds.includes(a.id) ? 0 : 1;
+      const bv = featuredIds.includes(b.id) ? 0 : 1;
+      return av - bv;
+    });
+  }
+
+  function posterRow(items) {
     if (!items.length) return "";
-    const compact = window.matchMedia("(max-width: 780px)").matches;
-    const cols = compact
-      ? (items.length > 8 ? 4 : 3)
-      : (items.length > 10 ? 5 : items.length > 6 ? 4 : 3);
-    return (
-      '<div class="poster' + (items.length <= 6 ? " is-short" : "") + '">' +
-        '<div class="poster-stage">' +
-          '<div class="poster-board" style="--cols:' + cols + '">' +
-            items.map((item, i) => cardHTML(item, i)).join("") +
-          "</div>" +
-        "</div>" +
-      "</div>"
-    );
+    return '<div class="poster-row">' + leadFirst(items).map((item) => cardHTML(item)).join("") + "</div>";
+  }
+
+  function posterGrid(items) {
+    if (!items.length) return "";
+    return '<div class="poster-grid">' + leadFirst(items).map((item, i) => cardHTML(item, i)).join("") + "</div>";
   }
 
   function sectionHTML(title, items, note) {
@@ -80,24 +80,28 @@
         '<header class="section-head"><h2>' + title + "</h2>" +
           (note ? "<p>" + note + "</p>" : "") +
         "</header>" +
-        posterHTML(items) +
+        posterGrid(items) +
+      "</section>"
+    );
+  }
+
+  function rowHTML(title, items, note) {
+    if (!items.length) return "";
+    return (
+      '<section class="gallery-section">' +
+        '<header class="section-head"><h2>' + title + "</h2>" +
+          (note ? "<p>" + note + "</p>" : "") +
+        "</header>" +
+        posterRow(items) +
       "</section>"
     );
   }
 
   function currentHTML(items) {
-    const featured = featuredIds.map((id) => items.find((item) => item.id === id)).filter(Boolean);
-    const rest = items.filter((item) => !featuredIds.includes(item.id));
-    const ordered = featured.concat(
-      rest.filter((item) => item.section === "games"),
-      rest.filter((item) => item.section === "projects"),
-      rest.filter((item) => item.section === "work")
-    );
     return (
-      '<section class="gallery-section selected">' +
-        '<header class="section-head"><h2>On the table</h2><p>The shelf as a poster. Pick a card up.</p></header>' +
-        posterHTML(ordered) +
-      "</section>"
+      rowHTML("Games", items.filter((item) => item.section === "games"), "Swipe the row, or pick a card up.") +
+      rowHTML("Tools", items.filter((item) => item.section === "projects"), "Small utilities for real groups.") +
+      rowHTML("Work", items.filter((item) => item.section === "work"), "The other shelf.")
     );
   }
 
