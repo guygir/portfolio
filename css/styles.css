@@ -841,7 +841,11 @@ body.inspect-open { overflow: hidden; }
 
   .meta strong { font-size: 14px; }
 
-  .meta small { -webkit-line-clamp: 2; }
+  .meta small {
+    display: block;
+    overflow: visible;
+    -webkit-line-clamp: unset;
+  }
 
   .sheet { padding: 18px 16px 14px; }
 

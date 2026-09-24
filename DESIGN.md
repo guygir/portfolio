@@ -184,7 +184,7 @@ The first fold on ~1280×800 must include the masthead and **at least six** equa
 - Fine-pointer hover/focus only. Keyboard `:focus-visible` still swaps the picture.
 - Nav / wordmark: `scale(0.97)` on `:active`.
 - Reduced-motion: crossfade only; no tilt, lift, press, or courier sky.
-- Phone: no rest tilt. 2 columns, then 1 column under 420px.
+- Phone: no rest tilt. 2 columns, then 1 column under 340px. Tile subtitles wrap in full; no ellipsis.
 
 ---
 
