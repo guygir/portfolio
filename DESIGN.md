@@ -161,7 +161,7 @@ Scale (desktop):
 - Masthead: sticky, ~52px, full width. Name + role left; chapter links right. Not a rail.
 - Page measure: ~1240px
 - Gutter: 24px desktop, 16px phone
-- Board: 3 equal columns on desktop. White print card (9px mat) around a 16 / 10 cover. Caption under the picture.
+- Board: 3 equal columns on desktop. White print card (~11px mat) around a 16 / 10 cover. Caption under the picture.
 - Tilt: deterministic `nth-child` rotations of about ±0.8–1.6deg plus a few pixels of offset. Not `Math.random()`.
 - Card radius: 0 (prints, not app chrome)
 - Portrait: 88px, 8px radius, in About only
@@ -250,7 +250,7 @@ Hebrew projects keep their names (Klafi, אתגר בקופסא) and get one Engl
 - ≥ 1080px: 3 equal columns; about six tiles in a 1280×800 fold
 - 780–1079: still 3 columns if width allows
 - < 780: masthead stacks; 2 columns; rest tilt removed
-- < 420: 1 column
+- < 340: 1 column
 - Hover becomes tap-to-flip when `(hover: none)`
 
 ---

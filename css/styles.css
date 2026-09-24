@@ -193,6 +193,12 @@ footer {
   padding: 16px var(--gutter) 8px;
 }
 
+body[data-view="work"] .chapter,
+body[data-view="games"] .chapter,
+body[data-view="projects"] .chapter {
+  min-height: calc(100vh - var(--mast) - 24px);
+}
+
 .chapter-head {
   display: flex;
   justify-content: space-between;
@@ -245,7 +251,7 @@ footer {
   display: flex;
   flex-direction: column;
   background: var(--paper);
-  padding: 9px 9px 10px;
+  padding: 11px 11px 12px;
   border: 1px solid rgb(25 21 18 / 0.08);
   box-shadow:
     0 1px 0 rgb(25 21 18 / 0.04),
@@ -253,12 +259,18 @@ footer {
   transform-origin: 50% 60%;
 }
 
-.piece:nth-child(6n + 1) .print { transform: rotate(-1.5deg) translate(2px, 6px); }
-.piece:nth-child(6n + 2) .print { transform: rotate(1.2deg) translate(-2px, -3px); }
-.piece:nth-child(6n + 3) .print { transform: rotate(-0.8deg) translate(3px, 4px); }
-.piece:nth-child(6n + 4) .print { transform: rotate(1.6deg) translate(-1px, 7px); }
-.piece:nth-child(6n + 5) .print { transform: rotate(-1.1deg) translate(2px, -2px); }
-.piece:nth-child(6n) .print { transform: rotate(0.9deg) translate(-3px, 3px); }
+.piece:nth-child(6n + 1) .print { transform: rotate(-1.8deg) translate(2px, 8px); }
+.piece:nth-child(6n + 2) .print { transform: rotate(1.4deg) translate(-3px, -4px); }
+.piece:nth-child(6n + 3) .print { transform: rotate(-1deg) translate(4px, 5px); }
+.piece:nth-child(6n + 4) .print { transform: rotate(1.9deg) translate(-2px, 8px); }
+.piece:nth-child(6n + 5) .print { transform: rotate(-1.3deg) translate(3px, -3px); }
+.piece:nth-child(6n) .print { transform: rotate(1.1deg) translate(-4px, 4px); }
+
+.piece.is-flipped { z-index: 2; }
+
+.piece.is-flipped .print {
+  transform: rotate(0deg) translateY(-4px);
+}
 
 .frame {
   display: block;
@@ -695,7 +707,7 @@ footer {
   footer { padding: 48px var(--gutter) 40px; }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 340px) {
   .board { grid-template-columns: 1fr; }
 }
 
