@@ -213,6 +213,10 @@ footer {
   padding-top: 10px;
 }
 
+.feature .meta small {
+  -webkit-line-clamp: 1;
+}
+
 .feature.is-flagship .meta strong {
   font-family: var(--display);
   font-size: 28px;
