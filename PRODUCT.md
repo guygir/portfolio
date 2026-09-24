@@ -20,13 +20,13 @@ Curation, not a GitHub mirror. Every tile has two authored pictures. The site is
 
 ## Operating Context
 
-Opened as a static folder (`python3 -m http.server 4173`). No account, no CMS, no build. Project records live in `js/data.js`. Current opens on a magazine spread of the featured trio, then Work / Games / Projects chapters. Those filters isolate a chapter. GitHub contribution heat lives in About.
+Opened as a static folder (`python3 -m http.server 4173`). No account, no CMS, no build. Project records live in `js/data.js`. Current opens on a scrapbook of equal-weight tiles — ZipNN, Klafi, and RifTrade first in order, same size as the rest. Work / Games / Projects isolate a chapter. GitHub contribution heat lives in About.
 
 ## Capabilities and Constraints
 
 - Static HTML / CSS / vanilla JS only. No React, no npm, no Tailwind or UI kit.
 - Data, copy, and project list stay in `js/data.js`. Do not invent projects, stats, or blurbs.
-- Featured trio is ZipNN, Klafi, and RifTrade — all three visible in the first viewport on a typical laptop (~1280×800). ZipNN is the wider flagship; Klafi and RifTrade sit beside it. No full-bleed single-project stage.
+- Featured trio is ZipNN, Klafi, and RifTrade — first in reading order, same tile size as every other piece. The first desktop viewport (~1280×800) shows about six equal tiles, not a flagship. No full-bleed single-project stage.
 - Thin masthead: name, role, Current / Work / Games / Projects / About. No sticky left rail.
 - Picture-first tiles: cover + hover, crossfade on hover/focus; tap-to-flip on coarse pointers before following the link.
 - Pulse calendar and courier behavior in `activity.js` / `pulse.js` remain product truth; the calendar is docked in About so it cannot dominate the opening.
@@ -50,7 +50,7 @@ Name: Guy Girmonsky. Voice: warm, specific, slightly dry. Hebrew titles stay (Kl
 3. Two pictures or it is not a tile. Filters and CSS do not stand in for a second image.
 4. Specific language over portfolio English.
 5. Ship as a folder of files someone can open and understand.
-6. The first fold is an overview. Do not hide the portfolio behind one monster hero.
+6. The first fold is an overview. Do not hide the portfolio behind one monster hero, and do not let one tile dominate.
 
 ## Anti-references
 
@@ -60,6 +60,7 @@ Name: Guy Girmonsky. Voice: warm, specific, slightly dry. Hebrew titles stay (Kl
 - Agency metric walls, partner logo rows, and “Let’s talk” CTA language (tovbar’s sales voice; sharkbombs’ cyan/pink studio brand).
 - A 30-repo GitHub dump, a pricing/bento rebuild, or a dashboard of the self (including the old sticky left rail).
 - A full-viewport single-project cinema stage / splash / enter screen.
+- An oversized flagship card that makes one project read as the whole page.
 
 ## Accessibility & Inclusion
 
