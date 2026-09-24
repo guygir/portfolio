@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Guy Girmonsky</title>
     <meta name="description" content="Work, games, and projects by Guy Girmonsky." />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="preload" href="fonts/fraunces-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
+    <a class="skip" href="#gallery">Skip to work</a>
     <div class="page">
       <aside>
         <a class="identity" href="#top">
-          <img src="images/profile/guy-girmonsky.jpg" alt="" width="48" height="48" />
+          <img src="images/profile/guy-girmonsky.jpg" alt="" width="56" height="56" />
           <span>
             <strong>Guy Girmonsky</strong>
             <small>Research &amp; games</small>
@@ -21,11 +24,11 @@
           I build systems that make complex things usable—from distributed AI
           infrastructure to small games.
         </p>
-        <nav>
-          <button type="button" data-filter="current" class="on">Current</button>
-          <button type="button" data-filter="work">Work</button>
-          <button type="button" data-filter="games">Games</button>
-          <button type="button" data-filter="projects">Projects</button>
+        <nav aria-label="Gallery">
+          <button type="button" data-filter="current" class="on" aria-pressed="true">Current</button>
+          <button type="button" data-filter="work" aria-pressed="false">Work</button>
+          <button type="button" data-filter="games" aria-pressed="false">Games</button>
+          <button type="button" data-filter="projects" aria-pressed="false">Projects</button>
           <a href="#about">About</a>
         </nav>
         <section class="pulse" aria-label="GitHub contribution calendar">

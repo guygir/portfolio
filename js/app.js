@@ -24,7 +24,7 @@
             '<strong>' + item.title + '</strong>' +
             '<small>' + (item.detail || item.blurb) + '</small>' +
           '</span>' +
-          '<span>' + note + '</span>' +
+          '<span class="tag' + (item.status === "archive" ? " is-archive" : "") + '">' + note + '</span>' +
         '</span>' +
       '</a>'
     );
@@ -90,7 +90,11 @@
 
   function apply(next) {
     filter = next;
-    buttons.forEach((b) => b.classList.toggle("on", b.dataset.filter === filter));
+    buttons.forEach((b) => {
+      const on = b.dataset.filter === filter;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    });
     render();
   }
 
