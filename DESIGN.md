@@ -136,7 +136,7 @@ Scale (desktop):
 
 - Wordmark: 22px Fraunces
 - Role: 11px uppercase sans
-- Flagship title: 28px Fraunces
+- Flagship title: 24px Fraunces
 - Chapter / About title: clamp 48–88px Fraunces
 - Essay title: clamp 32–54px Fraunces
 - Poster / index title: 20px
