@@ -155,7 +155,7 @@ footer {
 .opening {
   max-width: var(--page);
   margin: 0 auto;
-  padding: 20px var(--gutter) 0;
+  padding: 12px var(--gutter) 0;
 }
 
 .opening-head {
@@ -163,7 +163,7 @@ footer {
   justify-content: space-between;
   align-items: baseline;
   gap: 24px;
-  margin: 0 0 16px;
+  margin: 0 0 12px;
 }
 
 .opening-head p {
@@ -219,7 +219,7 @@ footer {
 
 .feature.is-flagship .meta strong {
   font-family: var(--display);
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 500;
   letter-spacing: -0.03em;
 }
