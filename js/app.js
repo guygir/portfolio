@@ -1,6 +1,7 @@
 (function () {
   const gallery = document.getElementById("gallery");
   const buttons = document.querySelectorAll("nav [data-filter]");
+  const inspectEl = document.getElementById("inspect");
   const featuredIds = ["zipnn", "klafi", "riftrade"];
   const notes = {
     opening: "One system, one game, one useful thing.",
@@ -10,7 +11,11 @@
     archive: "Older work, still part of the story.",
     lede: "I build systems that make complex things usable—from distributed AI infrastructure to small games.",
   };
+  const FOCUSABLE = "a[href], button:not([disabled])";
   let filter = "current";
+  let stack = [];
+  let cursor = 0;
+  let lastFocus = null;
 
   function esc(value) {
     return String(value || "")
@@ -27,9 +32,38 @@
     return item.status === "archive" ? "Archive" : item.tag;
   }
 
+  function stampOf(item) {
+    if (item.status === "archive") return "SHELF";
+    if (item.section === "games") {
+      if (/daily/i.test(item.detail || item.blurb || "")) return "DAILY";
+      if (/print/i.test(item.detail || item.blurb || "")) return "PRINT";
+      return "PLAY";
+    }
+    if (item.section === "work") return "WORK";
+    return "TOOL";
+  }
+
+  function kindOf(item) {
+    if (item.section === "games") return "Game";
+    if (item.section === "work") return "Work";
+    return "Tool";
+  }
+
+  function actionOf(item) {
+    if (item.status === "archive") return "Archive";
+    if (item.section === "games") return "Play";
+    if (item.section === "work") return "Work";
+    return "Open";
+  }
+
+  function padNum(n) {
+    return String(n).padStart(2, "0");
+  }
+
   function frameHTML(item) {
     return (
       '<span class="frame">' +
+        '<span class="stamp">' + esc(stampOf(item)) + "</span>" +
         '<img class="a" src="' + esc(item.cover) + '" alt="' + esc(item.title) + '" width="1600" height="1000">' +
         '<img class="b" src="' + esc(item.hover) + '" alt="" width="1600" height="1000">' +
         '<span class="reveal">' + esc(item.blurb) + "</span>" +
@@ -39,7 +73,7 @@
 
   function pieceHTML(item) {
     return (
-      '<a class="piece tile" data-item="' + item.id + '" href="' + esc(item.href) + '" target="_blank" rel="noopener noreferrer">' +
+      '<button type="button" class="piece tile" data-item="' + item.id + '" aria-haspopup="dialog">' +
         '<span class="print">' +
           frameHTML(item) +
           '<span class="meta">' +
@@ -50,7 +84,7 @@
             '<span class="tag' + (item.status === "archive" ? " is-archive" : "") + '">' + esc(tagFor(item)) + "</span>" +
           "</span>" +
         "</span>" +
-      "</a>"
+      "</button>"
     );
   }
 
@@ -124,18 +158,77 @@
     return chapter(filter, title, note, inner);
   }
 
+  function visibleTiles() {
+    return [...gallery.querySelectorAll(".tile")];
+  }
+
   function bindTiles() {
-    const coarse = window.matchMedia("(hover: none)");
-    gallery.querySelectorAll(".tile").forEach((tile) => {
-      tile.addEventListener("click", (event) => {
-        if (!coarse.matches) return;
-        if (!tile.classList.contains("is-flipped")) {
-          event.preventDefault();
-          gallery.querySelectorAll(".tile").forEach((other) => other.classList.remove("is-flipped"));
-          tile.classList.add("is-flipped");
-        }
+    visibleTiles().forEach((tile) => {
+      tile.addEventListener("click", () => {
+        const ids = visibleTiles().map((el) => el.dataset.item);
+        openInspect(tile.dataset.item, ids, tile);
       });
     });
+  }
+
+  function focusable() {
+    return [...inspectEl.querySelectorAll(FOCUSABLE)].filter((el) => !el.disabled && el.tabIndex !== -1);
+  }
+
+  function setChromeInert(on) {
+    ["chrome", "top"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.toggleAttribute("inert", on);
+    });
+  }
+
+  function fillSheet(item) {
+    document.getElementById("sheet-file").textContent =
+      "FILE / " + kindOf(item).toUpperCase() + " / " + padNum(cursor + 1);
+    document.getElementById("sheet-stamp").textContent = stampOf(item);
+    const img = document.getElementById("sheet-img");
+    img.src = item.cover;
+    img.alt = item.title;
+    document.getElementById("sheet-title").textContent = item.title;
+    document.getElementById("sheet-detail").textContent = item.detail || kindOf(item);
+    document.getElementById("sheet-story").textContent = item.story || item.blurb;
+    const enter = document.getElementById("sheet-enter");
+    enter.href = item.href;
+    enter.textContent = actionOf(item);
+    document.getElementById("sheet-prev").disabled = stack.length < 2;
+    document.getElementById("sheet-next").disabled = stack.length < 2;
+  }
+
+  function openInspect(id, ids, fromTile) {
+    const item = byId(id);
+    if (!item || !inspectEl) return;
+    lastFocus = fromTile || document.activeElement;
+    stack = (ids && ids.length ? ids : [id]).filter((key) => byId(key));
+    cursor = stack.indexOf(id);
+    if (cursor < 0) {
+      stack = [id];
+      cursor = 0;
+    }
+    fillSheet(byId(stack[cursor]));
+    inspectEl.hidden = false;
+    document.body.classList.add("inspect-open");
+    setChromeInert(true);
+    document.getElementById("sheet-enter").focus();
+  }
+
+  function closeInspect() {
+    if (!inspectEl || inspectEl.hidden) return;
+    inspectEl.hidden = true;
+    document.body.classList.remove("inspect-open");
+    setChromeInert(false);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  function step(delta) {
+    if (stack.length < 2) return;
+    cursor = (cursor + delta + stack.length) % stack.length;
+    fillSheet(byId(stack[cursor]));
+    document.getElementById("sheet-enter").focus();
   }
 
   function render() {
@@ -146,6 +239,7 @@
   }
 
   function apply(next, options) {
+    closeInspect();
     filter = next;
     buttons.forEach((btn) => {
       const on = btn.dataset.filter === filter;
@@ -188,6 +282,38 @@
 
   buttons.forEach((btn) => btn.addEventListener("click", () => apply(btn.dataset.filter)));
   window.addEventListener("hashchange", fromHash);
+
+  if (inspectEl) {
+    inspectEl.addEventListener("click", (event) => {
+      if (event.target.closest("[data-close]")) closeInspect();
+    });
+    document.getElementById("sheet-prev").addEventListener("click", () => step(-1));
+    document.getElementById("sheet-next").addEventListener("click", () => step(1));
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (!inspectEl || inspectEl.hidden) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeInspect();
+      return;
+    }
+    if (event.key === "ArrowLeft") step(-1);
+    if (event.key === "ArrowRight") step(1);
+    if (event.key === "Tab") {
+      const nodes = focusable();
+      if (!nodes.length) return;
+      const first = nodes[0];
+      const last = nodes[nodes.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
 
   const start = (location.hash || "").replace("#", "");
   if (start === "work" || start === "games" || start === "projects") apply(start, { silent: true });

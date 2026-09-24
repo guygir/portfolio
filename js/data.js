@@ -128,8 +128,8 @@ window.ITEMS = [
     blurb: "A community swap directory for Riftbound cards.",
     detail: "Riftbound community tool",
     href: "https://rif-trade.vercel.app",
-    cover: "images/covers/riftrade.jpg",
-    hover: "images/hover/riftrade.jpg",
+    cover: "images/hover/riftrade.jpg",
+    hover: "images/covers/riftrade.jpg",
   },
   {
     id: "gamerev",

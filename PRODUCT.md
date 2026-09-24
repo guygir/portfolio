@@ -64,4 +64,4 @@ Name: Guy Girmonsky. Voice: warm, specific, slightly dry. Hebrew titles stay (Kl
 
 ## Accessibility & Inclusion
 
-Keyboard focus matches hover on tiles. Coarse pointers tap once to reveal the second picture, twice to open the link. `prefers-reduced-motion` keeps the image crossfade and stops lift, rotate, and the courier sky. Body and mute text stay above 4.5:1 on paper. A skip link jumps the masthead.
+Keyboard focus matches hover on tiles. Activating a tile opens an inspect sheet (focus trap, Esc closes, focus returns to the tile). The sheet’s primary action is the project link. `prefers-reduced-motion` keeps the image crossfade and stops lift, rotate, and the courier sky. Body and mute text stay above 4.5:1 on paper. A skip link jumps the masthead.

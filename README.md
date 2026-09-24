@@ -16,7 +16,7 @@ Open http://127.0.0.1:4173
 - `js/data.js` — curated records from GitHub, itch.io, and papers
 - `js/activity.js` — last-year GitHub contribution calendar plus recent commit/PR routing
 - `js/pulse.js` — About-docked contribution board and couriers toward visible repo tiles
-- `js/app.js` — featured trio first (ZipNN / Klafi / RifTrade), equal tiles, chapter isolation, tap-to-flip
+- `js/app.js` — featured trio first (ZipNN / Klafi / RifTrade), equal tiles, chapter isolation, inspect sheet
 - `css/styles.css` — graph-paper board, white print frames, masthead
 - `fonts/` — self-hosted Fraunces (SIL OFL) for display type
 - `images/covers` + `images/hover` — two pictures per tile; hover, focus, or a coarse tap changes the image

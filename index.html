@@ -12,7 +12,7 @@
   <body data-view="current">
     <a class="skip" href="#gallery">Skip to work</a>
 
-    <header class="masthead">
+    <header class="masthead" id="chrome">
       <a class="wordmark" href="#top">
         Guy Girmonsky
         <small>Research &amp; games</small>
@@ -86,6 +86,26 @@
       </footer>
     </main>
     <svg class="pulse-sky" id="pulse-sky" aria-hidden="true"></svg>
+
+    <div class="inspect" id="inspect" hidden>
+      <button type="button" class="inspect-dim" data-close tabindex="-1" aria-label="Close"></button>
+      <article class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+        <p class="sheet-file" id="sheet-file"></p>
+        <span class="sheet-stamp" id="sheet-stamp"></span>
+        <figure class="sheet-frame">
+          <img id="sheet-img" alt="" width="1600" height="1000" />
+        </figure>
+        <h2 id="sheet-title"></h2>
+        <p class="sheet-detail" id="sheet-detail"></p>
+        <p class="sheet-story" id="sheet-story"></p>
+        <div class="sheet-bar">
+          <button type="button" id="sheet-prev">Prev</button>
+          <a id="sheet-enter" target="_blank" rel="noopener noreferrer">Open</a>
+          <button type="button" id="sheet-next">Next</button>
+        </div>
+        <button type="button" class="sheet-close" data-close>Close</button>
+      </article>
+    </div>
 
     <script src="js/data.js"></script>
     <script src="js/activity.js"></script>

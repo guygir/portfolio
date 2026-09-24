@@ -55,7 +55,7 @@ Guy is an AI Platforms research engineer at IBM who also ships games and small t
 - White print / paper cards, a faint graph-paper ground, a degree or two of deterministic tilt.
 - Hover straightens and lifts the card.
 
-Do **not** copy Jackie’s doodles, stamps, red woodblock borders, black field, or Framer-specific effects.
+Do **not** copy Jackie’s doodles, woodblock stamps, red borders, black field, or Framer-specific effects. The small red file stamp on our covers is from the earlier desk/inspect catalog, not from Jackie.
 
 ### From portfolio layout craft
 
@@ -98,7 +98,7 @@ Work / Games / Projects
 
 ### 3.1 Current / opening
 
-Selected first in order: ZipNN, Klafi, RifTrade — one system, one game, one useful thing. Same tile size as llm-d, Hold’emle, and the rest of the active catalog. Hover still changes each picture.
+Selected first in order: ZipNN, Klafi, RifTrade — one system, one game, one useful thing. Same tile size as llm-d, Hold’emle, and the rest of the active catalog. Hover still changes each picture. Activating a tile opens the inspect sheet.
 
 ### 3.2 Work
 
@@ -164,6 +164,7 @@ Scale (desktop):
 - Board: 3 equal columns on desktop. White print card (~11px mat) around a 16 / 10 cover. Caption under the picture.
 - Tilt: deterministic `nth-child` rotations of about ±0.8–1.6deg plus a few pixels of offset. Not `Math.random()`.
 - Card radius: 0 (prints, not app chrome)
+- Red file stamp: top-right inside the print window. Text is derived from `js/data.js` (`section`, `status`, `detail`/`blurb`): WORK, PLAY, DAILY, PRINT, TOOL, or SHELF. Same `#b42318` outline stamp as the earlier desk catalog.
 - Portrait: 88px, 8px radius, in About only
 
 The first fold on ~1280×800 must include the masthead and **at least six** equal project tiles (image + title). No oversized flagship.
@@ -196,6 +197,17 @@ This is the reason sharkbombs was cited. Do not ship cards that only tint.
 3. Title and detail remain under the card.
 
 Two images are required in data: `cover` and `hover`. If a live screenshot is missing, the hover image is a distinct designed poster — never a CSS filter of the same file.
+
+---
+
+## 5b. Inspect sheet
+
+Activating a tile opens a paper dialog. Content comes from the record: cover, title, `detail`, `blurb` (or `story` if one exists), primary link. The red stamp and `FILE / KIND / 01` label are derived, not invented copy.
+
+- Focus moves into the sheet. Tab cycles inside it. Esc, the dim, and Close put it away and return focus to the tile.
+- Prev / Next walk the tiles currently on the board.
+- The primary action is the existing `href` (Play / Work / Open / Archive).
+- Reduced motion: no extra sheet animation; stamps sit flat.
 
 ---
 
