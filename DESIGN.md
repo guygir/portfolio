@@ -146,7 +146,7 @@ Scale (desktop):
 - Masthead: sticky, ~64px, full width. Not a rail.
 - Page measure: ~1240px
 - Gutter: 36px desktop, 20px phone
-- Stage plate: ~viewport minus masthead minus caption; image `object-fit: contain`
+- Stage plate: ~viewport minus masthead minus caption. ZipNN contains on black; Klafi contains as an object on white; RifTrade covers so the light UI screenshot is not a blank field.
 - Work: two-column essays, alternating sides, hairline between pieces
 - Games: 2 columns; Archive 3 columns
 - Projects: one-column index, 152px thumbs
@@ -205,7 +205,7 @@ Sticky paper bar. Left: Fraunces wordmark. Right: Current · Work · Games · Pr
 
 ### Stage (Current only)
 
-Full-width plate, then a caption band: huge title + copy on the left, the three names and “One system, one game, one useful thing.” on the right.
+Full-width plate, then a caption band: title + detail on the left, the three names and “One system, one game, one useful thing.” on the right. The one-line blurb lives on the Work/Games/Projects pieces, not on the opening plate.
 
 No “Selected” heading. No 2fr/1fr cluster.
 

@@ -24,8 +24,10 @@
     return window.ITEMS.find((item) => item.id === id);
   }
 
-  function tone(id) {
-    return id === "zipnn" ? "dark" : "light";
+  function plateClass(id) {
+    if (id === "zipnn") return "is-dark";
+    if (id === "klafi") return "is-object";
+    return "is-shot";
   }
 
   function tagFor(item) {
@@ -56,7 +58,7 @@
     }).join("");
 
     return (
-      '<section class="stage is-' + tone(item.id) + '" id="stage">' +
+      '<section class="stage ' + plateClass(item.id) + '" id="stage">' +
         '<a class="stage-plate tile" data-item="' + item.id + '" href="' + esc(item.href) + '" target="_blank" rel="noopener noreferrer">' +
           frameHTML(item) +
         "</a>" +
@@ -121,7 +123,7 @@
   function chapter(id, title, note, inner) {
     if (!inner) return "";
     return (
-      '<section class="chapter" id="' + id + '">' +
+      '<section class="chapter" id="chapter-' + id + '">' +
         '<header class="chapter-head"><h2>' + title + "</h2>" +
           (note ? "<p>" + note + "</p>" : "") +
         "</header>" +
@@ -195,8 +197,8 @@
   function paintStage(item) {
     const stage = document.querySelector(".stage");
     if (!stage) return;
-    stage.classList.toggle("is-dark", tone(item.id) === "dark");
-    stage.classList.toggle("is-light", tone(item.id) === "light");
+    stage.classList.remove("is-dark", "is-object", "is-shot");
+    stage.classList.add(plateClass(item.id));
     const plate = stage.querySelector(".stage-plate");
     plate.dataset.item = item.id;
     plate.href = item.href;
@@ -266,11 +268,20 @@
         if (location.hash && location.hash !== "#top" && location.hash !== "#stage") {
           history.replaceState(null, "", location.pathname + location.search);
         }
-        window.scrollTo(0, 0);
       } else {
         history.replaceState(null, "", "#" + filter);
-        window.scrollTo(0, 0);
       }
+      const top = function () {
+        if (document.activeElement && document.activeElement.blur) {
+          document.activeElement.blur();
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        document.documentElement.scrollTop = 0;
+      };
+      top();
+      requestAnimationFrame(top);
+      setTimeout(top, 80);
+      setTimeout(top, 200);
     }
   }
 
