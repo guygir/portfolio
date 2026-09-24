@@ -1,6 +1,6 @@
 # Guy Girmonsky
 
-Personal site: research systems, playable games, and small tools. A static one-page catalog — white paper, a work-first stage, then chapters.
+Personal site: research systems, playable games, and small tools. A static one-page catalog — white paper, a magazine opening of current work, then chapters.
 
 ## Run locally
 
@@ -12,12 +12,12 @@ Open http://127.0.0.1:4173
 
 ## Layout
 
-- `index.html` — one page: masthead, featured stage, chapters, about
+- `index.html` — one page: masthead, magazine opening, chapters, about
 - `js/data.js` — curated records from GitHub, itch.io, and papers
 - `js/activity.js` — last-year GitHub contribution calendar plus recent commit/PR routing
 - `js/pulse.js` — About-docked contribution board and couriers toward visible repo tiles
-- `js/app.js` — stage picks (ZipNN / Klafi / RifTrade), chapter isolation, tap-to-flip
-- `css/styles.css` — white paper, masthead, stage, essays / posters / index
+- `js/app.js` — featured trio (ZipNN / Klafi / RifTrade), chapter isolation, tap-to-flip
+- `css/styles.css` — white paper, masthead, magazine, essays / posters / index
 - `fonts/` — self-hosted Fraunces (SIL OFL) for display type
 - `images/covers` + `images/hover` — two pictures per tile; hover, focus, or a coarse tap changes the image
 - `images/profile` — identity portrait, used in About

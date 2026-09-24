@@ -3,7 +3,7 @@
   const buttons = document.querySelectorAll("nav [data-filter]");
   const featuredIds = ["zipnn", "klafi", "riftrade"];
   const notes = {
-    stage: "One system, one game, one useful thing.",
+    opening: "One system, one game, one useful thing.",
     work: "Published systems and current infrastructure work.",
     games: "Playable experiments, puzzles and tabletop ideas.",
     projects: "Small utilities for real groups and communities.",
@@ -11,7 +11,6 @@
     lede: "I build systems that make complex things usable—from distributed AI infrastructure to small games.",
   };
   let filter = "current";
-  let stageId = "zipnn";
 
   function esc(value) {
     return String(value || "")
@@ -22,12 +21,6 @@
 
   function byId(id) {
     return window.ITEMS.find((item) => item.id === id);
-  }
-
-  function plateClass(id) {
-    if (id === "zipnn") return "is-dark";
-    if (id === "klafi") return "is-object";
-    return "is-shot";
   }
 
   function tagFor(item) {
@@ -44,35 +37,34 @@
     );
   }
 
-  function stageHTML(item) {
-    const picks = featuredIds.map((id) => {
-      const pick = byId(id);
-      if (!pick) return "";
-      const on = id === item.id;
-      return (
-        '<button type="button" role="tab" data-stage="' + id + '"' +
-          ' aria-selected="' + (on ? "true" : "false") + '"' +
-          (on ? ' class="on"' : "") +
-        ">" + esc(pick.title) + "</button>"
-      );
-    }).join("");
-
+  function featureHTML(item, extraClass) {
     return (
-      '<section class="stage ' + plateClass(item.id) + '" id="stage">' +
-        '<a class="stage-plate tile" data-item="' + item.id + '" href="' + esc(item.href) + '" target="_blank" rel="noopener noreferrer">' +
-          frameHTML(item) +
-        "</a>" +
-        '<div class="stage-caption">' +
-          '<div class="stage-copy">' +
-            '<p class="kicker">' + esc(item.tag) + "</p>" +
-            "<h1>" + esc(item.title) + "</h1>" +
-            '<p class="detail">' + esc(item.detail || item.blurb) + "</p>" +
-            '<p class="blurb">' + esc(item.blurb) + "</p>" +
-          "</div>" +
-          '<div class="stage-picks">' +
-            '<p class="picks-note">' + notes.stage + "</p>" +
-            '<div class="picks-row" role="tablist" aria-label="Selected work">' + picks + "</div>" +
-          "</div>" +
+      '<a class="feature tile ' + (extraClass || "") + '" data-item="' + item.id + '" href="' + esc(item.href) + '" target="_blank" rel="noopener noreferrer">' +
+        frameHTML(item) +
+        '<span class="meta">' +
+          '<span class="project-text">' +
+            "<strong>" + esc(item.title) + "</strong>" +
+            "<small>" + esc(item.detail || item.blurb) + "</small>" +
+          "</span>" +
+          '<span class="tag">' + esc(tagFor(item)) + "</span>" +
+        "</span>" +
+      "</a>"
+    );
+  }
+
+  function openingHTML() {
+    const featured = featuredIds.map(byId).filter(Boolean);
+    if (featured.length < 3) return "";
+    return (
+      '<section class="opening" id="opening">' +
+        '<header class="opening-head">' +
+          "<p>" + notes.lede + "</p>" +
+          '<p class="opening-note">' + notes.opening + "</p>" +
+        "</header>" +
+        '<div class="magazine">' +
+          featureHTML(featured[0], "is-flagship") +
+          featureHTML(featured[1], "is-support") +
+          featureHTML(featured[2], "is-support") +
         "</div>" +
       "</section>"
     );
@@ -144,7 +136,7 @@
       inner +=
         '<div class="archive-block">' +
           "<h3>Archive</h3>" +
-          '<p>' + notes.archive + "</p>" +
+          "<p>" + notes.archive + "</p>" +
           '<div class="poster-wall is-archive">' + archive.map(posterHTML).join("") + "</div>" +
         "</div>";
     }
@@ -173,13 +165,11 @@
   }
 
   function currentHTML() {
-    const stage = byId(stageId) || byId(featuredIds[0]);
     const work = window.ITEMS.filter((item) => item.section === "work" && item.status === "active");
     const games = splitStatus(window.ITEMS.filter((item) => item.section === "games"));
     const projects = splitStatus(window.ITEMS.filter((item) => item.section === "projects"));
     return (
-      stageHTML(stage) +
-      '<p class="intro">' + notes.lede + "</p>" +
+      openingHTML() +
       workChapter(work) +
       gamesChapter(games.active, []) +
       projectsChapter(projects.active, [])
@@ -192,33 +182,6 @@
     if (filter === "work") return workChapter(parts.active.concat(parts.archive));
     if (filter === "games") return gamesChapter(parts.active, parts.archive);
     return projectsChapter(parts.active, parts.archive);
-  }
-
-  function paintStage(item) {
-    const stage = document.querySelector(".stage");
-    if (!stage) return;
-    stage.classList.remove("is-dark", "is-object", "is-shot");
-    stage.classList.add(plateClass(item.id));
-    const plate = stage.querySelector(".stage-plate");
-    plate.dataset.item = item.id;
-    plate.href = item.href;
-    plate.classList.remove("is-flipped");
-    const cover = plate.querySelector(".a");
-    const hover = plate.querySelector(".b");
-    cover.src = item.cover;
-    cover.alt = item.title;
-    hover.src = item.hover;
-    plate.querySelector(".reveal").textContent = item.blurb;
-    stage.querySelector(".stage-copy .kicker").textContent = item.tag;
-    stage.querySelector(".stage-copy h1").textContent = item.title;
-    stage.querySelector(".stage-copy .detail").textContent = item.detail || item.blurb;
-    stage.querySelector(".stage-copy .blurb").textContent = item.blurb;
-    stage.querySelectorAll("[data-stage]").forEach((btn) => {
-      const on = btn.dataset.stage === item.id;
-      btn.classList.toggle("on", on);
-      btn.setAttribute("aria-selected", on ? "true" : "false");
-    });
-    if (window.Pulse) window.Pulse.refresh();
   }
 
   function bindTiles() {
@@ -235,22 +198,10 @@
     });
   }
 
-  function bindStage() {
-    gallery.querySelectorAll("[data-stage]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const item = byId(btn.dataset.stage);
-        if (!item) return;
-        stageId = item.id;
-        paintStage(item);
-      });
-    });
-  }
-
   function render() {
     document.body.dataset.view = filter;
     gallery.innerHTML = filter === "current" ? currentHTML() : isolatedHTML();
     bindTiles();
-    bindStage();
     if (window.Pulse) window.Pulse.refresh();
   }
 
@@ -265,7 +216,7 @@
     const silent = options && options.silent;
     if (!silent) {
       if (filter === "current") {
-        if (location.hash && location.hash !== "#top" && location.hash !== "#stage") {
+        if (location.hash && location.hash !== "#top" && location.hash !== "#opening") {
           history.replaceState(null, "", location.pathname + location.search);
         }
       } else {
