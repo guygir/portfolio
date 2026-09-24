@@ -12,24 +12,24 @@ People who already know Guy, or who were sent the URL: hiring researchers, game-
 
 ## Product Purpose
 
-A one-page picture gallery of Guy Girmonsky’s curated work — IBM research systems, playable games, and small tools. Success is a ten-second takeaway: this person publishes real systems research *and* ships playable things. The visitor should be inside the work immediately; chrome should recede.
+A one-page picture index of Guy Girmonsky’s curated work — IBM research systems, playable games, and small tools. Success is a ten-second takeaway: this person publishes real systems research *and* ships playable things. The first viewport is the work, not chrome.
 
 ## Positioning
 
-Curation, not a GitHub mirror. Every tile has two authored pictures. The site is a maker’s desk, not a résumé dump, not a studio splash, and not a SaaS landing page for a product that does not exist.
+Curation, not a GitHub mirror. Every tile has two authored pictures. The site is a small-press catalog you scroll, not a résumé dump, not a studio splash, and not a dashboard of the self.
 
 ## Operating Context
 
-Opened as a static folder (`python3 -m http.server 4173`). No account, no CMS, no build. Filters stay on the page. Project records live in `js/data.js`. GitHub contribution heat in the left rail is a live pulse, not a vanity metric wall.
+Opened as a static folder (`python3 -m http.server 4173`). No account, no CMS, no build. Project records live in `js/data.js`. Current is a sequential magazine: featured stage, then Work, Games, Projects, About. Work / Games / Projects isolate that chapter. GitHub contribution heat lives in About.
 
 ## Capabilities and Constraints
 
 - Static HTML / CSS / vanilla JS only. No React, no npm, no Tailwind or UI kit.
 - Data, copy, and project list stay in `js/data.js`. Do not invent projects, stats, or blurbs.
-- Featured trio is ZipNN, Klafi, and RifTrade.
-- Sticky left rail: identity, lede, Current / Work / Games / Projects, About, contribution pulse.
+- Featured trio is ZipNN, Klafi, and RifTrade — presented as a single full-viewport stage, not a 2fr/1fr card cluster.
+- Thin masthead: wordmark plus Current / Work / Games / Projects / About. No sticky left rail.
 - Picture-first tiles: cover + hover, crossfade on hover/focus; tap-to-flip on coarse pointers before following the link.
-- Pulse and courier behavior in `activity.js` / `pulse.js` is product truth.
+- Pulse calendar and courier behavior in `activity.js` / `pulse.js` remain product truth; the calendar is docked in About so it cannot dominate the opening.
 
 ## Brand Commitments
 
@@ -57,8 +57,8 @@ Name: Guy Girmonsky. Voice: warm, specific, slightly dry. Hebrew titles stay (Kl
 - SaaS camping/product landings with device mockups and Get Started pills.
 - Inter + purple-gradient onboarding cards; generic “Welcome to Our Platform” AI slop.
 - Agency metric walls, partner logo rows, and “Let’s talk” CTA language (tovbar’s sales voice; sharkbombs’ cyan/pink studio brand).
-- A 30-repo GitHub dump, a pricing/bento rebuild, or a dashboard of the self.
+- A 30-repo GitHub dump, a pricing/bento rebuild, or a dashboard of the self (including the old sticky left rail + 3-column gallery).
 
 ## Accessibility & Inclusion
 
-Keyboard focus matches hover on tiles. Coarse pointers tap once to reveal the second picture, twice to open the link. `prefers-reduced-motion` keeps the image crossfade and stops lift, rotate, and the courier sky. Body and mute text stay above 4.5:1 on paper.
+Keyboard focus matches hover on tiles. Coarse pointers tap once to reveal the second picture, twice to open the link. `prefers-reduced-motion` keeps the image crossfade and stops lift, rotate, and the courier sky. Body and mute text stay above 4.5:1 on paper. A skip link jumps the masthead.

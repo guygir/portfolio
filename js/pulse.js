@@ -2,7 +2,7 @@
   const WEEKS = 53;
   const MAX_WORKERS = 4;
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const compact = window.matchMedia("(max-width: 780px)");
+  const compact = window.matchMedia("(max-width: 860px)");
 
   const board = document.getElementById("pulse-board");
   const months = document.getElementById("pulse-months");

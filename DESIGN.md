@@ -1,13 +1,13 @@
 # Guy Girmonsky — Personal Site Design Spec
 
-Shipped shape: sticky left rail, selected trio (ZipNN / Klafi / RifTrade), sectioned gallery, tap-to-flip on coarse pointers. The rail also carries the last year of GitHub contribution heat. Days with known pull requests keep a thin outline, and busier recent days send a few quiet courier marks toward the matching repo tile. Research, itch.io games, and live tools use composed photography. Parked GitHub work without photography uses designed posters in Archive.
+Shipped shape: work-first editorial scroll. A thin masthead, one featured stage (ZipNN / Klafi / RifTrade), then sequential chapters with three different layouts. About holds the GitHub calendar. Tap-to-flip on coarse pointers. Research, itch.io games, and live tools use composed photography. Parked GitHub work without photography uses designed posters in Archive.
 
 This file matches the shipped site. If they disagree, change the site or change this file — do not leave a second, unimplemented IA sitting here.
 
 References: [tovbar.com](https://tovbar.com), [sharkbombs.com](https://www.sharkbombs.com/index.html), Emil Kowalski motion rules, Impeccable Experience mode.
 Source inventory: GitHub `guygir`, itch.io `guygir`, IBM Research publications.
 
-Visitor mode for this surface: **Experience**. The work leads from the first viewport; the rail recedes.
+Visitor mode for this surface: **Experience**. The first viewport is a picture of the work. Identity recedes to a wordmark and an About chapter.
 
 ---
 
@@ -15,7 +15,7 @@ Visitor mode for this surface: **Experience**. The work leads from the first vie
 
 A personal index of work, not a résumé dump and not a game-studio splash.
 
-Guy is an AI Platforms research engineer at IBM who also ships games and small tools. The site should feel like a careful maker’s desk: white paper, strong type, pictures first. Research sits next to games without either pretending to be the other.
+Guy is an AI Platforms research engineer at IBM who also ships games and small tools. The site should feel like a small-press catalog: white paper, a large opening plate, then chapters that do not all look like the same card grid. Research sits next to games without either pretending to be the other.
 
 **Visitor takeaway in ten seconds:** this person publishes real systems research *and* playable things.
 
@@ -26,29 +26,26 @@ Guy is an AI Platforms research engineer at IBM who also ships games and small t
 ### From tovbar.com
 
 - Image-led portfolio. The work is the interface.
-- Friendly, short voice in the rail. One sentence of personality, then the grid.
-- Sparse chrome: identity, a few filters, no agency CTA.
+- Friendly, short voice. One sentence of personality after the opening plate, not before it.
+- Sparse chrome: wordmark, a few chapter links, no agency CTA.
 - Generous paper, quiet frames, no neon brand system.
-- Asymmetric rhythm is allowed (featured row can be larger than the archive).
 
 ### From sharkbombs.com
 
 - Games as a first-class category, not a footnote under “side projects.”
 - The hover: the project *picture changes*. On sharkbombs this is zoom + slight rotate + dark veil + title. We keep that physics and make the picture change literal — a second image crossfades in.
-- Title + one-line role under the card so the grid stays readable without hover.
-- Category filters (Current / Work / Games / Projects) instead of a flat dump of every repo.
+- Title + one-line role remain readable without hover (under posters; beside essays; in the stage caption).
 
 ### From Impeccable (Experience mode)
 
-- Artifact-first composition. No hero-metric landing, no pricing/bento rebuild.
-- Typeset and spacing carry the redesign. No new product features.
+- Artifact-first composition. No hero-metric landing, no pricing/bento rebuild, no dashboard rail.
 - No decorative eyebrows or `01 / Work` section numbers. The heading speaks.
 
 ### From Emil Kowalski
 
-- Purpose before motion. Tile hover exists to show the second picture and keep the swap from being a hard cut.
+- Purpose before motion. Tile hover exists to show the second picture and keep the swap from being a hard cut. Stage picks exist to change which artifact is on the plate.
 - Custom ease-out `cubic-bezier(0.23, 1, 0.32, 1)`. Never `ease-in` on UI. Never `transition: all`.
-- Cover/hover 180–240ms. Press 160ms. Animate transform and opacity (plus a single lift shadow on the frame).
+- Cover/hover 180–240ms. Press 160ms. Animate transform and opacity (plus a single lift shadow on smaller frames).
 - Hover motion gated with `@media (hover: hover) and (pointer: fine)`.
 - Interruptible CSS transitions. `prefers-reduced-motion` keeps the crossfade and kills lift, rotate, and courier sky.
 
@@ -57,44 +54,56 @@ Guy is an AI Platforms research engineer at IBM who also ships games and small t
 - Sharkbombs cyan/pink gradient wordmark, underwater hero, partner logo wall.
 - Tovbar’s “Let’s talk” agency CTA language.
 - The Nate Herkai “before” set: dark neon Web3, SaaS device-mockup landings, Inter + purple cards.
+- The previous site’s sticky left rail + Selected 2fr/1fr + 3-column gallery. That IA is retired.
 - A 30-repo GitHub mirror. Curation is the design.
 
 ---
 
 ## 3. Information architecture
 
-One page. The rail is the index; the gallery is the work.
+One page. Current is the full story. The other filters isolate a chapter.
 
 ```
-Rail
-  identity · lede · Current / Work / Games / Projects · About · GitHub pulse
-Gallery
-  Current → Selected trio + Research + Games + Tools
-  Work / Games / Projects → active grid, then Archive
-  About
+Masthead
+  wordmark · Current / Work / Games / Projects · About
+
+Current
+  Featured stage (ZipNN ↔ Klafi ↔ RifTrade)
+  Lede
+  Work essays
+  Games posters (active)
+  Projects index (active)
+  About + GitHub pulse
+
+Work / Games / Projects
+  That chapter only (active, then Archive where it exists)
+  About + pulse
+
+About
+  Always at the bottom of whatever view is open
 ```
 
-### 3.1 Current
+### 3.1 Current / stage
 
-Selected: ZipNN, Klafi, RifTrade — one system, one game, one useful thing. Then the rest of the active work, grouped.
+Selected: ZipNN, Klafi, RifTrade — one system, one game, one useful thing. One large plate at a time. The names on the right swap the plate. Hover still changes the picture.
 
 ### 3.2 Work
 
-Employment and published research, as a picture grid (not a list/stage). ZipNN, SkyStore, llm-d, and Club Tech titles that belong with games when filtered there.
+Employment and published research, as alternating picture/type essays (not a card grid). ZipNN, SkyStore, llm-d.
 
 ### 3.3 Games
 
-Playable. Active titles stay in Current / Games; older itch and Club Tech work sits in Archive.
+Playable. Two-up posters while active; Archive is a denser strip. Older itch and Club Tech work sits in Archive (visible when Games is isolated).
 
 ### 3.4 Projects
 
-Useful things that are not games and not papers. RifTrade is the featured tool. Archive holds parked GitHub work with designed posters.
+Useful things that are not games and not papers. A compact index: thumb, title, blurb, tag. RifTrade is the featured tool on the stage. Archive holds parked GitHub work with designed posters.
 
 Omitted on purpose: `Test`, `my-fork`, `vllm` fork, `clawdchan`, `Better-Minimal-WebGL-Template`.
 
 ### 3.5 About
 
-Short bio, current role, selected writing (ZipNN, SkyStore), links (GitHub, itch, Hugging Face, Collectr, mail).
+Portrait, short bio, current role, selected writing (ZipNN, SkyStore), links, then the GitHub year.
 
 ---
 
@@ -102,45 +111,47 @@ Short bio, current role, selected writing (ZipNN, SkyStore), links (GitHub, itch
 
 ### 4.1 Character
 
-Warm editorial. Closer to a small press catalog than a SaaS landing page. The wall stays white so cream and black tiles keep their own paper. Games get saturated pictures; research gets quieter, larger type on the lead tile.
+Warm editorial. Closer to a catalog you turn than a gallery wall you scan. The wall stays white so cream and black tiles keep their own paper. Research gets large Fraunces beside the picture. Games get bigger posters. Tools get a quieter list.
 
 ### 4.2 Color
 
 | Token | Hex | Use |
 |---|---|---|
-| `--paper` | `#FFFFFF` | Gallery wall |
+| `--paper` | `#FFFFFF` | Page |
 | `--ink` | `#191512` | Type (warm, not pure black) |
 | `--mute` | `#5C564E` | Lede, captions, tags |
 | `--wash` | `#F1EEE8` | Tile placeholder |
-| `--line` | `#E4DFD6` | About list rules |
+| `--line` | `#E4DFD6` | Essay / index / About rules |
 
-The tiles carry their own brand color. The page stays white.
+The tiles carry their own brand color. The page stays white. ZipNN’s plate is black because the cover is black; Klafi and RifTrade sit contained on white so their cream art is not swallowed.
 
 ### 4.3 Type
 
-- **Display:** Fraunces, self-hosted variable (`fonts/fraunces-latin-wght.woff2`), weight 500. Identity name, section titles, About, pulse heading.
+- **Display:** Fraunces, self-hosted variable (`fonts/fraunces-latin-wght.woff2`), weight 500. Wordmark, stage title, chapter titles, essay titles, About, pulse heading.
 - **UI / body / meta:** Helvetica Neue / Helvetica / Arial.
 
 Scale (desktop):
 
-- Identity name: 30px Fraunces
-- Section / About title: clamp 36–56px Fraunces
-- Featured card title: 22px
-- Card title: 17px
+- Wordmark: 22px Fraunces
+- Stage title: clamp 51–108px Fraunces
+- Chapter / About title: clamp 48–88px Fraunces
+- Essay title: clamp 32–54px Fraunces
+- Poster / index title: 20px
 - Body: 17px / 1.55
-- Lede: 16px / 1.5
+- Lede: 18px / 1.5
 - Meta / tags: 11px uppercase, 0.1em tracking
-- Pulse help: 12px
 
 ### 4.4 Layout
 
-- Rail: sticky, ~268–320px, scrolls internally if needed
-- Gallery gutter: 36–56px
-- Featured: 2fr + stacked pair
-- Games / projects / work: 3 columns desktop, 2 tablet, 1 phone
-- Vertical section padding: 96px desktop, 64px phone
-- Card radius: 14px
-- Portrait: 56px, 8px radius (a print, not a status avatar)
+- Masthead: sticky, ~64px, full width. Not a rail.
+- Page measure: ~1240px
+- Gutter: 36px desktop, 20px phone
+- Stage plate: ~viewport minus masthead minus caption; image `object-fit: contain`
+- Work: two-column essays, alternating sides, hairline between pieces
+- Games: 2 columns; Archive 3 columns
+- Projects: one-column index, 152px thumbs
+- Card radius: 2px essays, 8px posters, 4px index thumbs, 0 on the stage
+- Portrait: 88px, 8px radius, in About only
 
 ### 4.5 Motion
 
@@ -152,9 +163,11 @@ Scale (desktop):
 | `--dur-press` | 160ms |
 
 - Image crossfade: 240ms opacity. Always on, including tap-to-flip and reduced motion.
-- Fine-pointer hover/focus: frame lifts `translateY(-6px)`, scales `1.03`, rotates `±1.4deg` (odd / even). Soft offset shadow, not a glow halo. A 1px inset line keeps white screenshots from vanishing into the wall.
-- Veil: gradient to `--veil` (0.42), blurb on the picture.
-- Nav / identity / About links: `scale(0.97)` on `:active`.
+- Stage: no lift or rotate (it is too large). Dark plates fade to paper when the hover picture is light.
+- Essays / index: `translateY(-4px)` only.
+- Game posters: lift `translateY(-6px)`, scale `1.03`, rotate `±1.4deg` (odd / even).
+- Fine-pointer hover/focus only. Keyboard `:focus-visible` still swaps the picture.
+- Nav / wordmark / picks: `scale(0.97)` on `:active`.
 - Reduced-motion: crossfade only; no lift, rotate, press, or courier sky.
 
 ---
@@ -163,17 +176,22 @@ Scale (desktop):
 
 This is the reason sharkbombs was cited. Do not ship cards that only tint.
 
-**Grid cards (Selected, Research, Games, Tools, Archive)**
+**Stage**
 
-1. Rest: cover image, full bleed, no type on the picture.
-2. Hover / focus-visible (fine pointer):
-   - Cover fades out
-   - Second image (gameplay / live UI / paper figure) fades in
-   - Frame lifts, scales, and ticks a few degrees
-   - Dark veil + one-line blurb
-3. Title and detail remain under the card so the grid stays readable without hover.
-4. Keyboard: `:focus-visible` equals the picture change. Lift/rotate still require a fine hover pointer.
-5. Coarse pointer: first tap adds `is-flipped` (hover picture + veil); second tap follows the link.
+1. Rest: cover image, contained in a tall plate. Caption (title, detail, blurb) sits on paper underneath.
+2. Picks swap which record is on the plate.
+3. Hover / focus-visible / tap-to-flip: cover fades out, hover image fades in.
+4. Clicking the plate follows the primary link.
+
+**Essays and posters**
+
+1. Rest: cover image, full bleed in the frame, no type on the picture.
+2. Hover / focus-visible (fine pointer): second image, optional lift/rotate, veil + blurb.
+3. Title and detail remain off the picture.
+
+**Project index**
+
+Same two-picture swap on the thumb. No veil (the row is already a caption).
 
 Two images are required in data: `cover` and `hover`. If a live screenshot is missing, the hover image is a distinct designed poster — never a CSS filter of the same file.
 
@@ -181,21 +199,25 @@ Two images are required in data: `cover` and `hover`. If a live screenshot is mi
 
 ## 6. Page structure
 
-### Rail
+### Masthead
 
-Sticky. White paper. Identity (cubist portrait + Fraunces name + uppercase meta). Lede. Text filters. About jump. Pulse docked to the bottom of the rail on desktop.
+Sticky paper bar. Left: Fraunces wordmark. Right: Current · Work · Games · Projects · About. No portrait, no lede, no calendar.
 
-No fixed top header. No “Say hello” pill. No 88–120px hero name in the gallery — that would compete with the pictures.
+### Stage (Current only)
 
-### Gallery
+Full-width plate, then a caption band: huge title + copy on the left, the three names and “One system, one game, one useful thing.” on the right.
 
-- Current: Selected trio, then Research / Games / Tools for remaining active work.
-- Other filters: active grid, then Archive.
-- Archive tiles keep full color on the hover picture, with an `Archive` tag.
+No “Selected” heading. No 2fr/1fr cluster.
+
+### Chapters
+
+- Current continues into Work / Games / Projects after a centered lede.
+- Isolated filters render only that chapter, then About.
+- Archive appears under Games and Projects when those filters are on.
 
 ### About
 
-Two columns. Left: bio. Right: papers and links, hairline-separated. Display title matches the gallery sections.
+Two columns. Left: portrait + bio. Right: papers and links, hairline-separated. Pulse calendar underneath.
 
 ### Footer
 
@@ -226,10 +248,9 @@ Hebrew projects keep their names (Klafi, אתגר בקופסא) and get one Engl
 
 ## 9. Breakpoints
 
-- ≥ 1080px: 3-col grids, featured 2fr + stack
-- 780–1079: 2-col grids, featured stack still side-by-side
-- < 780: rail stacks above the gallery; featured lead spans full width; pulse sky hides; pulse help copy hides so the pictures still lead
-- < 520: 1-col; section notes drop under titles
+- ≥ 1080px: essays side-by-side, games 2-up, archive 3-up, stage caption split
+- 780–1079: essays stack (picture then type); archive 2-up
+- < 780: masthead stacks; stage plate ~64vh; picks become a row; games 1-up; project thumbs shrink; pulse sky hides
 - Hover becomes tap-to-flip when `(hover: none)`
 
 ---
@@ -240,17 +261,17 @@ In:
 
 - One-page static site
 - Real project data from GitHub / itch / papers
-- Hover picture-change on every card
-- Active / archive via filters
+- Hover picture-change on every artifact
+- Featured stage + chapter isolation
 - Responsive layout
-- Contribution pulse + couriers
+- Contribution pulse in About
 
 Out:
 
 - CMS, auth, blog, i18n toggle
 - Auto-sync from GitHub as a product feature
 - Case-study pages
-- A work “stage” (list + swapping hero). Work is a picture grid like everything else.
+- The retired sticky-rail dashboard
 
 ---
 
@@ -258,4 +279,4 @@ Out:
 
 Static HTML / CSS / JS. Project records in `js/data.js`. Images in `images/`. Display face in `fonts/`. No framework.
 
-`PRODUCT.md` holds durable product truth. This file holds the visual world for the gallery surface.
+`PRODUCT.md` holds durable product truth. This file holds the visual world for the catalog surface.

@@ -9,30 +9,56 @@
     <link rel="preload" href="fonts/fraunces-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="css/styles.css" />
   </head>
-  <body>
+  <body data-view="current">
     <a class="skip" href="#gallery">Skip to work</a>
-    <div class="page">
-      <aside>
-        <a class="identity" href="#top">
-          <img src="images/profile/guy-girmonsky.jpg" alt="" width="56" height="56" />
-          <span>
-            <strong>Guy Girmonsky</strong>
-            <small>Research &amp; games</small>
-          </span>
-        </a>
-        <p class="lede">
-          I build systems that make complex things usable—from distributed AI
-          infrastructure to small games.
-        </p>
-        <nav aria-label="Gallery">
-          <button type="button" data-filter="current" class="on" aria-pressed="true">Current</button>
-          <button type="button" data-filter="work" aria-pressed="false">Work</button>
-          <button type="button" data-filter="games" aria-pressed="false">Games</button>
-          <button type="button" data-filter="projects" aria-pressed="false">Projects</button>
-          <a href="#about">About</a>
-        </nav>
+
+    <header class="masthead">
+      <a class="wordmark" href="#top">Guy Girmonsky</a>
+      <nav aria-label="Chapters">
+        <button type="button" data-filter="current" class="on" aria-pressed="true">Current</button>
+        <button type="button" data-filter="work" aria-pressed="false">Work</button>
+        <button type="button" data-filter="games" aria-pressed="false">Games</button>
+        <button type="button" data-filter="projects" aria-pressed="false">Projects</button>
+        <a href="#about">About</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <div id="gallery"></div>
+
+      <section id="about">
+        <div class="about-grid">
+          <div class="about-copy">
+            <h2>About</h2>
+            <div class="about-lede">
+              <img src="images/profile/guy-girmonsky.jpg" alt="" width="88" height="88" />
+              <div>
+                <p>
+                  Research engineer on AI platforms at IBM, previously hybrid-cloud
+                  storage. M.Sc. student. Before that I shipped Unity games for Club
+                  Tech.
+                </p>
+                <p>
+                  I collect Riftbound. The binder is on
+                  <a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a>.
+                </p>
+              </div>
+            </div>
+          </div>
+          <ul>
+            <li><a href="https://github.com/zipnn/zipnn">ZipNN</a>, IEEE CLOUD 2025</li>
+            <li><a href="https://arxiv.org/abs/2502.20818">SkyStore</a>, VLDB 2025</li>
+            <li><a href="https://www.llm-d.ai">llm-d</a></li>
+            <li><a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a></li>
+            <li><a href="https://github.com/guygir">GitHub</a></li>
+            <li><a href="https://guygir.itch.io">itch.io</a></li>
+            <li><a href="https://huggingface.co/Guygir">Hugging Face</a></li>
+            <li><a href="mailto:guygir@gmail.com">guygir@gmail.com</a></li>
+          </ul>
+        </div>
+
         <section class="pulse" aria-label="GitHub contribution calendar">
-          <h2>Now</h2>
+          <h3>Now</h3>
           <p>Last year on GitHub. Green is contribution heat; outlined days have pull requests.</p>
           <p class="pulse-total" id="pulse-total"></p>
           <div class="pulse-cal">
@@ -50,41 +76,12 @@
             <span class="pulse-key-pr"><i class="pulse-swatch is-pr"></i>pull request</span>
           </p>
         </section>
-      </aside>
+      </section>
 
-      <main id="top">
-        <div id="gallery"></div>
-
-        <section id="about">
-          <div>
-            <h2>About</h2>
-            <p>
-              Research engineer on AI platforms at IBM, previously hybrid-cloud
-              storage. M.Sc. student. Before that I shipped Unity games for Club
-              Tech.
-            </p>
-            <p>
-              I collect Riftbound. The binder is on
-              <a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a>.
-            </p>
-          </div>
-          <ul>
-            <li><a href="https://github.com/zipnn/zipnn">ZipNN</a>, IEEE CLOUD 2025</li>
-            <li><a href="https://arxiv.org/abs/2502.20818">SkyStore</a>, VLDB 2025</li>
-            <li><a href="https://www.llm-d.ai">llm-d</a></li>
-            <li><a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a></li>
-            <li><a href="https://github.com/guygir">GitHub</a></li>
-            <li><a href="https://guygir.itch.io">itch.io</a></li>
-            <li><a href="https://huggingface.co/Guygir">Hugging Face</a></li>
-            <li><a href="mailto:guygir@gmail.com">guygir@gmail.com</a></li>
-          </ul>
-        </section>
-
-        <footer>
-          Research systems, playable ideas and a growing Riftbound binder.
-        </footer>
-      </main>
-    </div>
+      <footer>
+        Research systems, playable ideas and a growing Riftbound binder.
+      </footer>
+    </main>
     <svg class="pulse-sky" id="pulse-sky" aria-hidden="true"></svg>
 
     <script src="js/data.js"></script>
