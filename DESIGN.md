@@ -152,7 +152,7 @@ Scale (desktop):
 | `--dur-press` | 160ms |
 
 - Image crossfade: 240ms opacity. Always on, including tap-to-flip and reduced motion.
-- Fine-pointer hover/focus: frame lifts `translateY(-6px)`, scales `1.045`, rotates `±1.4deg` (odd / even). Soft offset shadow, not a glow halo.
+- Fine-pointer hover/focus: frame lifts `translateY(-6px)`, scales `1.03`, rotates `±1.4deg` (odd / even). Soft offset shadow, not a glow halo. A 1px inset line keeps white screenshots from vanishing into the wall.
 - Veil: gradient to `--veil` (0.42), blurb on the picture.
 - Nav / identity / About links: `scale(0.97)` on `:active`.
 - Reduced-motion: crossfade only; no lift, rotate, press, or courier sky.
@@ -228,7 +228,7 @@ Hebrew projects keep their names (Klafi, אתגר בקופסא) and get one Engl
 
 - ≥ 1080px: 3-col grids, featured 2fr + stack
 - 780–1079: 2-col grids, featured stack still side-by-side
-- < 780: rail stacks above the gallery; featured lead spans full width; pulse sky hides
+- < 780: rail stacks above the gallery; featured lead spans full width; pulse sky hides; pulse help copy hides so the pictures still lead
 - < 520: 1-col; section notes drop under titles
 - Hover becomes tap-to-flip when `(hover: none)`
 

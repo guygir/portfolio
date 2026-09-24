@@ -284,7 +284,7 @@ nav button.on {
 
 .pulse-lane {
   fill: none;
-  stroke: rgb(25 21 18 / 0.16);
+  stroke: rgb(25 21 18 / 0.07);
   stroke-width: 1;
 }
 
@@ -296,7 +296,9 @@ nav button.on {
 }
 
 .tile.is-receiving .frame {
-  box-shadow: 0 16px 36px -28px rgb(25 21 18 / 0.55);
+  box-shadow:
+    inset 0 0 0 1px rgb(25 21 18 / 0.08),
+    0 16px 36px -28px rgb(25 21 18 / 0.55);
 }
 
 main {
@@ -368,6 +370,7 @@ main {
   overflow: hidden;
   background: var(--wash);
   border-radius: var(--radius);
+  box-shadow: inset 0 0 0 1px rgb(25 21 18 / 0.08);
 }
 
 .frame img {
@@ -543,8 +546,10 @@ footer {
 
   .tile:hover .frame,
   .tile:focus-visible .frame {
-    transform: translateY(-6px) rotate(-1.4deg) scale(1.045);
-    box-shadow: 0 22px 44px -30px rgb(25 21 18 / 0.55);
+    transform: translateY(-6px) rotate(-1.4deg) scale(1.03);
+    box-shadow:
+      inset 0 0 0 1px rgb(25 21 18 / 0.08),
+      0 22px 44px -30px rgb(25 21 18 / 0.55);
   }
 
   .project-grid .tile:nth-child(even):hover .frame,
@@ -553,7 +558,7 @@ footer {
   .featured-grid > .tile:focus-visible .frame,
   .featured-stack .tile:nth-child(even):hover .frame,
   .featured-stack .tile:nth-child(even):focus-visible .frame {
-    transform: translateY(-6px) rotate(1.4deg) scale(1.045);
+    transform: translateY(-6px) rotate(1.4deg) scale(1.03);
   }
 
   .tile:hover .reveal,
@@ -576,8 +581,8 @@ footer {
   aside {
     position: static;
     height: auto;
-    padding: 28px 22px 8px;
-    gap: 20px;
+    padding: 24px 22px 4px;
+    gap: 16px;
     overflow: visible;
   }
 
@@ -590,7 +595,9 @@ footer {
     gap: 4px 18px;
   }
 
-  .pulse { margin-top: 4px; }
+  .pulse { margin-top: 2px; padding-top: 0; }
+  .pulse h2 { font-size: 15px; }
+  .pulse > p:not(.pulse-total):not(.pulse-key) { display: none; }
   .pulse-sky { display: none; }
 
   main { padding: 16px 22px 88px; }
