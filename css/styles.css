@@ -145,7 +145,6 @@ footer {
   display: block;
   height: calc(100svh - var(--mast) - var(--caption));
   min-height: 380px;
-  max-height: 760px;
   background: #0a0a0a;
   text-decoration: none;
 }
