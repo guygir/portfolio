@@ -262,7 +262,7 @@ body[data-view="projects"] .chapter {
 .board {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 22px 20px;
   align-items: start;
 }
 
@@ -301,7 +301,7 @@ html[data-layout="uneven"] .board {
   overflow: hidden;
   background: transparent;
   box-shadow:
-    0 0 0 1px rgb(25 21 18 / 0.12),
+    0 0 0 1px rgb(25 21 18 / 0.16),
     0 14px 28px -16px rgb(25 21 18 / 0.48);
   transform-origin: 50% 60%;
 }
@@ -330,7 +330,7 @@ html[data-layout="uneven"] .shot.is-stack { aspect-ratio: 6 / 5; }
 
 .layers {
   position: absolute;
-  inset: 10% 11% 10%;
+  inset: 6% 9% 10%;
 }
 
 .layer {
@@ -338,16 +338,27 @@ html[data-layout="uneven"] .shot.is-stack { aspect-ratio: 6 / 5; }
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
   background: var(--paper);
   box-shadow:
-    0 0 0 1px rgb(25 21 18 / 0.12),
-    0 12px 26px -14px rgb(25 21 18 / 0.5);
+    0 0 0 1px rgb(25 21 18 / 0.18),
+    0 14px 28px -12px rgb(25 21 18 / 0.55);
   transition: transform var(--dur-cover) var(--ease-out);
 }
 
-.layer.back { transform: rotate(-6deg) translate(-12%, 8%); }
-.layer.front { transform: rotate(4deg) translate(8%, -3%); }
+img.layer,
+.layer img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.layer.front {
+  overflow: hidden;
+}
+
+.layer.back { transform: rotate(-9deg) translate(-20%, 12%); }
+.layer.front { transform: rotate(3.5deg) translate(8%, -4%); }
 
 .piece:focus { outline: none; }
 
@@ -363,12 +374,12 @@ html[data-layout="uneven"] .shot.is-stack { aspect-ratio: 6 / 5; }
 
 .piece.is-stack:focus-visible .layer.back,
 .piece.is-stack.is-fan .layer.back {
-  transform: rotate(-11deg) translate(-18%, 12%);
+  transform: rotate(-14deg) translate(-26%, 16%);
 }
 
 .piece.is-stack:focus-visible .layer.front,
 .piece.is-stack.is-fan .layer.front {
-  transform: rotate(1deg) translate(4%, -6px);
+  transform: rotate(1deg) translate(4%, -8px);
 }
 
 .stamp {
@@ -387,13 +398,8 @@ html[data-layout="uneven"] .shot.is-stack { aspect-ratio: 6 / 5; }
   transform: rotate(8deg);
 }
 
-.shot.is-stack .stamp {
-  top: 14%;
-  right: 14%;
-}
-
 .piece[data-item="riftrade"] .shot .a,
-.piece[data-item="riftrade"] .layer.front {
+.piece[data-item="riftrade"] .layer.front img {
   object-fit: cover;
   object-position: center 12%;
 }
@@ -1010,11 +1016,11 @@ body.inspect-open { overflow: hidden; }
   }
 
   .piece.is-stack:hover .layer.back {
-    transform: rotate(-11deg) translate(-18%, 12%);
+    transform: rotate(-14deg) translate(-26%, 16%);
   }
 
   .piece.is-stack:hover .layer.front {
-    transform: rotate(1deg) translate(4%, -6px);
+    transform: rotate(1deg) translate(4%, -8px);
   }
 
   .piece:hover,

@@ -96,10 +96,12 @@
     if (isStack(item)) {
       return (
         '<span class="shot is-stack">' +
-          '<span class="stamp">' + esc(stampOf(item)) + "</span>" +
           '<span class="layers">' +
             '<img class="layer back" src="' + esc(item.hover) + '" alt="" width="1600" height="1000">' +
-            '<img class="layer front" src="' + esc(item.cover) + '" alt="' + esc(item.title) + '" width="1600" height="1000">' +
+            '<span class="layer front">' +
+              '<img src="' + esc(item.cover) + '" alt="' + esc(item.title) + '" width="1600" height="1000">' +
+              '<span class="stamp">' + esc(stampOf(item)) + "</span>" +
+            "</span>" +
           "</span>" +
         "</span>"
       );
@@ -215,33 +217,35 @@
   function visibleTiles() {
     const boards = [...gallery.querySelectorAll(".board")];
     if (!boards.length) return [...gallery.querySelectorAll(".tile")];
-    return boards.flatMap((board) => {
-      const cols = [...board.querySelectorAll(".col")];
-      if (!cols.length) return [...board.querySelectorAll(".piece")];
-      const reading = [];
-      let row = 0;
-      let more = true;
-      while (more) {
-        more = false;
-        cols.forEach((col) => {
-          const piece = col.children[row];
-          if (piece) {
-            reading.push(piece);
-            more = true;
-          }
-        });
-        row += 1;
-      }
-      return reading;
-    });
+    return boards.flatMap((board) => piecesInReadingOrder(board));
   }
 
   function layoutBoards() {
     gallery.querySelectorAll(".board").forEach(applyBoardLayout);
   }
 
+  function piecesInReadingOrder(board) {
+    const cols = [...board.querySelectorAll(".col")];
+    if (!cols.length) return [...board.querySelectorAll(".piece")];
+    const reading = [];
+    let row = 0;
+    let more = true;
+    while (more) {
+      more = false;
+      cols.forEach((col) => {
+        const piece = col.children[row];
+        if (piece) {
+          reading.push(piece);
+          more = true;
+        }
+      });
+      row += 1;
+    }
+    return reading;
+  }
+
   function applyBoardLayout(board) {
-    const pieces = [...board.querySelectorAll(".piece")];
+    const pieces = piecesInReadingOrder(board);
     if (!pieces.length) return;
     board.replaceChildren();
     if (currentLayout() === "uneven") {
