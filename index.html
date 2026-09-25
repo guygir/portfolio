@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-layout="even">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -12,9 +12,10 @@
         var layout = "even";
         try {
           var stored = localStorage.getItem("board-layout");
-          if (stored === "even" || stored === "uneven") layout = stored;
+          if (stored === "uneven") layout = "uneven";
+          else if (stored && stored !== "even") localStorage.removeItem("board-layout");
         } catch (err) {}
-        document.documentElement.dataset.layout = layout;
+        document.documentElement.setAttribute("data-layout", layout);
       })();
     </script>
     <link rel="stylesheet" href="css/styles.css" />

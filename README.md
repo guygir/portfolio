@@ -1,6 +1,6 @@
 # Guy Girmonsky
 
-Personal site: research systems, playable games, and small tools. A static one-page catalog — warm paper, a scrapbook of equal-weight print tiles.
+Personal site: research systems, playable games, and small tools. A static one-page catalog — warm paper, a scrapbook of equal-weight photos on graph paper.
 
 ## Run locally
 

@@ -15,7 +15,7 @@ Visitor mode for this surface: **Experience**. Work imagery leads; chrome recede
 
 A personal index of work, not a résumé dump and not a game-studio splash.
 
-Guy is an AI Platforms research engineer at IBM who also ships games and small tools. The site should feel like a small-press scrapbook: warm paper, a faint grid, white print frames, several projects visible at once.
+Guy is an AI Platforms research engineer at IBM who also ships games and small tools. The site should feel like a small-press scrapbook: warm paper, a faint grid, photographs lying directly on the board, several projects visible at once.
 
 **Visitor takeaway in ten seconds:** this person publishes real systems research *and* playable things. Name, role, and about six project tiles are visible without scrolling on a typical laptop.
 
@@ -50,10 +50,10 @@ Guy is an AI Platforms research engineer at IBM who also ships games and small t
 
 ### From Jackie Zhang (jackiezhang.co.za) — feel, not costume
 
-- Equal-weight framed pieces on a board, not a flagship hero.
+- Equal-weight photographs on a board, not a flagship hero.
 - Scrapbook density: about six tiles in one desktop viewport.
-- White print / paper cards, a faint graph-paper ground, a degree or two of deterministic tilt.
-- Hover straightens and lifts the card.
+- Photos sit on a faint graph-paper ground with a degree or two of deterministic tilt. No outer white card or mat.
+- Hover straightens and lifts the photo.
 
 Do **not** copy Jackie’s doodles, woodblock stamps, red borders, black field, or Framer-specific effects. The small red file stamp on our covers is from the earlier desk/inspect catalog, not from Jackie.
 
@@ -103,7 +103,7 @@ Games / Projects
 
 ### 3.1 Current / opening
 
-Selected first: ZipNN, Klafi, RifTrade. Even mode is a 3-column equal-tile grid (2 on phone). Uneven mode is masonry with varying heights. The switch persists in `localStorage` (`board-layout`) and is applied before first paint. Klafi, RifTrade, and Hold’emle are fanned photo stacks (cover in front, hover peeking behind). Other tiles still crossfade on hover. Activating a tile opens the inspect sheet. The red stamp is the only category label.
+Selected first: ZipNN, Klafi, RifTrade. Even mode is a 3-column equal-tile grid (2 on phone). Uneven mode is masonry with varying heights. The switch persists in `localStorage` (`board-layout`) only after an explicit choice and is applied before first paint. A missing or invalid stored value always renders Even, including the switch `aria-checked` state. Klafi, RifTrade, and Hold’emle *are* fanned photo stacks (cover in front, hover peeking behind). Other tiles are a single tilted photo that crossfades on hover. Title and subtitle sit as plain text on the graph paper under the image. Activating a tile opens the inspect sheet. The red stamp is the only category label.
 
 ### 3.2 Work
 
@@ -115,7 +115,7 @@ Playable. Same board while active; Archive is a second board when Games is isola
 
 ### 3.4 Projects
 
-Tools and community utilities as the same print tiles. Archive holds parked GitHub work with designed posters.
+Tools and community utilities as the same photo tiles. Archive holds parked GitHub work with designed posters.
 
 Omitted on purpose: `Test`, `my-fork`, `vllm` fork, `clawdchan`, `Better-Minimal-WebGL-Template`.
 
@@ -129,13 +129,13 @@ Duotone portrait (real `images/profile/guy-girmonsky.jpg`), the existing bio, a 
 
 ### 4.1 Character
 
-Warm scrapbook. The wall is a faint graph-paper wash so white print cards read as objects. Every project gets the same frame. Research, games, and tools are distinguished by their pictures and tags, not by a different layout.
+Warm scrapbook. Photographs lie on a faint graph-paper wash — no outer white card. Stacks are the tile; singles are one tilted print with a thin edge and a soft shadow so light-edged images still separate from the board. Research, games, and tools are distinguished by their pictures and stamps, not by a different layout.
 
 ### 4.2 Color
 
 | Token | Hex | Use |
 |---|---|---|
-| `--paper` | `#FFFFFF` | Print cards, type knockouts |
+| `--paper` | `#FFFFFF` | Inspect sheet, type knockouts, switch pill |
 | `--board` | `#F6F3EC` | Page ground |
 | `--ink` | `#191512` | Type (warm, not pure black) |
 | `--mute` | `#5C564E` | Lede, captions, tags |
@@ -166,13 +166,13 @@ Scale (desktop):
 - Masthead: sticky, ~52px, full width. Wordmark + role only. No top link row.
 - Page measure: ~1240px
 - Gutter: 24px desktop, 16px phone
-- Board: Even = CSS grid, equal 16/10 tiles, 3 columns (2 on phone). Uneven = masonry columns, varying heights. White print card (~11px mat). Caption is title + detail only — no grey tag.
-- Layout switch: paper Even | Uneven pill above the board. Radiogroup. Default Even. Stored as `board-layout`.
+- Board: Even = CSS grid, equal 16/10 tiles, 3 columns (2 on phone). Uneven = masonry columns, varying heights. No outer card. Caption is title + detail only, set as plain text on the board — no grey tag.
+- Layout switch: paper Even | Uneven pill above the board. Radiogroup. Default Even (HTML `data-layout="even"` plus a pre-paint script). Stored as `board-layout` only when the visitor picks a side. Invalid keys are dropped.
 - Dock: the only navigation. Fixed bottom-center pill (Work / Games / Projects / About / Contact). Hidden while the inspect sheet is open. Respects `safe-area-inset-bottom`. Extra page/footer padding so it does not cover the last lines. `:focus-visible` ring. Active item fills ink.
-- Stacked tiles (Klafi, RifTrade, Hold’emle only): cover + hover as a compact fanned stack inside the frame. Hover/focus fans the back image a little more. Click opens the inspect sheet.
+- Stacked tiles (Klafi, RifTrade, Hold’emle only): the fanned stack *is* the tile. Cover in front, second shot peeking behind. Hover/focus fans a little more. Click opens the inspect sheet. Focus ring sits on the front photo.
 - Tilt: deterministic `nth-child` rotations of about ±0.8–1.6deg plus a few pixels of offset. Not `Math.random()`.
-- Card radius: 0 (prints, not app chrome)
-- Red file stamp: top-right inside the print window. Text is derived from `js/data.js` (`section`, `status`, `detail`/`blurb`): WORK, PLAY, DAILY, PRINT, TOOL, or SHELF. Same `#b42318` outline stamp as the earlier desk catalog.
+- Photo corners: 0 (prints, not app chrome)
+- Red file stamp: top-right on the front image. Text is derived from `js/data.js` (`section`, `status`, `detail`/`blurb`): WORK, PLAY, DAILY, PRINT, TOOL, or SHELF. Same `#b42318` outline stamp as the earlier desk catalog.
 - Portrait: 168px (120px on phone), duotone via `#portrait-ink`, in About only
 
 The first fold on ~1280×800 must include the masthead, the layout switch, and about five to six tiles. No oversized flagship. About sits after the board.
@@ -187,7 +187,7 @@ The first fold on ~1280×800 must include the masthead, the layout switch, and a
 | `--dur-press` | 160ms |
 
 - Image crossfade: 240ms opacity on flat tiles. Always on, including reduced motion.
-- Rest: print card sits at its deterministic tilt.
+- Rest: the photo (or stack) sits at its deterministic tilt.
 - Hover / focus-visible (fine pointer): `rotate(0)` + `translateY(-6px)`, picture swap on flat tiles.
 - Fine-pointer hover/focus only. Keyboard `:focus-visible` still swaps the picture on flat tiles.
 - Stacked tiles: back image fans a little more on hover/focus; reduced motion flattens the stack.
@@ -200,11 +200,11 @@ The first fold on ~1280×800 must include the masthead, the layout switch, and a
 
 ## 5. Signature interaction — the picture change
 
-This is the reason sharkbombs was cited. Do not ship cards that only tint.
+This is the reason sharkbombs was cited. Do not ship tiles that only tint.
 
-1. Rest: cover image, full bleed in the print window, title under the card.
-2. Hover / focus-visible (fine pointer) on flat tiles: second image, card straightens and lifts.
-3. On Klafi, RifTrade, and Hold’emle: two authored pictures sit as a fanned stack. Title and detail remain under the card. The inspect sheet shows each picture full and uncropped, with thumbnails and arrow keys.
+1. Rest: cover image as a photo on the graph paper, title and detail as plain text underneath.
+2. Hover / focus-visible (fine pointer) on flat tiles: second image, photo straightens and lifts.
+3. On Klafi, RifTrade, and Hold’emle: two authored pictures sit as a fanned stack. Title and detail remain under the stack. The inspect sheet shows each picture full and uncropped, with thumbnails and arrow keys.
 
 Two images are required in data: `cover` and `hover`. If a live screenshot is missing, the hover image is a distinct designed poster — never a CSS filter of the same file.
 

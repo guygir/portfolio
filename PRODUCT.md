@@ -28,7 +28,8 @@ Opened as a static folder (`python3 -m http.server 4173`). No account, no CMS, n
 - Data, copy, and project list stay in `js/data.js`. Do not invent projects, stats, or blurbs.
 - Featured trio is ZipNN, Klafi, and RifTrade — first in reading order. Even tiles by default; Uneven masonry is a persisted choice. The first desktop viewport (~1280×800) shows about five to six tiles, not a flagship. No full-bleed single-project stage.
 - Thin masthead: name and role only. A floating Work / Games / Projects / About / Contact dock is the only navigation. No sticky left rail.
-- Picture-first tiles: cover + hover. Most tiles crossfade on hover/focus. Klafi, RifTrade, and Hold’emle show both pictures as a fanned stack. Activating a tile opens the inspect sheet.
+- Picture-first tiles sit on the graph-paper board with no outer white card. Most tiles are one tilted photo that crossfades on hover/focus. Klafi, RifTrade, and Hold’emle *are* a fanned stack. Title and subtitle are plain text under the image. Activating a tile opens the inspect sheet.
+- Layout default is Even. A first visit with no `board-layout` key, or any invalid stored value, always renders Even (pre-paint `<head>` script and switch `aria-checked`). An explicit Even or Uneven choice is remembered.
 - Pulse calendar and courier behavior in `activity.js` / `pulse.js` remain product truth; the calendar is docked in About so it cannot dominate the opening.
 
 ## Brand Commitments

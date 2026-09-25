@@ -35,24 +35,30 @@
     return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
 
+  function parseLayout(value) {
+    return value === "uneven" ? "uneven" : "even";
+  }
+
   function currentLayout() {
-    return document.documentElement.dataset.layout === "uneven" ? "uneven" : "even";
+    return parseLayout(document.documentElement.getAttribute("data-layout"));
   }
 
   function readLayout() {
     let layout = "even";
     try {
       const stored = localStorage.getItem(LAYOUT_KEY);
-      if (stored === "even" || stored === "uneven") layout = stored;
+      if (stored === "uneven" || stored === "even") layout = stored;
+      else if (stored) localStorage.removeItem(LAYOUT_KEY);
     } catch (err) {}
-    document.documentElement.dataset.layout = layout;
+    document.documentElement.setAttribute("data-layout", layout);
     return layout;
   }
 
   function writeLayout(layout) {
-    document.documentElement.dataset.layout = layout;
+    const next = parseLayout(layout);
+    document.documentElement.setAttribute("data-layout", next);
     try {
-      localStorage.setItem(LAYOUT_KEY, layout);
+      localStorage.setItem(LAYOUT_KEY, next);
     } catch (err) {}
   }
 
@@ -86,10 +92,10 @@
     return [item.cover];
   }
 
-  function frameHTML(item) {
+  function shotHTML(item) {
     if (isStack(item)) {
       return (
-        '<span class="frame is-stack">' +
+        '<span class="shot is-stack">' +
           '<span class="stamp">' + esc(stampOf(item)) + "</span>" +
           '<span class="layers">' +
             '<img class="layer back" src="' + esc(item.hover) + '" alt="" width="1600" height="1000">' +
@@ -99,7 +105,7 @@
       );
     }
     return (
-      '<span class="frame">' +
+      '<span class="shot">' +
         '<span class="stamp">' + esc(stampOf(item)) + "</span>" +
         '<img class="a" src="' + esc(item.cover) + '" alt="' + esc(item.title) + '" width="1600" height="1000">' +
         '<img class="b" src="' + esc(item.hover) + '" alt="" width="1600" height="1000">' +
@@ -111,12 +117,10 @@
     const stacked = isStack(item) ? " is-stack" : "";
     return (
       '<button type="button" class="piece tile' + stacked + '" data-item="' + item.id + '" aria-haspopup="dialog">' +
-        '<span class="print">' +
-          frameHTML(item) +
-          '<span class="meta">' +
-            "<strong>" + esc(item.title) + "</strong>" +
-            "<small>" + esc(item.detail || item.blurb) + "</small>" +
-          "</span>" +
+        shotHTML(item) +
+        '<span class="meta">' +
+          "<strong>" + esc(item.title) + "</strong>" +
+          "<small>" + esc(item.detail || item.blurb) + "</small>" +
         "</span>" +
       "</button>"
     );
