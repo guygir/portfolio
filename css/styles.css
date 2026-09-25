@@ -281,6 +281,7 @@ html[data-layout="uneven"] .board {
 
 .piece {
   display: block;
+  position: relative;
   width: 100%;
   margin: 0;
   padding: 0;
@@ -296,6 +297,7 @@ html[data-layout="uneven"] .board {
 .shot {
   display: block;
   position: relative;
+  z-index: 0;
   width: 100%;
   aspect-ratio: 16 / 10;
   overflow: hidden;
@@ -307,7 +309,7 @@ html[data-layout="uneven"] .board {
 }
 
 .shot.is-stack {
-  overflow: visible;
+  overflow: hidden;
   box-shadow: none;
 }
 
@@ -330,7 +332,7 @@ html[data-layout="uneven"] .shot.is-stack { aspect-ratio: 6 / 5; }
 
 .layers {
   position: absolute;
-  inset: 6% 9% 10%;
+  inset: 12% 16% 20%;
 }
 
 .layer {
@@ -357,8 +359,8 @@ img.layer,
   overflow: hidden;
 }
 
-.layer.back { transform: rotate(-9deg) translate(-20%, 12%); }
-.layer.front { transform: rotate(3.5deg) translate(8%, -4%); }
+.layer.back { transform: rotate(-7deg) translate(-12%, 2%); }
+.layer.front { transform: rotate(3deg) translate(6%, -2%); }
 
 .piece:focus { outline: none; }
 
@@ -374,12 +376,12 @@ img.layer,
 
 .piece.is-stack:focus-visible .layer.back,
 .piece.is-stack.is-fan .layer.back {
-  transform: rotate(-14deg) translate(-26%, 16%);
+  transform: rotate(-11deg) translate(-18%, 3%);
 }
 
 .piece.is-stack:focus-visible .layer.front,
 .piece.is-stack.is-fan .layer.front {
-  transform: rotate(1deg) translate(4%, -8px);
+  transform: rotate(0.8deg) translate(3%, -6px);
 }
 
 .stamp {
@@ -423,6 +425,8 @@ img.layer,
 
 .meta {
   display: flex;
+  position: relative;
+  z-index: 2;
   flex-direction: column;
   gap: 2px;
   padding: 10px 2px 0;
@@ -1016,11 +1020,11 @@ body.inspect-open { overflow: hidden; }
   }
 
   .piece.is-stack:hover .layer.back {
-    transform: rotate(-14deg) translate(-26%, 16%);
+    transform: rotate(-11deg) translate(-18%, 3%);
   }
 
   .piece.is-stack:hover .layer.front {
-    transform: rotate(1deg) translate(4%, -8px);
+    transform: rotate(0.8deg) translate(3%, -6px);
   }
 
   .piece:hover,

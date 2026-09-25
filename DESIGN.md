@@ -169,7 +169,7 @@ Scale (desktop):
 - Board: Even = CSS grid, equal 16/10 tiles, 3 columns (2 on phone). Uneven = masonry columns, varying heights. No outer card. Caption is title + detail only, set as plain text on the board — no grey tag.
 - Layout switch: paper Even | Uneven pill above the board. Radiogroup. Default Even (HTML `data-layout="even"` plus a pre-paint script). Stored as `board-layout` only when the visitor picks a side. Invalid keys are dropped.
 - Dock: the only navigation. Fixed bottom-center pill (Work / Games / Projects / About / Contact). Hidden while the inspect sheet is open. Respects `safe-area-inset-bottom`. Extra page/footer padding so it does not cover the last lines. `:focus-visible` ring. Active item fills ink.
-- Stacked tiles (Klafi, RifTrade, Hold’emle only): the fanned stack *is* the tile. Cover in front, second shot peeking behind. Hover/focus fans a little more. Click opens the inspect sheet. Focus ring sits on the front photo.
+- Stacked tiles (Klafi, RifTrade, Hold’emle only): the fanned stack *is* the tile. Cover in front, second shot peeking behind. The whole stack — rest tilt and hover fan — stays inside the image well above the caption. Title and subtitle are always fully visible; `.meta` also paints above the photos. Hover/focus fans a little more. Click opens the inspect sheet. Focus ring sits on the front photo.
 - Tilt: deterministic `nth-child` rotations of about ±0.8–1.6deg plus a few pixels of offset. Not `Math.random()`.
 - Photo corners: 0 (prints, not app chrome)
 - Red file stamp: top-right on the front image. Text is derived from `js/data.js` (`section`, `status`, `detail`/`blurb`): WORK, PLAY, DAILY, PRINT, TOOL, or SHELF. Same `#b42318` outline stamp as the earlier desk catalog.
