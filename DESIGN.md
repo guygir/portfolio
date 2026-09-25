@@ -169,7 +169,7 @@ Scale (desktop):
 - Board: Even = CSS grid, equal 16/10 tiles, 3 columns (2 on phone). Uneven = masonry columns, varying heights. No outer card. Caption is title + detail only, set as plain text on the board — no grey tag.
 - Layout switch: paper Even | Uneven pill above the board. Radiogroup. Default Even (HTML `data-layout="even"` plus a pre-paint script). Stored as `board-layout` only when the visitor picks a side. Invalid keys are dropped.
 - Dock: the only navigation. Fixed bottom-center pill (Work / Games / Projects / About / Contact). Hidden while the inspect sheet is open. Respects `safe-area-inset-bottom`. Extra page/footer padding so it does not cover the last lines. `:focus-visible` ring. Active item fills ink.
-- Stacked tiles (Klafi, RifTrade, Hold’emle only): the fanned stack *is* the tile. Cover in front, second shot peeking behind. The whole stack — rest tilt and hover fan — stays inside the image well above the caption. Title and subtitle are always fully visible; `.meta` also paints above the photos. Hover/focus fans a little more. Click opens the inspect sheet. Focus ring sits on the front photo.
+- Stacked tiles (Klafi, RifTrade, Hold’emle only): the fanned stack *is* the tile. Cover in front, second shot peeking behind. The whole stack — rest tilt and hover fan — stays inside the image well above the caption. Title and subtitle are always fully visible; `.meta` also paints above the photos. Hover/focus fans a little more. Click opens the inspect sheet. Focus ring sits on the front photo. On touch (and mouse drag), a horizontal swipe of ~40px on the stack brings the next (left) or previous (right) photo to the front with a short slide; vertical drags still scroll (`touch-action: pan-y`), a tap opens the sheet at the photo currently in front, and a swipe never also opens it.
 - Tilt: deterministic `nth-child` rotations of about ±0.8–1.6deg plus a few pixels of offset. Not `Math.random()`.
 - Photo corners: 0 (prints, not app chrome)
 - Red file stamp: top-right on the front image. Text is derived from `js/data.js` (`section`, `status`, `detail`/`blurb`): WORK, PLAY, DAILY, PRINT, TOOL, or SHELF. Same `#b42318` outline stamp as the earlier desk catalog.
@@ -216,7 +216,7 @@ Activating a tile opens a paper dialog. Content comes from the record: cover, ti
 
 - Focus moves into the sheet. Tab cycles inside it. Esc, the dim, and Close put it away and return focus to the tile.
 - Prev / Next walk the tiles currently on the board.
-- If the project is a stack, the sheet shows the current picture at `object-fit: contain` with a thumbnail row underneath. Arrow keys step the pictures. No dots.
+- If the project is a stack, the sheet shows the current picture at `object-fit: contain` with a thumbnail row underneath. Arrow keys and a horizontal swipe on the large image step the pictures (wrapping), keeping the thumbnail selection in sync. No dots.
 - The primary action is the existing `href`, labeled **Open project**.
 - Reduced motion: no extra sheet animation; stamps sit flat.
 

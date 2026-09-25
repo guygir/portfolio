@@ -311,6 +311,7 @@ html[data-layout="uneven"] .board {
 .shot.is-stack {
   overflow: hidden;
   box-shadow: none;
+  touch-action: pan-y;
 }
 
 html[data-layout="uneven"] .col .piece:nth-child(odd) .shot:not(.is-stack) { aspect-ratio: 16 / 10; }
@@ -883,6 +884,7 @@ footer {
   aspect-ratio: 16 / 10;
   overflow: hidden;
   background: var(--wash);
+  touch-action: pan-y;
 }
 
 .sheet-frame img {
