@@ -3,7 +3,7 @@
   const inspectEl = document.getElementById("inspect");
   const dock = document.getElementById("dock");
   const featuredIds = ["zipnn", "klafi", "riftrade"];
-  const galleryIds = ["klafi", "riftrade", "holdemle"];
+  const stackedIds = ["klafi", "riftrade", "holdemle"];
   const notes = {
     opening: "One system, one game, one useful thing.",
     work: "Published systems and current infrastructure work.",
@@ -17,6 +17,7 @@
   let filter = "current";
   let stack = [];
   let cursor = 0;
+  let shot = 0;
   let lastFocus = null;
 
   function esc(value) {
@@ -76,35 +77,24 @@
     return String(n).padStart(2, "0");
   }
 
-  function isGallery(item) {
-    return galleryIds.indexOf(item.id) !== -1 && item.cover && item.hover && item.cover !== item.hover;
+  function isStack(item) {
+    return stackedIds.indexOf(item.id) !== -1 && item.cover && item.hover && item.cover !== item.hover;
   }
 
-  function reelInnerHTML(item) {
-    const slides = [
-      { src: item.cover, alt: item.title },
-      { src: item.hover, alt: "" },
-    ];
-    return (
-      '<div class="reel" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Image 1 of 2" data-index="0">' +
-        slides.map((slide) => (
-          '<img class="reel-slide" src="' + esc(slide.src) + '" alt="' + esc(slide.alt) + '" width="1600" height="1000" draggable="false">'
-        )).join("") +
-      "</div>" +
-      '<div class="reel-ui">' +
-        '<button type="button" class="reel-prev" tabindex="-1" aria-label="Previous image">‹</button>' +
-        '<button type="button" class="reel-next" tabindex="-1" aria-label="Next image">›</button>' +
-      "</div>" +
-      '<div class="reel-dots" aria-hidden="true"><i class="on"></i><i></i></div>'
-    );
+  function shotsOf(item) {
+    if (isStack(item)) return [item.cover, item.hover];
+    return [item.cover];
   }
 
   function frameHTML(item) {
-    if (isGallery(item)) {
+    if (isStack(item)) {
       return (
-        '<span class="frame is-reel">' +
+        '<span class="frame is-stack">' +
           '<span class="stamp">' + esc(stampOf(item)) + "</span>" +
-          reelInnerHTML(item) +
+          '<span class="layers">' +
+            '<img class="layer back" src="' + esc(item.hover) + '" alt="" width="1600" height="1000">' +
+            '<img class="layer front" src="' + esc(item.cover) + '" alt="' + esc(item.title) + '" width="1600" height="1000">' +
+          "</span>" +
         "</span>"
       );
     }
@@ -118,9 +108,9 @@
   }
 
   function pieceHTML(item) {
-    const reel = isGallery(item) ? " is-reel" : "";
+    const stacked = isStack(item) ? " is-stack" : "";
     return (
-      '<article class="piece tile' + reel + '" data-item="' + item.id + '" tabindex="0" aria-haspopup="dialog" aria-label="' + esc(item.title) + '">' +
+      '<button type="button" class="piece tile' + stacked + '" data-item="' + item.id + '" aria-haspopup="dialog">' +
         '<span class="print">' +
           frameHTML(item) +
           '<span class="meta">' +
@@ -128,7 +118,7 @@
             "<small>" + esc(item.detail || item.blurb) + "</small>" +
           "</span>" +
         "</span>" +
-      "</article>"
+      "</button>"
     );
   }
 
@@ -290,65 +280,6 @@
     });
   }
 
-  function reelIndex(reel) {
-    const slides = [...reel.querySelectorAll(".reel-slide")];
-    if (!slides.length) return 0;
-    let best = 0;
-    let dist = Infinity;
-    slides.forEach((slide, i) => {
-      const d = Math.abs(slide.offsetLeft - reel.scrollLeft);
-      if (d < dist) {
-        dist = d;
-        best = i;
-      }
-    });
-    return best;
-  }
-
-  function syncReel(reel) {
-    const slides = [...reel.querySelectorAll(".reel-slide")];
-    if (!slides.length) return;
-    const index = reelIndex(reel);
-    reel.dataset.index = String(index);
-    reel.setAttribute("aria-label", "Image " + (index + 1) + " of " + slides.length);
-    const host = reel.closest(".frame, .sheet-frame");
-    if (!host) return;
-    host.querySelectorAll(".reel-dots i").forEach((dot, i) => {
-      dot.classList.toggle("on", i === index);
-    });
-  }
-
-  function goReel(reel, index) {
-    const slides = [...reel.querySelectorAll(".reel-slide")];
-    const slide = slides[index];
-    if (!slide) return;
-    reel.scrollTo({
-      left: slide.offsetLeft,
-      behavior: reduceMotion() ? "auto" : "smooth",
-    });
-    reel.dataset.index = String(index);
-    reel.setAttribute("aria-label", "Image " + (index + 1) + " of " + slides.length);
-    const host = reel.closest(".frame, .sheet-frame");
-    if (host) {
-      host.querySelectorAll(".reel-dots i").forEach((dot, i) => {
-        dot.classList.toggle("on", i === index);
-      });
-    }
-  }
-
-  function stepReel(reel, delta) {
-    if (!reel) return;
-    const slides = [...reel.querySelectorAll(".reel-slide")];
-    if (slides.length < 2) return;
-    const next = (reelIndex(reel) + delta + slides.length) % slides.length;
-    goReel(reel, next);
-  }
-
-  function reelFromEvent(event) {
-    const host = event.target.closest(".frame.is-reel, .sheet-frame.is-reel");
-    return host ? host.querySelector(".reel") : null;
-  }
-
   function openFromTile(tile) {
     if (!tile) return;
     const ids = visibleTiles().map((el) => el.dataset.item);
@@ -366,13 +297,8 @@
         setLayout(layoutBtn.dataset.layout);
         return;
       }
-      if (event.target.closest(".reel-ui, .reel-dots")) return;
       const tile = event.target.closest(".tile");
       if (!tile || !gallery.contains(tile)) return;
-      if (tile.dataset.swiped === "1") {
-        delete tile.dataset.swiped;
-        return;
-      }
       openFromTile(tile);
     });
 
@@ -383,78 +309,7 @@
         setLayout(currentLayout() === "even" ? "uneven" : "even");
         const on = group.querySelector('[aria-checked="true"]');
         if (on) on.focus();
-        return;
       }
-      if (event.target.classList.contains("reel")) return;
-      if (event.key !== "Enter" && event.key !== " ") return;
-      const tile = event.target.closest(".tile");
-      if (!tile || event.target !== tile) return;
-      event.preventDefault();
-      openFromTile(tile);
-    });
-  }
-
-  function bindReels() {
-    if (document.body.dataset.reels) return;
-    document.body.dataset.reels = "1";
-
-    let startX = 0;
-    let startY = 0;
-    let moving = null;
-    let swiped = false;
-
-    document.addEventListener("pointerdown", (event) => {
-      const reel = event.target.closest(".reel");
-      if (!reel) return;
-      startX = event.clientX;
-      startY = event.clientY;
-      moving = reel;
-      swiped = false;
-    });
-
-    document.addEventListener("pointermove", (event) => {
-      if (!moving) return;
-      if (Math.abs(event.clientX - startX) > 8 || Math.abs(event.clientY - startY) > 8) {
-        swiped = true;
-      }
-    });
-
-    document.addEventListener("pointerup", () => {
-      if (swiped && moving) {
-        const tile = moving.closest(".tile");
-        if (tile) tile.dataset.swiped = "1";
-      }
-      moving = null;
-      swiped = false;
-    });
-
-    document.addEventListener("click", (event) => {
-      if (event.target.closest(".reel-prev")) {
-        event.preventDefault();
-        event.stopPropagation();
-        stepReel(reelFromEvent(event), -1);
-        return;
-      }
-      if (event.target.closest(".reel-next")) {
-        event.preventDefault();
-        event.stopPropagation();
-        stepReel(reelFromEvent(event), 1);
-      }
-    });
-
-    document.addEventListener("scroll", (event) => {
-      if (event.target && event.target.classList && event.target.classList.contains("reel")) {
-        syncReel(event.target);
-      }
-    }, true);
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-      const reel = event.target.closest(".reel");
-      if (!reel) return;
-      event.preventDefault();
-      event.stopPropagation();
-      stepReel(reel, event.key === "ArrowRight" ? 1 : -1);
     });
   }
 
@@ -533,18 +388,42 @@
     });
   }
 
+  function syncThumbs(item) {
+    const thumbs = document.getElementById("sheet-thumbs");
+    const shots = shotsOf(item);
+    if (!thumbs) return;
+    if (shots.length < 2) {
+      thumbs.hidden = true;
+      thumbs.innerHTML = "";
+      return;
+    }
+    thumbs.hidden = false;
+    thumbs.innerHTML = shots.map((src, i) => (
+      '<button type="button" class="sheet-thumb' + (i === shot ? " on" : "") + '" data-shot="' + i + '" aria-label="Image ' + (i + 1) + ' of ' + shots.length + '" aria-pressed="' + (i === shot ? "true" : "false") + '">' +
+        '<img src="' + esc(src) + '" alt="" width="160" height="100">' +
+      "</button>"
+    )).join("");
+  }
+
+  function showShot(item, index) {
+    const shots = shotsOf(item);
+    if (!shots.length) return;
+    shot = ((index % shots.length) + shots.length) % shots.length;
+    const img = document.getElementById("sheet-img");
+    img.src = shots[shot];
+    img.alt = item.title + (shots.length > 1 ? " (" + (shot + 1) + " of " + shots.length + ")" : "");
+    syncThumbs(item);
+  }
+
   function fillSheet(item) {
     document.getElementById("sheet-file").textContent =
       "FILE / " + kindOf(item).toUpperCase() + " / " + padNum(cursor + 1);
     document.getElementById("sheet-stamp").textContent = stampOf(item);
     const frame = document.getElementById("sheet-frame");
-    if (isGallery(item)) {
-      frame.className = "sheet-frame is-reel";
-      frame.innerHTML = reelInnerHTML(item);
-    } else {
-      frame.className = "sheet-frame";
-      frame.innerHTML = '<img alt="' + esc(item.title) + '" width="1600" height="1000" src="' + esc(item.cover) + '">';
-    }
+    frame.className = "sheet-frame";
+    frame.innerHTML = '<img id="sheet-img" alt="" width="1600" height="1000">';
+    shot = 0;
+    showShot(item, 0);
     document.getElementById("sheet-title").textContent = item.title;
     document.getElementById("sheet-detail").textContent = item.detail || kindOf(item);
     document.getElementById("sheet-story").textContent = item.story || item.blurb;
@@ -593,7 +472,6 @@
     layoutBoards();
     syncSwitch();
     bindChrome();
-    bindReels();
     renderTimeline();
     bindDock();
     setDock(dockKeyForFilter());
@@ -642,17 +520,28 @@
   if (inspectEl) {
     inspectEl.addEventListener("click", (event) => {
       if (event.target.closest("[data-close]")) closeInspect();
+      const thumb = event.target.closest("[data-shot]");
+      if (thumb) {
+        const item = byId(stack[cursor]);
+        if (item) showShot(item, Number(thumb.dataset.shot));
+      }
     });
     document.getElementById("sheet-prev").addEventListener("click", () => step(-1));
     document.getElementById("sheet-next").addEventListener("click", () => step(1));
   }
 
   document.addEventListener("keydown", (event) => {
-    if (event.target.closest(".reel")) return;
     if (!inspectEl || inspectEl.hidden) return;
     if (event.key === "Escape") {
       event.preventDefault();
       closeInspect();
+      return;
+    }
+    const item = byId(stack[cursor]);
+    const shots = item ? shotsOf(item) : [];
+    if ((event.key === "ArrowLeft" || event.key === "ArrowRight") && shots.length > 1) {
+      event.preventDefault();
+      showShot(item, shot + (event.key === "ArrowRight" ? 1 : -1));
       return;
     }
     if (event.key === "ArrowLeft") step(-1);

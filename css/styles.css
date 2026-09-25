@@ -318,9 +318,9 @@ html[data-layout="uneven"] .board {
   transform: rotate(0deg) translateY(-4px);
 }
 
-html[data-layout="uneven"] .col .piece:nth-child(odd) .frame:not(.is-reel) { aspect-ratio: 16 / 10; }
-html[data-layout="uneven"] .col .piece:nth-child(even) .frame:not(.is-reel) { aspect-ratio: 4 / 3; }
-html[data-layout="uneven"] .frame.is-reel { aspect-ratio: 6 / 5; }
+html[data-layout="uneven"] .col .piece:nth-child(odd) .frame:not(.is-stack) { aspect-ratio: 16 / 10; }
+html[data-layout="uneven"] .col .piece:nth-child(even) .frame:not(.is-stack) { aspect-ratio: 4 / 3; }
+html[data-layout="uneven"] .frame.is-stack { aspect-ratio: 6 / 5; }
 
 .frame {
   display: block;
@@ -331,78 +331,34 @@ html[data-layout="uneven"] .frame.is-reel { aspect-ratio: 6 / 5; }
   background: var(--wash);
 }
 
-.reel {
+.layers {
   position: absolute;
-  inset: 0;
-  display: flex;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
-  touch-action: pan-x;
+  inset: 14% 12% 12%;
 }
 
-.reel::-webkit-scrollbar { display: none; }
-
-.reel-slide {
-  flex: 0 0 100%;
+.layer {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  scroll-snap-align: start;
   background: var(--paper);
+  box-shadow: 0 8px 20px -12px rgb(25 21 18 / 0.45);
+  transition: transform var(--dur-cover) var(--ease-out);
 }
 
-.reel-ui {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  pointer-events: none;
+.layer.back { transform: rotate(-6deg) translate(-12%, 8%); }
+.layer.front { transform: rotate(4deg) translate(8%, -3%); }
+
+.piece.is-stack:focus-visible .layer.back,
+.piece.is-stack.is-fan .layer.back {
+  transform: rotate(-11deg) translate(-18%, 12%);
 }
 
-.reel-prev,
-.reel-next {
-  position: absolute;
-  top: 50%;
-  width: 26px;
-  height: 26px;
-  padding: 0;
-  border: 1px solid rgb(25 21 18 / 0.1);
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.92);
-  color: var(--ink);
-  font-size: 18px;
-  line-height: 1;
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: auto;
-  transform: translateY(-50%);
+.piece.is-stack:focus-visible .layer.front,
+.piece.is-stack.is-fan .layer.front {
+  transform: rotate(1deg) translate(4%, -6px);
 }
-
-.reel-prev { left: 8px; }
-.reel-next { right: 8px; }
-
-.reel-dots {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 8px;
-  z-index: 4;
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  pointer-events: none;
-}
-
-.reel-dots i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgb(255 255 255 / 0.45);
-  box-shadow: 0 0 0 1px rgb(25 21 18 / 0.18);
-}
-
-.reel-dots i.on { background: #fff; }
 
 .stamp {
   position: absolute;
@@ -425,12 +381,12 @@ html[data-layout="uneven"] .frame.is-reel { aspect-ratio: 6 / 5; }
 }
 
 .piece[data-item="riftrade"] .frame .a,
-.piece[data-item="riftrade"] .reel-slide:first-child {
+.piece[data-item="riftrade"] .layer.front {
   object-fit: cover;
   object-position: center 12%;
 }
 
-.frame:not(.is-reel) img {
+.frame:not(.is-stack) img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -864,7 +820,7 @@ footer {
 .sheet {
   position: relative;
   z-index: 1;
-  width: min(440px, 100%);
+  width: min(560px, 100%);
   padding: 22px 22px 18px;
   background: var(--paper);
   border: 1px solid rgb(25 21 18 / 0.08);
@@ -898,7 +854,10 @@ footer {
 
 .sheet-frame {
   position: relative;
-  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 10px;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   background: var(--wash);
@@ -906,14 +865,40 @@ footer {
 
 .sheet-frame img {
   display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.sheet-thumbs {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.sheet-thumbs[hidden] { display: none; }
+
+.sheet-thumb {
+  width: 64px;
+  height: 42px;
+  padding: 0;
+  border: 1px solid rgb(25 21 18 / 0.12);
+  background: var(--wash);
+  cursor: pointer;
+}
+
+.sheet-thumb img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.sheet-frame.is-reel img.reel-slide {
-  width: 100%;
-  height: 100%;
+.sheet-thumb.on {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
 }
 
 .sheet h2 {
@@ -1002,11 +987,23 @@ body.inspect-open { overflow: hidden; }
       box-shadow var(--dur-cover) var(--ease-out);
   }
 
-  .tile:not(.is-reel):hover .a,
-  .tile:not(.is-reel):focus-visible .a { opacity: 0; }
+  .tile:not(.is-stack):hover .a,
+  .tile:not(.is-stack):focus-visible .a { opacity: 0; }
 
-  .tile:not(.is-reel):hover .b,
-  .tile:not(.is-reel):focus-visible .b { opacity: 1; }
+  .tile:not(.is-stack):hover .b,
+  .tile:not(.is-stack):focus-visible .b { opacity: 1; }
+
+  .layer {
+    transition: transform var(--dur-cover) var(--ease-out);
+  }
+
+  .piece.is-stack:hover .layer.back {
+    transform: rotate(-11deg) translate(-18%, 12%);
+  }
+
+  .piece.is-stack:hover .layer.front {
+    transform: rotate(1deg) translate(4%, -6px);
+  }
 
   .piece:hover,
   .piece:focus-visible { z-index: 2; }
@@ -1017,17 +1014,6 @@ body.inspect-open { overflow: hidden; }
     box-shadow:
       0 1px 0 rgb(25 21 18 / 0.04),
       0 20px 36px -18px rgb(25 21 18 / 0.42);
-  }
-
-  .frame.is-reel:hover .reel-prev,
-  .frame.is-reel:hover .reel-next,
-  .frame.is-reel:focus-within .reel-prev,
-  .frame.is-reel:focus-within .reel-next,
-  .sheet-frame.is-reel:hover .reel-prev,
-  .sheet-frame.is-reel:hover .reel-next,
-  .sheet-frame.is-reel:focus-within .reel-prev,
-  .sheet-frame.is-reel:focus-within .reel-next {
-    opacity: 1;
   }
 }
 
@@ -1140,11 +1126,9 @@ body.inspect-open { overflow: hidden; }
     transition: none;
   }
 
-  .frame:not(.is-reel) img {
+  .frame:not(.is-stack) img {
     transition: opacity var(--dur-cover) var(--ease-out);
   }
-
-  .reel { scroll-behavior: auto; }
 
   .piece:nth-child(n) .print,
   .wordmark:active,
@@ -1153,7 +1137,15 @@ body.inspect-open { overflow: hidden; }
   .piece:focus-visible .print,
   .stamp,
   .sheet-stamp,
-  .reel-slide {
+  .layer,
+  .layer.back,
+  .layer.front,
+  .piece.is-stack:hover .layer.back,
+  .piece.is-stack:hover .layer.front,
+  .piece.is-stack:focus-visible .layer.back,
+  .piece.is-stack:focus-visible .layer.front,
+  .piece.is-stack.is-fan .layer.back,
+  .piece.is-stack.is-fan .layer.front {
     transform: none;
   }
 

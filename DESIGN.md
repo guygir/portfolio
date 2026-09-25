@@ -1,6 +1,6 @@
 # Guy Girmonsky — Personal Site Design Spec
 
-Shipped shape: wordmark-only masthead, a scrapbook with an Even / Uneven layout switch (Even is the default), a floating Work / Games / Projects / About / Contact dock as the only nav, and an About panel with a duotone portrait plus a sourced catalog timeline. ZipNN, Klafi, and RifTrade still lead. Click opens the inspect sheet. Klafi, RifTrade, and Hold’emle swipe between their two pictures.
+Shipped shape: wordmark-only masthead, a scrapbook with an Even / Uneven layout switch (Even is the default), a floating Work / Games / Projects / About / Contact dock as the only nav, and an About panel with a duotone portrait plus a sourced catalog timeline. ZipNN, Klafi, and RifTrade still lead. Click opens the inspect sheet. Klafi, RifTrade, and Hold’emle show a fanned photo stack; the sheet steps through those pictures.
 
 This file matches the shipped site. If they disagree, change the site or change this file — do not leave a second, unimplemented IA sitting here.
 
@@ -103,7 +103,7 @@ Games / Projects
 
 ### 3.1 Current / opening
 
-Selected first: ZipNN, Klafi, RifTrade. Even mode is a 3-column equal-tile grid (2 on phone). Uneven mode is masonry with varying heights. The switch persists in `localStorage` (`board-layout`) and is applied before first paint. Klafi, RifTrade, and Hold’emle are swipeable two-image reels. Other tiles still crossfade on hover. Activating a tile opens the inspect sheet. The red stamp is the only category label.
+Selected first: ZipNN, Klafi, RifTrade. Even mode is a 3-column equal-tile grid (2 on phone). Uneven mode is masonry with varying heights. The switch persists in `localStorage` (`board-layout`) and is applied before first paint. Klafi, RifTrade, and Hold’emle are fanned photo stacks (cover in front, hover peeking behind). Other tiles still crossfade on hover. Activating a tile opens the inspect sheet. The red stamp is the only category label.
 
 ### 3.2 Work
 
@@ -169,7 +169,7 @@ Scale (desktop):
 - Board: Even = CSS grid, equal 16/10 tiles, 3 columns (2 on phone). Uneven = masonry columns, varying heights. White print card (~11px mat). Caption is title + detail only — no grey tag.
 - Layout switch: paper Even | Uneven pill above the board. Radiogroup. Default Even. Stored as `board-layout`.
 - Dock: the only navigation. Fixed bottom-center pill (Work / Games / Projects / About / Contact). Hidden while the inspect sheet is open. Respects `safe-area-inset-bottom`. Extra page/footer padding so it does not cover the last lines. `:focus-visible` ring. Active item fills ink.
-- Swipe tiles (Klafi, RifTrade, Hold’emle only): cover + hover as a scroll-snap carousel, dots, desktop prev/next on hover/focus. Swipe does not open the sheet; tap/click does. Same reel in the inspect sheet.
+- Stacked tiles (Klafi, RifTrade, Hold’emle only): cover + hover as a compact fanned stack inside the frame. Hover/focus fans the back image a little more. Click opens the inspect sheet.
 - Tilt: deterministic `nth-child` rotations of about ±0.8–1.6deg plus a few pixels of offset. Not `Math.random()`.
 - Card radius: 0 (prints, not app chrome)
 - Red file stamp: top-right inside the print window. Text is derived from `js/data.js` (`section`, `status`, `detail`/`blurb`): WORK, PLAY, DAILY, PRINT, TOOL, or SHELF. Same `#b42318` outline stamp as the earlier desk catalog.
@@ -190,7 +190,7 @@ The first fold on ~1280×800 must include the masthead, the layout switch, and a
 - Rest: print card sits at its deterministic tilt.
 - Hover / focus-visible (fine pointer): `rotate(0)` + `translateY(-6px)`, picture swap on flat tiles.
 - Fine-pointer hover/focus only. Keyboard `:focus-visible` still swaps the picture on flat tiles.
-- Reel tiles: native scroll-snap; arrow keys when the reel is focused; instant scroll under reduced motion.
+- Stacked tiles: back image fans a little more on hover/focus; reduced motion flattens the stack.
 - Layout switch: short opacity dip, or instant under reduced motion.
 - Wordmark: `scale(0.97)` on `:active`.
 - Reduced-motion: crossfade only; no tilt, lift, press, or courier sky.
@@ -204,7 +204,7 @@ This is the reason sharkbombs was cited. Do not ship cards that only tint.
 
 1. Rest: cover image, full bleed in the print window, title under the card.
 2. Hover / focus-visible (fine pointer) on flat tiles: second image, card straightens and lifts.
-3. On Klafi, RifTrade, and Hold’emle: swipe or arrow between the two authored pictures. Title and detail remain under the card.
+3. On Klafi, RifTrade, and Hold’emle: two authored pictures sit as a fanned stack. Title and detail remain under the card. The inspect sheet shows each picture full and uncropped, with thumbnails and arrow keys.
 
 Two images are required in data: `cover` and `hover`. If a live screenshot is missing, the hover image is a distinct designed poster — never a CSS filter of the same file.
 
@@ -216,7 +216,7 @@ Activating a tile opens a paper dialog. Content comes from the record: cover, ti
 
 - Focus moves into the sheet. Tab cycles inside it. Esc, the dim, and Close put it away and return focus to the tile.
 - Prev / Next walk the tiles currently on the board.
-- If the project is a reel, the sheet cover is the same swipeable gallery.
+- If the project is a stack, the sheet shows the current picture at `object-fit: contain` with a thumbnail row underneath. Arrow keys step the pictures. No dots.
 - The primary action is the existing `href`, labeled **Open project**.
 - Reduced motion: no extra sheet animation; stamps sit flat.
 
@@ -274,7 +274,7 @@ Hebrew projects keep their names (Klafi, אתגר בקופסא) and get one Engl
 - 780–1079: still 3 columns if width allows
 - < 780: 2 columns; rest tilt removed
 - < 340: one column
-- Hover becomes tap-to-inspect when `(hover: none)`; reel tiles swipe
+- Hover becomes tap-to-inspect when `(hover: none)`
 
 ---
 
