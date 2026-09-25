@@ -102,7 +102,7 @@ Work / Games / Projects
 
 ### 3.1 Current / opening
 
-Selected first: ZipNN, Klafi, RifTrade sit at the top of the three desktop columns. Heights vary (16/10 or 4/5, plus taller stacked frames). Hover still changes flat tiles; stacked tiles (Klafi, RifTrade, Hold’emle) show cover + hover as two offset layers. Activating a tile opens the inspect sheet. The red stamp is the only category label.
+Selected first: ZipNN, Klafi, RifTrade sit at the top of the three desktop columns. Heights vary (16/10 or 4/3, plus taller 6/5 stacked frames). Hover still changes flat tiles; stacked tiles (Klafi, RifTrade, Hold’emle) show cover + hover as two offset layers. Activating a tile opens the inspect sheet. The red stamp is the only category label.
 
 ### 3.2 Work
 
@@ -171,7 +171,7 @@ Scale (desktop):
 - Tilt: deterministic `nth-child` rotations of about ±0.8–1.6deg plus a few pixels of offset. Not `Math.random()`.
 - Card radius: 0 (prints, not app chrome)
 - Red file stamp: top-right inside the print window. Text is derived from `js/data.js` (`section`, `status`, `detail`/`blurb`): WORK, PLAY, DAILY, PRINT, TOOL, or SHELF. Same `#b42318` outline stamp as the earlier desk catalog.
-- Portrait: 88px, 8px radius, in About only
+- Portrait: 168px (120px on phone), duotone via `#portrait-ink`, in About only
 
 The first fold on ~1280×800 must include the masthead and about five to six masonry tiles. No oversized flagship. About sits after the board.
 
@@ -212,7 +212,7 @@ Activating a tile opens a paper dialog. Content comes from the record: cover, ti
 
 - Focus moves into the sheet. Tab cycles inside it. Esc, the dim, and Close put it away and return focus to the tile.
 - Prev / Next walk the tiles currently on the board.
-- The primary action is the existing `href` (Play / Work / Open / Archive).
+- The primary action is the existing `href`, labeled **Open project**.
 - Reduced motion: no extra sheet animation; stamps sit flat.
 
 ---
@@ -234,7 +234,7 @@ A one-line lede and “One system, one game, one useful thing.” then the scrap
 
 ### About
 
-Two columns. Left: portrait + bio. Right: papers and links. Pulse calendar underneath.
+Two columns. Left: duotone portrait + sourced bio. Right: catalog timeline (dated project facts only) and paper links. Pulse calendar underneath.
 
 ### Footer
 

@@ -26,9 +26,9 @@ Opened as a static folder (`python3 -m http.server 4173`). No account, no CMS, n
 
 - Static HTML / CSS / vanilla JS only. No React, no npm, no Tailwind or UI kit.
 - Data, copy, and project list stay in `js/data.js`. Do not invent projects, stats, or blurbs.
-- Featured trio is ZipNN, Klafi, and RifTrade — first in reading order, same tile size as every other piece. The first desktop viewport (~1280×800) shows about six equal tiles, not a flagship. No full-bleed single-project stage.
-- Thin masthead: name, role, Current / Work / Games / Projects / About. No sticky left rail.
-- Picture-first tiles: cover + hover, crossfade on hover/focus; tap-to-flip on coarse pointers before following the link.
+- Featured trio is ZipNN, Klafi, and RifTrade — first in reading order, same column width, varying tile heights. The first desktop viewport (~1280×800) shows about five to six masonry tiles, not a flagship. No full-bleed single-project stage.
+- Thin masthead: name, role, Current / Work / Games / Projects / About. A floating Work / About / Contact dock. No sticky left rail.
+- Picture-first tiles: cover + hover, crossfade on hover/focus; a few tiles layer both pictures. Activating a tile opens the inspect sheet.
 - Pulse calendar and courier behavior in `activity.js` / `pulse.js` remain product truth; the calendar is docked in About so it cannot dominate the opening.
 
 ## Brand Commitments
