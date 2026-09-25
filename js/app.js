@@ -95,18 +95,35 @@
     return [item.cover];
   }
 
+  function dotsHTML(item) {
+    const shots = shotsOf(item);
+    if (shots.length < 2) return "";
+    return (
+      '<span class="stack-dots" role="group" aria-label="Photos">' +
+        shots.map((_, i) => (
+          '<button type="button" class="stack-dot" data-shot="' + i + '" aria-label="Photo ' + (i + 1) + " of " + shots.length + '"' +
+            (i === 0 ? ' aria-current="true"' : "") +
+          "></button>"
+        )).join("") +
+      "</span>"
+    );
+  }
+
   function shotHTML(item) {
     if (isStack(item)) {
       return (
         '<span class="shot is-stack">' +
-          '<span class="layers">' +
-            '<img class="layer back" src="' + esc(item.hover) + '" alt="" width="1600" height="1000">' +
-            '<span class="layer front">' +
-              '<img src="' + esc(item.cover) + '" alt="' + esc(item.title) + '" width="1600" height="1000">' +
-              '<span class="stamp">' + esc(stampOf(item)) + "</span>" +
+          '<button type="button" class="stack-open" aria-haspopup="dialog" aria-label="' + esc(item.title) + '">' +
+            '<span class="layers">' +
+              '<img class="layer back" src="' + esc(item.hover) + '" alt="" width="1600" height="1000">' +
+              '<span class="layer front">' +
+                '<img src="' + esc(item.cover) + '" alt="' + esc(item.title) + '" width="1600" height="1000">' +
+                '<span class="stamp">' + esc(stampOf(item)) + "</span>" +
+              "</span>" +
             "</span>" +
-          "</span>" +
-        "</span>"
+          "</button>" +
+        "</span>" +
+        dotsHTML(item)
       );
     }
     return (
@@ -119,14 +136,23 @@
   }
 
   function pieceHTML(item) {
-    const stacked = isStack(item) ? " is-stack" : "";
+    const meta =
+      '<span class="meta">' +
+        "<strong>" + esc(item.title) + "</strong>" +
+        "<small>" + esc(item.detail || item.blurb) + "</small>" +
+      "</span>";
+    if (isStack(item)) {
+      return (
+        '<article class="piece tile is-stack" data-item="' + item.id + '" data-front="0">' +
+          shotHTML(item) +
+          meta +
+        "</article>"
+      );
+    }
     return (
-      '<button type="button" class="piece tile' + stacked + '" data-item="' + item.id + '" aria-haspopup="dialog">' +
+      '<button type="button" class="piece tile" data-item="' + item.id + '" aria-haspopup="dialog">' +
         shotHTML(item) +
-        '<span class="meta">' +
-          "<strong>" + esc(item.title) + "</strong>" +
-          "<small>" + esc(item.detail || item.blurb) + "</small>" +
-        "</span>" +
+        meta +
       "</button>"
     );
   }
@@ -294,7 +320,8 @@
   function openFromTile(tile) {
     if (!tile) return;
     const ids = visibleTiles().map((el) => el.dataset.item);
-    openInspect(tile.dataset.item, ids, tile, frontOf(tile));
+    const focusEl = tile.matches("button") ? tile : (tile.querySelector(".stack-open") || tile);
+    openInspect(tile.dataset.item, ids, focusEl, frontOf(tile));
   }
 
   function wrap(index, length) {
@@ -326,7 +353,7 @@
       if (event.pointerId !== id) return;
       const dx = event.clientX - x0;
       const dy = event.clientY - y0;
-      if (Math.abs(dx) > TAP_SLOP && Math.abs(dx) > Math.abs(dy)) dragged = true;
+      if (Math.abs(dx) > TAP_SLOP || Math.abs(dy) > TAP_SLOP) dragged = true;
     }
     function end(event) {
       if (event.pointerId !== id) return;
@@ -360,6 +387,11 @@
       }
       const surface = event.target.closest && event.target.closest(selector);
       if (!surface || !root.contains(surface)) {
+        track = null;
+        return;
+      }
+      // Dots are inside the stack well; a tap there steps the photo, it is not a swipe.
+      if (event.target.closest && event.target.closest(".stack-dot")) {
         track = null;
         return;
       }
@@ -405,6 +437,30 @@
     }, { passive: true });
   }
 
+  function syncDots(piece) {
+    if (!piece) return;
+    const front = frontOf(piece);
+    piece.querySelectorAll(".stack-dot").forEach((dot) => {
+      if (Number(dot.dataset.shot) === front) dot.setAttribute("aria-current", "true");
+      else dot.removeAttribute("aria-current");
+    });
+  }
+
+  function goStack(piece, index) {
+    const item = byId(piece.dataset.item);
+    if (!item || !isStack(item)) return;
+    const shots = shotsOf(item);
+    if (shots.length < 2) return;
+    const current = frontOf(piece);
+    const target = wrap(index, shots.length);
+    if (target === current) return;
+    let delta = target - current;
+    if (Math.abs(delta) > shots.length / 2) {
+      delta = delta > 0 ? delta - shots.length : delta + shots.length;
+    }
+    rotateStack(piece, delta);
+  }
+
   function rotateStack(piece, delta) {
     const item = byId(piece.dataset.item);
     if (!item || !isStack(item)) return;
@@ -419,6 +475,7 @@
     piece.dataset.front = String(next);
     frontImg.src = shots[next];
     backImg.src = shots[wrap(next + 1, shots.length)];
+    syncDots(piece);
     if (!frontLayer.animate) return;
     frontLayer.getAnimations().forEach((anim) => anim.cancel());
     const still = reduceMotion();
@@ -439,12 +496,20 @@
         setLayout(layoutBtn.dataset.layout);
         return;
       }
+      const dot = event.target.closest(".stack-dot");
+      if (dot && gallery.contains(dot)) {
+        event.preventDefault();
+        const piece = dot.closest(".piece.is-stack");
+        if (piece) goStack(piece, Number(dot.dataset.shot));
+        return;
+      }
       const tile = event.target.closest(".tile");
       if (!tile || !gallery.contains(tile)) return;
       openFromTile(tile);
     });
 
     gallery.addEventListener("pointerdown", (event) => {
+      if (event.target.closest(".stack-dot")) return;
       const surface = event.target.closest(".shot.is-stack");
       const piece = surface && surface.closest(".piece.is-stack");
       if (!piece || !gallery.contains(piece)) return;

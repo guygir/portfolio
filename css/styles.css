@@ -316,6 +316,75 @@ html[data-layout="uneven"] .board {
   user-select: none;
 }
 
+.stack-open {
+  display: block;
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.stack-open:focus { outline: none; }
+
+.stack-dots {
+  position: relative;
+  z-index: 6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  margin: -18px 0 0;
+}
+
+.piece.is-stack .meta {
+  padding-top: 4px;
+}
+
+.stack-dot {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.stack-dot::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(25 21 18 / 0.22);
+  box-shadow: 0 0 0 1px rgb(25 21 18 / 0.18);
+}
+
+.stack-dot[aria-current="true"]::after {
+  background: var(--ink);
+  box-shadow: 0 0 0 1px rgb(25 21 18 / 0.28);
+}
+
+.stack-dot:focus { outline: none; }
+
+.stack-dot:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 0;
+}
+
 html[data-layout="uneven"] .col .piece:nth-child(odd) .shot:not(.is-stack) { aspect-ratio: 16 / 10; }
 html[data-layout="uneven"] .col .piece:nth-child(even) .shot:not(.is-stack) { aspect-ratio: 4 / 3; }
 html[data-layout="uneven"] .shot.is-stack { aspect-ratio: 6 / 5; }
@@ -335,7 +404,7 @@ html[data-layout="uneven"] .shot.is-stack { aspect-ratio: 6 / 5; }
 
 .layers {
   position: absolute;
-  inset: 12% 16% 20%;
+  inset: 10% 16% 24%;
 }
 
 .layer {
@@ -372,17 +441,17 @@ img.layer,
   outline-offset: 3px;
 }
 
-.piece.is-stack:focus-visible .layer.front {
+.piece.is-stack .stack-open:focus-visible .layer.front {
   outline: 2px solid var(--ink);
   outline-offset: 3px;
 }
 
-.piece.is-stack:focus-visible .layer.back,
+.piece.is-stack .stack-open:focus-visible .layer.back,
 .piece.is-stack.is-fan .layer.back {
   transform: rotate(-11deg) translate(-18%, 3%);
 }
 
-.piece.is-stack:focus-visible .layer.front,
+.piece.is-stack .stack-open:focus-visible .layer.front,
 .piece.is-stack.is-fan .layer.front {
   transform: rotate(0.8deg) translate(3%, -6px);
 }
@@ -1042,11 +1111,19 @@ body.inspect-open { overflow: hidden; }
   }
 
   .piece:hover,
-  .piece:focus-visible { z-index: 2; }
+  .piece:focus-visible,
+  .piece.is-stack:has(.stack-open:focus-visible) { z-index: 2; }
 
   .piece:hover .shot,
-  .piece:focus-visible .shot {
+  .piece:focus-visible .shot,
+  .piece.is-stack:has(.stack-open:focus-visible) .shot {
     transform: rotate(0deg) translateY(-6px);
+  }
+
+  .piece.is-stack:hover .stack-dots,
+  .piece.is-stack:has(.stack-open:focus-visible) .stack-dots {
+    transform: translateY(-6px);
+    transition: transform var(--dur-cover) var(--ease-out);
   }
 
   .piece:hover .shot:not(.is-stack),
@@ -1175,6 +1252,8 @@ body.inspect-open { overflow: hidden; }
   #about a:active,
   .piece:hover .shot,
   .piece:focus-visible .shot,
+  .piece.is-stack:hover .stack-dots,
+  .piece.is-stack:has(.stack-open:focus-visible) .stack-dots,
   .stamp,
   .sheet-stamp,
   .layer,
@@ -1182,8 +1261,8 @@ body.inspect-open { overflow: hidden; }
   .layer.front,
   .piece.is-stack:hover .layer.back,
   .piece.is-stack:hover .layer.front,
-  .piece.is-stack:focus-visible .layer.back,
-  .piece.is-stack:focus-visible .layer.front,
+  .piece.is-stack .stack-open:focus-visible .layer.back,
+  .piece.is-stack .stack-open:focus-visible .layer.front,
   .piece.is-stack.is-fan .layer.back,
   .piece.is-stack.is-fan .layer.front {
     transform: none;
