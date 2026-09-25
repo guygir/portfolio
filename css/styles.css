@@ -312,6 +312,8 @@ html[data-layout="uneven"] .board {
   overflow: hidden;
   box-shadow: none;
   touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 html[data-layout="uneven"] .col .piece:nth-child(odd) .shot:not(.is-stack) { aspect-ratio: 16 / 10; }
@@ -885,6 +887,16 @@ footer {
   overflow: hidden;
   background: var(--wash);
   touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.shot.is-stack img,
+.sheet-frame img {
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .sheet-frame img {
