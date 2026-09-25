@@ -219,7 +219,27 @@
   }
 
   function visibleTiles() {
-    return [...gallery.querySelectorAll(".tile")];
+    const boards = [...gallery.querySelectorAll(".board")];
+    if (!boards.length) return [...gallery.querySelectorAll(".tile")];
+    return boards.flatMap((board) => {
+      const cols = [...board.querySelectorAll(".col")];
+      if (!cols.length) return [...board.querySelectorAll(".piece")];
+      const reading = [];
+      let row = 0;
+      let more = true;
+      while (more) {
+        more = false;
+        cols.forEach((col) => {
+          const piece = col.children[row];
+          if (piece) {
+            reading.push(piece);
+            more = true;
+          }
+        });
+        row += 1;
+      }
+      return reading;
+    });
   }
 
   function layoutBoards() {
