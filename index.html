@@ -34,7 +34,9 @@
           <div class="about-copy">
             <h2>About</h2>
             <div class="about-lede">
-              <img src="images/profile/guy-girmonsky.jpg" alt="" width="88" height="88" />
+              <figure class="portrait">
+                <img src="images/profile/guy-girmonsky.jpg" alt="" width="220" height="220" />
+              </figure>
               <div>
                 <p>
                   Research engineer on AI platforms at IBM, previously hybrid-cloud
@@ -48,16 +50,16 @@
               </div>
             </div>
           </div>
-          <ul>
-            <li><a href="https://github.com/zipnn/zipnn">ZipNN</a>, IEEE CLOUD 2025</li>
-            <li><a href="https://arxiv.org/abs/2502.20818">SkyStore</a>, VLDB 2025</li>
-            <li><a href="https://www.llm-d.ai">llm-d</a></li>
-            <li><a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a></li>
-            <li><a href="https://github.com/guygir">GitHub</a></li>
-            <li><a href="https://guygir.itch.io">itch.io</a></li>
-            <li><a href="https://huggingface.co/Guygir">Hugging Face</a></li>
-            <li><a href="mailto:guygir@gmail.com">guygir@gmail.com</a></li>
-          </ul>
+          <div class="journey" id="journey">
+            <h3>From the catalog</h3>
+            <ol class="timeline" id="timeline"></ol>
+            <ul class="about-links">
+              <li><a href="https://github.com/zipnn/zipnn">ZipNN</a>, IEEE CLOUD 2025</li>
+              <li><a href="https://arxiv.org/abs/2502.20818">SkyStore</a>, VLDB 2025</li>
+              <li><a href="https://www.llm-d.ai">llm-d</a></li>
+              <li><a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a></li>
+            </ul>
+          </div>
         </div>
 
         <section class="pulse" aria-label="GitHub contribution calendar">
@@ -81,11 +83,37 @@
         </section>
       </section>
 
+      <section id="contact">
+        <h2>Contact</h2>
+        <p><a href="mailto:guygir@gmail.com">guygir@gmail.com</a></p>
+        <ul>
+          <li><a href="https://github.com/guygir">GitHub</a></li>
+          <li><a href="https://guygir.itch.io">itch.io</a></li>
+          <li><a href="https://huggingface.co/Guygir">Hugging Face</a></li>
+        </ul>
+      </section>
+
       <footer>
         Research systems, playable ideas and a growing Riftbound binder.
       </footer>
     </main>
     <svg class="pulse-sky" id="pulse-sky" aria-hidden="true"></svg>
+    <svg class="sr-filters" aria-hidden="true">
+      <filter id="portrait-ink" color-interpolation-filters="sRGB">
+        <feColorMatrix type="saturate" values="0" />
+        <feComponentTransfer>
+          <feFuncR type="table" tableValues="0.965 0.098" />
+          <feFuncG type="table" tableValues="0.953 0.082" />
+          <feFuncB type="table" tableValues="0.925 0.071" />
+        </feComponentTransfer>
+      </filter>
+    </svg>
+
+    <nav class="dock" id="dock" aria-label="Page">
+      <a href="#gallery" data-dock="work">Work</a>
+      <a href="#about" data-dock="about">About</a>
+      <a href="#contact" data-dock="contact">Contact</a>
+    </nav>
 
     <div class="inspect" id="inspect" hidden>
       <button type="button" class="inspect-dim" data-close tabindex="-1" aria-label="Close"></button>
@@ -108,6 +136,7 @@
     </div>
 
     <script src="js/data.js"></script>
+    <script src="js/timeline.js"></script>
     <script src="js/activity.js"></script>
     <script src="js/app.js"></script>
     <script src="js/pulse.js"></script>

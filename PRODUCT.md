@@ -20,7 +20,7 @@ Curation, not a GitHub mirror. Every tile has two authored pictures. The site is
 
 ## Operating Context
 
-Opened as a static folder (`python3 -m http.server 4173`). No account, no CMS, no build. Project records live in `js/data.js`. Current opens on a scrapbook of equal-weight tiles — ZipNN, Klafi, and RifTrade first in order, same size as the rest. Work / Games / Projects isolate a chapter. GitHub contribution heat lives in About.
+Opened as a static folder (`python3 -m http.server 4173`). No account, no CMS, no build. Project records live in `js/data.js`. Current opens on a masonry scrapbook — ZipNN, Klafi, and RifTrade first. A dock jumps Work / About / Contact. Work / Games / Projects isolate a chapter. GitHub heat lives in About.
 
 ## Capabilities and Constraints
 

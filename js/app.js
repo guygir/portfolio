@@ -2,7 +2,9 @@
   const gallery = document.getElementById("gallery");
   const buttons = document.querySelectorAll("nav [data-filter]");
   const inspectEl = document.getElementById("inspect");
+  const dock = document.getElementById("dock");
   const featuredIds = ["zipnn", "klafi", "riftrade"];
+  const stackedIds = ["klafi", "riftrade", "holdemle"];
   const notes = {
     opening: "One system, one game, one useful thing.",
     work: "Published systems and current infrastructure work.",
@@ -28,10 +30,6 @@
     return window.ITEMS.find((item) => item.id === id);
   }
 
-  function tagFor(item) {
-    return item.status === "archive" ? "Archive" : item.tag;
-  }
-
   function stampOf(item) {
     if (item.status === "archive") return "SHELF";
     if (item.section === "games") {
@@ -49,18 +47,24 @@
     return "Tool";
   }
 
-  function actionOf(item) {
-    if (item.status === "archive") return "Archive";
-    if (item.section === "games") return "Play";
-    if (item.section === "work") return "Work";
-    return "Open";
-  }
-
   function padNum(n) {
     return String(n).padStart(2, "0");
   }
 
   function frameHTML(item) {
+    const stacked = stackedIds.indexOf(item.id) !== -1;
+    if (stacked) {
+      return (
+        '<span class="frame is-stack">' +
+          '<span class="stamp">' + esc(stampOf(item)) + "</span>" +
+          '<span class="layers">' +
+            '<img class="layer back" src="' + esc(item.hover) + '" alt="" width="1600" height="1000">' +
+            '<img class="layer front" src="' + esc(item.cover) + '" alt="' + esc(item.title) + '" width="1600" height="1000">' +
+          "</span>" +
+          '<span class="reveal">' + esc(item.blurb) + "</span>" +
+        "</span>"
+      );
+    }
     return (
       '<span class="frame">' +
         '<span class="stamp">' + esc(stampOf(item)) + "</span>" +
@@ -72,16 +76,14 @@
   }
 
   function pieceHTML(item) {
+    const stacked = stackedIds.indexOf(item.id) !== -1 ? " is-stack" : "";
     return (
-      '<button type="button" class="piece tile" data-item="' + item.id + '" aria-haspopup="dialog">' +
+      '<button type="button" class="piece tile' + stacked + '" data-item="' + item.id + '" aria-haspopup="dialog">' +
         '<span class="print">' +
           frameHTML(item) +
           '<span class="meta">' +
-            '<span class="project-text">' +
-              "<strong>" + esc(item.title) + "</strong>" +
-              "<small>" + esc(item.detail || item.blurb) + "</small>" +
-            "</span>" +
-            '<span class="tag' + (item.status === "archive" ? " is-archive" : "") + '">' + esc(tagFor(item)) + "</span>" +
+            "<strong>" + esc(item.title) + "</strong>" +
+            "<small>" + esc(item.detail || item.blurb) + "</small>" +
           "</span>" +
         "</span>" +
       "</button>"
@@ -163,11 +165,13 @@
   }
 
   function bindTiles() {
-    visibleTiles().forEach((tile) => {
-      tile.addEventListener("click", () => {
-        const ids = visibleTiles().map((el) => el.dataset.item);
-        openInspect(tile.dataset.item, ids, tile);
-      });
+    if (gallery.dataset.bound) return;
+    gallery.dataset.bound = "1";
+    gallery.addEventListener("click", (event) => {
+      const tile = event.target.closest(".tile");
+      if (!tile || !gallery.contains(tile)) return;
+      const ids = visibleTiles().map((el) => el.dataset.item);
+      openInspect(tile.dataset.item, ids, tile);
     });
   }
 
@@ -176,9 +180,70 @@
   }
 
   function setChromeInert(on) {
-    ["chrome", "top"].forEach((id) => {
+    ["chrome", "top", "dock"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) el.toggleAttribute("inert", on);
+    });
+  }
+
+  function masonry(board) {
+    if (!board) return;
+    const pieces = [...board.querySelectorAll(".piece")];
+    if (!pieces.length) return;
+    const n = window.matchMedia("(max-width: 780px)").matches ? 2 : 3;
+    board.replaceChildren();
+    const cols = Array.from({ length: n }, function () {
+      const col = document.createElement("div");
+      col.className = "col";
+      board.appendChild(col);
+      return col;
+    });
+    pieces.forEach((piece, i) => cols[i % n].appendChild(piece));
+  }
+
+  function renderTimeline() {
+    const list = document.getElementById("timeline");
+    if (!list || !window.TIMELINE) return;
+    const rows = (window.TIMELINE.entries || []).filter((row) => row && !row.todo && row.render !== false);
+    list.innerHTML = rows.map((row) => (
+      "<li>" +
+        '<span class="when">' + esc(row.year) + "</span>" +
+        '<span class="what">' +
+          "<strong>" + esc(row.title) + "</strong>" +
+          "<small>" + esc(row.detail) + "</small>" +
+        "</span>" +
+      "</li>"
+    )).join("");
+  }
+
+  function setDock(key) {
+    if (!dock) return;
+    dock.querySelectorAll("[data-dock]").forEach((link) => {
+      link.classList.toggle("on", link.dataset.dock === key);
+    });
+  }
+
+  function bindDock() {
+    if (!dock || dock.dataset.bound) return;
+    dock.dataset.bound = "1";
+    const targets = [
+      { key: "work", el: document.getElementById("gallery") },
+      { key: "about", el: document.getElementById("about") },
+      { key: "contact", el: document.getElementById("contact") },
+    ].filter((row) => row.el);
+    const io = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      const match = targets.find((row) => row.el === visible.target);
+      if (match) setDock(match.key);
+    }, { rootMargin: "-28% 0px -52% 0px", threshold: [0.1, 0.25, 0.5] });
+    targets.forEach((row) => io.observe(row.el));
+    dock.addEventListener("click", (event) => {
+      const link = event.target.closest("[data-dock]");
+      if (!link) return;
+      setDock(link.dataset.dock);
     });
   }
 
@@ -194,7 +259,7 @@
     document.getElementById("sheet-story").textContent = item.story || item.blurb;
     const enter = document.getElementById("sheet-enter");
     enter.href = item.href;
-    enter.textContent = actionOf(item);
+    enter.textContent = "Open project";
     document.getElementById("sheet-prev").disabled = stack.length < 2;
     document.getElementById("sheet-next").disabled = stack.length < 2;
   }
@@ -234,7 +299,11 @@
   function render() {
     document.body.dataset.view = filter;
     gallery.innerHTML = filter === "current" ? currentHTML() : isolatedHTML();
+    gallery.querySelectorAll(".board").forEach(masonry);
     bindTiles();
+    renderTimeline();
+    bindDock();
+    setDock("work");
     if (window.Pulse) window.Pulse.refresh();
   }
 
@@ -313,6 +382,15 @@
         first.focus();
       }
     }
+  });
+
+  let masonryTimer = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(masonryTimer);
+    masonryTimer = setTimeout(() => {
+      gallery.querySelectorAll(".board").forEach(masonry);
+      bindTiles();
+    }, 120);
   });
 
   const start = (location.hash || "").replace("#", "");

@@ -1,10 +1,10 @@
 # Guy Girmonsky — Personal Site Design Spec
 
-Shipped shape: compact masthead, then a scrapbook of equal-weight print tiles. Current shows every active project on one board. ZipNN, Klafi, and RifTrade come first in order, at the same size as everything else. Filters isolate a chapter. About holds the GitHub calendar. Tap-to-flip on coarse pointers.
+Shipped shape: compact masthead, a masonry scrapbook (same column width, varying heights), a floating Work / About / Contact dock, and an About panel with a duotone portrait plus a sourced catalog timeline. ZipNN, Klafi, and RifTrade still lead. Filters isolate a chapter. Click opens the inspect sheet.
 
 This file matches the shipped site. If they disagree, change the site or change this file — do not leave a second, unimplemented IA sitting here.
 
-References: [tovbar.com](https://tovbar.com), [sharkbombs.com](https://www.sharkbombs.com/index.html), Emil Kowalski motion rules, Impeccable Experience mode, Jackie Zhang’s scrapbook work board (feel only).
+References: [tovbar.com](https://tovbar.com), [sharkbombs.com](https://www.sharkbombs.com/index.html), Emil Kowalski motion rules, Impeccable Experience mode, Jackie Zhang’s scrapbook (feel), Marijana Pavlinić (masonry + dock), Daniella Marynova (a few layered tiles), Mackenzie Child (portrait + timeline structure).
 Source inventory: GitHub `guygir`, itch.io `guygir`, IBM Research publications.
 
 Visitor mode for this surface: **Experience**. Work imagery leads; chrome recedes. A dense board of artifacts still counts. Experience does **not** mean one project filling the viewport, and it does **not** mean one tile larger than the others.
@@ -60,7 +60,7 @@ Do **not** copy Jackie’s doodles, woodblock stamps, red borders, black field, 
 ### From portfolio layout craft
 
 - Recruiters scan the homepage for name/role + multiple strong thumbnails.
-- Preferred pattern here: **equal gallery / scrapbook** — same tile size, featured trio first in reading order.
+- Preferred pattern here: **masonry scrapbook** — same column width, varying tile heights, featured trio first (one at the top of each desktop column).
 - Avoid splash/enter screens, monster heroes, and one oversized flagship.
 
 ### What we do not copy
@@ -84,21 +84,25 @@ One page. Current is the full active board. The other filters isolate a chapter.
 Masthead
   wordmark + role · Current / Work / Games / Projects · About
 
+Dock (fixed)
+  Work / About / Contact
+
 Current
   Compact lede
-  Scrapbook of every active project (ZipNN, Klafi, RifTrade first)
-  About + GitHub pulse
+  Masonry scrapbook (ZipNN, Klafi, RifTrade first)
+  About (portrait, sourced intro, catalog timeline, links, pulse)
+  Contact
 
 Work / Games / Projects
   Compact chapter title
-  Same equal-weight scrapbook for that section
+  Same masonry scrapbook
   Archive board under Games and Projects
-  About + pulse
+  About + Contact
 ```
 
 ### 3.1 Current / opening
 
-Selected first in order: ZipNN, Klafi, RifTrade — one system, one game, one useful thing. Same tile size as llm-d, Hold’emle, and the rest of the active catalog. Hover still changes each picture. Activating a tile opens the inspect sheet.
+Selected first: ZipNN, Klafi, RifTrade sit at the top of the three desktop columns. Heights vary (16/10 or 4/5, plus taller stacked frames). Hover still changes flat tiles; stacked tiles (Klafi, RifTrade, Hold’emle) show cover + hover as two offset layers. Activating a tile opens the inspect sheet. The red stamp is the only category label.
 
 ### 3.2 Work
 
@@ -116,7 +120,7 @@ Omitted on purpose: `Test`, `my-fork`, `vllm` fork, `clawdchan`, `Better-Minimal
 
 ### 3.5 About
 
-Portrait, short bio, selected writing (ZipNN, SkyStore), links, then the GitHub year.
+Duotone portrait (real `images/profile/guy-girmonsky.jpg`), the existing bio, a catalog timeline of dated project facts only, selected writing, then the GitHub year. Career-role dates live as non-rendering TODOs in `js/timeline.js`.
 
 ---
 
@@ -161,13 +165,15 @@ Scale (desktop):
 - Masthead: sticky, ~52px, full width. Name + role left; chapter links right. Not a rail.
 - Page measure: ~1240px
 - Gutter: 24px desktop, 16px phone
-- Board: 3 equal columns on desktop. White print card (~11px mat) around a 16 / 10 cover. Caption under the picture.
+- Board: 3 masonry columns on desktop (2 on phone). Same column width; tile heights vary. White print card (~11px mat). Caption is title + detail only — no grey tag.
+- Dock: fixed bottom-center pill (Work / About / Contact). Hidden while the inspect sheet is open. Respects `safe-area-inset-bottom`. `:focus-visible` ring. Active item fills ink.
+- Stacked tiles (Klafi, RifTrade, Hold’emle only): two existing images, offset a few degrees inside the frame.
 - Tilt: deterministic `nth-child` rotations of about ±0.8–1.6deg plus a few pixels of offset. Not `Math.random()`.
 - Card radius: 0 (prints, not app chrome)
 - Red file stamp: top-right inside the print window. Text is derived from `js/data.js` (`section`, `status`, `detail`/`blurb`): WORK, PLAY, DAILY, PRINT, TOOL, or SHELF. Same `#b42318` outline stamp as the earlier desk catalog.
 - Portrait: 88px, 8px radius, in About only
 
-The first fold on ~1280×800 must include the masthead and **at least six** equal project tiles (image + title). No oversized flagship.
+The first fold on ~1280×800 must include the masthead and about five to six masonry tiles. No oversized flagship. About sits after the board.
 
 ### 4.5 Motion
 
@@ -259,10 +265,10 @@ Hebrew projects keep their names (Klafi, אתגר בקופסא) and get one Engl
 
 ## 9. Breakpoints
 
-- ≥ 1080px: 3 equal columns; about six tiles in a 1280×800 fold
+- ≥ 1080px: 3 masonry columns; about five to six tiles in a 1280×800 fold
 - 780–1079: still 3 columns if width allows
-- < 780: masthead stacks; 2 columns; rest tilt removed
-- < 340: 1 column
+- < 780: masthead stacks; 2 masonry columns; rest tilt removed
+- < 340: one column
 - Hover becomes tap-to-flip when `(hover: none)`
 
 ---
