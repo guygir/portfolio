@@ -353,7 +353,7 @@
       if (event.pointerId !== id) return;
       const dx = event.clientX - x0;
       const dy = event.clientY - y0;
-      if (Math.abs(dx) > TAP_SLOP && Math.abs(dx) > Math.abs(dy)) dragged = true;
+      if (Math.abs(dx) > TAP_SLOP || Math.abs(dy) > TAP_SLOP) dragged = true;
     }
     function end(event) {
       if (event.pointerId !== id) return;
