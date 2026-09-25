@@ -135,25 +135,26 @@
   function switchHTML() {
     const layout = currentLayout();
     return (
-      '<div class="board-bar">' +
-        '<div class="layout-switch" role="radiogroup" aria-label="Board layout">' +
-          '<button type="button" role="radio" data-layout="even" aria-checked="' + (layout === "even" ? "true" : "false") + '">Even</button>' +
-          '<button type="button" role="radio" data-layout="uneven" aria-checked="' + (layout === "uneven" ? "true" : "false") + '">Uneven</button>' +
-        "</div>" +
+      '<div class="layout-switch" role="radiogroup" aria-label="Board layout">' +
+        '<button type="button" role="radio" data-layout="even" aria-checked="' + (layout === "even" ? "true" : "false") + '">Even</button>' +
+        '<button type="button" role="radio" data-layout="uneven" aria-checked="' + (layout === "uneven" ? "true" : "false") + '">Uneven</button>' +
       "</div>"
     );
   }
 
   function boardHTML(items) {
     if (!items.length) return "";
-    return switchHTML() + '<div class="board">' + items.map(pieceHTML).join("") + "</div>";
+    return '<div class="board">' + items.map(pieceHTML).join("") + "</div>";
   }
 
   function ledeHTML() {
     return (
       '<header class="opening-head">' +
         "<p>" + notes.lede + "</p>" +
-        '<p class="opening-note">' + notes.opening + "</p>" +
+        '<div class="opening-tools">' +
+          '<p class="opening-note">' + notes.opening + "</p>" +
+          switchHTML() +
+        "</div>" +
       "</header>"
     );
   }
@@ -163,7 +164,10 @@
     return (
       '<section class="chapter" id="chapter-' + id + '">' +
         '<header class="chapter-head"><h2>' + title + "</h2>" +
-          (note ? "<p>" + note + "</p>" : "") +
+          '<div class="opening-tools">' +
+            (note ? "<p>" + note + "</p>" : "") +
+            switchHTML() +
+          "</div>" +
         "</header>" +
         inner +
       "</section>"
