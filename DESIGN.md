@@ -1,6 +1,6 @@
 # Guy Girmonsky — Personal Site Design Spec
 
-Shipped shape: compact masthead, a masonry scrapbook (same column width, varying heights), a floating Work / About / Contact dock, and an About panel with a duotone portrait plus a sourced catalog timeline. ZipNN, Klafi, and RifTrade still lead. Filters isolate a chapter. Click opens the inspect sheet.
+Shipped shape: wordmark-only masthead, a scrapbook with an Even / Uneven layout switch (Even is the default), a floating Work / Games / Projects / About / Contact dock as the only nav, and an About panel with a duotone portrait plus a sourced catalog timeline. ZipNN, Klafi, and RifTrade still lead. Click opens the inspect sheet. Klafi, RifTrade, and Hold’emle swipe between their two pictures.
 
 This file matches the shipped site. If they disagree, change the site or change this file — do not leave a second, unimplemented IA sitting here.
 
@@ -26,7 +26,7 @@ Guy is an AI Platforms research engineer at IBM who also ships games and small t
 ### From tovbar.com
 
 - Image-led portfolio. The work is the interface.
-- Sparse chrome: wordmark, a few chapter links, no agency CTA.
+- Sparse chrome: wordmark only in the header; no agency CTA.
 - Quiet frames, no neon brand system.
 
 ### From sharkbombs.com
@@ -60,7 +60,7 @@ Do **not** copy Jackie’s doodles, woodblock stamps, red borders, black field, 
 ### From portfolio layout craft
 
 - Recruiters scan the homepage for name/role + multiple strong thumbnails.
-- Preferred pattern here: **masonry scrapbook** — same column width, varying tile heights, featured trio first (one at the top of each desktop column).
+- Preferred pattern here: **scrapbook with a layout switch** — Even (equal tiles) by default, Uneven (masonry) optional. Featured trio first.
 - Avoid splash/enter screens, monster heroes, and one oversized flagship.
 
 ### What we do not copy
@@ -82,31 +82,32 @@ One page. Current is the full active board. The other filters isolate a chapter.
 
 ```
 Masthead
-  wordmark + role · Current / Work / Games / Projects · About
+  wordmark + role
 
-Dock (fixed)
-  Work / About / Contact
+Dock (fixed, only nav)
+  Work / Games / Projects / About / Contact
 
-Current
+Current (Work)
   Compact lede
-  Masonry scrapbook (ZipNN, Klafi, RifTrade first)
+  Even | Uneven switch
+  Scrapbook (ZipNN, Klafi, RifTrade first)
   About (portrait, sourced intro, catalog timeline, links, pulse)
   Contact
 
-Work / Games / Projects
+Games / Projects
   Compact chapter title
-  Same masonry scrapbook
+  Same switch + scrapbook
   Archive board under Games and Projects
   About + Contact
 ```
 
 ### 3.1 Current / opening
 
-Selected first: ZipNN, Klafi, RifTrade sit at the top of the three desktop columns. Heights vary (16/10 or 4/3, plus taller 6/5 stacked frames). Hover still changes flat tiles; stacked tiles (Klafi, RifTrade, Hold’emle) show cover + hover as two offset layers. Activating a tile opens the inspect sheet. The red stamp is the only category label.
+Selected first: ZipNN, Klafi, RifTrade. Even mode is a 3-column equal-tile grid (2 on phone). Uneven mode is masonry with varying heights. The switch persists in `localStorage` (`board-layout`) and is applied before first paint. Klafi, RifTrade, and Hold’emle are swipeable two-image reels. Other tiles still crossfade on hover. Activating a tile opens the inspect sheet. The red stamp is the only category label.
 
 ### 3.2 Work
 
-Employment and published research: ZipNN, llm-d, SkyStore. Same print tiles as Current.
+The dock’s Work item returns to the mixed current board (research, games, and tools together). Isolated research-only view is no longer a separate top-nav filter.
 
 ### 3.3 Games
 
@@ -154,7 +155,7 @@ Scale (desktop):
 - Wordmark: 20px Fraunces
 - Role: 10px uppercase sans
 - Chapter title: clamp 26–34px Fraunces
-- About title: clamp 48–88px Fraunces
+- About title: clamp 38–64px Fraunces, with space below so it does not overlap the portrait
 - Tile title: 15px
 - Body: 17px / 1.55
 - Opening lede: 13px
@@ -162,18 +163,19 @@ Scale (desktop):
 
 ### 4.4 Layout
 
-- Masthead: sticky, ~52px, full width. Name + role left; chapter links right. Not a rail.
+- Masthead: sticky, ~52px, full width. Wordmark + role only. No top link row.
 - Page measure: ~1240px
 - Gutter: 24px desktop, 16px phone
-- Board: 3 masonry columns on desktop (2 on phone). Same column width; tile heights vary. White print card (~11px mat). Caption is title + detail only — no grey tag.
-- Dock: fixed bottom-center pill (Work / About / Contact). Hidden while the inspect sheet is open. Respects `safe-area-inset-bottom`. `:focus-visible` ring. Active item fills ink.
-- Stacked tiles (Klafi, RifTrade, Hold’emle only): two existing images, offset a few degrees inside the frame.
+- Board: Even = CSS grid, equal 16/10 tiles, 3 columns (2 on phone). Uneven = masonry columns, varying heights. White print card (~11px mat). Caption is title + detail only — no grey tag.
+- Layout switch: paper Even | Uneven pill above the board. Radiogroup. Default Even. Stored as `board-layout`.
+- Dock: the only navigation. Fixed bottom-center pill (Work / Games / Projects / About / Contact). Hidden while the inspect sheet is open. Respects `safe-area-inset-bottom`. Extra page/footer padding so it does not cover the last lines. `:focus-visible` ring. Active item fills ink.
+- Swipe tiles (Klafi, RifTrade, Hold’emle only): cover + hover as a scroll-snap carousel, dots, desktop prev/next on hover/focus. Swipe does not open the sheet; tap/click does. Same reel in the inspect sheet.
 - Tilt: deterministic `nth-child` rotations of about ±0.8–1.6deg plus a few pixels of offset. Not `Math.random()`.
 - Card radius: 0 (prints, not app chrome)
 - Red file stamp: top-right inside the print window. Text is derived from `js/data.js` (`section`, `status`, `detail`/`blurb`): WORK, PLAY, DAILY, PRINT, TOOL, or SHELF. Same `#b42318` outline stamp as the earlier desk catalog.
 - Portrait: 168px (120px on phone), duotone via `#portrait-ink`, in About only
 
-The first fold on ~1280×800 must include the masthead and about five to six masonry tiles. No oversized flagship. About sits after the board.
+The first fold on ~1280×800 must include the masthead, the layout switch, and about five to six tiles. No oversized flagship. About sits after the board.
 
 ### 4.5 Motion
 
@@ -184,11 +186,13 @@ The first fold on ~1280×800 must include the masthead and about five to six mas
 | `--dur-ui` | 200ms |
 | `--dur-press` | 160ms |
 
-- Image crossfade: 240ms opacity. Always on, including tap-to-flip and reduced motion.
+- Image crossfade: 240ms opacity on flat tiles. Always on, including reduced motion.
 - Rest: print card sits at its deterministic tilt.
-- Hover / focus-visible (fine pointer): `rotate(0)` + `translateY(-6px)`, picture swap, optional veil + blurb.
-- Fine-pointer hover/focus only. Keyboard `:focus-visible` still swaps the picture.
-- Nav / wordmark: `scale(0.97)` on `:active`.
+- Hover / focus-visible (fine pointer): `rotate(0)` + `translateY(-6px)`, picture swap on flat tiles.
+- Fine-pointer hover/focus only. Keyboard `:focus-visible` still swaps the picture on flat tiles.
+- Reel tiles: native scroll-snap; arrow keys when the reel is focused; instant scroll under reduced motion.
+- Layout switch: short opacity dip, or instant under reduced motion.
+- Wordmark: `scale(0.97)` on `:active`.
 - Reduced-motion: crossfade only; no tilt, lift, press, or courier sky.
 - Phone: no rest tilt. 2 columns, then 1 column under 340px. Tile subtitles wrap in full; no ellipsis.
 
@@ -199,8 +203,8 @@ The first fold on ~1280×800 must include the masthead and about five to six mas
 This is the reason sharkbombs was cited. Do not ship cards that only tint.
 
 1. Rest: cover image, full bleed in the print window, title under the card.
-2. Hover / focus-visible (fine pointer): second image, card straightens and lifts, veil + blurb.
-3. Title and detail remain under the card.
+2. Hover / focus-visible (fine pointer) on flat tiles: second image, card straightens and lifts.
+3. On Klafi, RifTrade, and Hold’emle: swipe or arrow between the two authored pictures. Title and detail remain under the card.
 
 Two images are required in data: `cover` and `hover`. If a live screenshot is missing, the hover image is a distinct designed poster — never a CSS filter of the same file.
 
@@ -212,6 +216,7 @@ Activating a tile opens a paper dialog. Content comes from the record: cover, ti
 
 - Focus moves into the sheet. Tab cycles inside it. Esc, the dim, and Close put it away and return focus to the tile.
 - Prev / Next walk the tiles currently on the board.
+- If the project is a reel, the sheet cover is the same swipeable gallery.
 - The primary action is the existing `href`, labeled **Open project**.
 - Reduced motion: no extra sheet animation; stamps sit flat.
 
@@ -221,7 +226,7 @@ Activating a tile opens a paper dialog. Content comes from the record: cover, ti
 
 ### Masthead
 
-Sticky paper bar. Left: Fraunces wordmark + uppercase “Research & games.” Right: Current · Work · Games · Projects · About. No calendar.
+Sticky paper bar. Fraunces wordmark + uppercase “Research & games.” No top links. No calendar. The dock is the only navigation.
 
 ### Opening (Current)
 
@@ -229,12 +234,12 @@ A one-line lede and “One system, one game, one useful thing.” then the scrap
 
 ### Chapters
 
-- Isolated filters render only that chapter’s board, then About.
+- Dock Games / Projects isolate that chapter’s board, then About.
 - Archive appears under Games and Projects when those filters are on.
 
 ### About
 
-Two columns. Left: duotone portrait + sourced bio. Right: catalog timeline (dated project facts only) and paper links. Pulse calendar underneath.
+Full-width About heading with space below, then two columns. Left: duotone portrait + sourced bio. Right: catalog timeline (dated project facts only) and paper links. Pulse calendar underneath. The heading must not overlap the portrait.
 
 ### Footer
 
@@ -265,11 +270,11 @@ Hebrew projects keep their names (Klafi, אתגר בקופסא) and get one Engl
 
 ## 9. Breakpoints
 
-- ≥ 1080px: 3 masonry columns; about five to six tiles in a 1280×800 fold
+- ≥ 1080px: 3 columns; about five to six tiles in a 1280×800 fold
 - 780–1079: still 3 columns if width allows
-- < 780: masthead stacks; 2 masonry columns; rest tilt removed
+- < 780: 2 columns; rest tilt removed
 - < 340: one column
-- Hover becomes tap-to-flip when `(hover: none)`
+- Hover becomes tap-to-inspect when `(hover: none)`; reel tiles swipe
 
 ---
 

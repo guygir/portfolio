@@ -20,15 +20,15 @@ Curation, not a GitHub mirror. Every tile has two authored pictures. The site is
 
 ## Operating Context
 
-Opened as a static folder (`python3 -m http.server 4173`). No account, no CMS, no build. Project records live in `js/data.js`. Current opens on a masonry scrapbook — ZipNN, Klafi, and RifTrade first. A dock jumps Work / About / Contact. Work / Games / Projects isolate a chapter. GitHub heat lives in About.
+Opened as a static folder (`python3 -m http.server 4173`). No account, no CMS, no build. Project records live in `js/data.js`. Current opens on an Even scrapbook (switchable to Uneven) — ZipNN, Klafi, and RifTrade first. A dock is the only nav: Work / Games / Projects / About / Contact. GitHub heat lives in About.
 
 ## Capabilities and Constraints
 
 - Static HTML / CSS / vanilla JS only. No React, no npm, no Tailwind or UI kit.
 - Data, copy, and project list stay in `js/data.js`. Do not invent projects, stats, or blurbs.
-- Featured trio is ZipNN, Klafi, and RifTrade — first in reading order, same column width, varying tile heights. The first desktop viewport (~1280×800) shows about five to six masonry tiles, not a flagship. No full-bleed single-project stage.
-- Thin masthead: name, role, Current / Work / Games / Projects / About. A floating Work / About / Contact dock. No sticky left rail.
-- Picture-first tiles: cover + hover, crossfade on hover/focus; a few tiles layer both pictures. Activating a tile opens the inspect sheet.
+- Featured trio is ZipNN, Klafi, and RifTrade — first in reading order. Even tiles by default; Uneven masonry is a persisted choice. The first desktop viewport (~1280×800) shows about five to six tiles, not a flagship. No full-bleed single-project stage.
+- Thin masthead: name and role only. A floating Work / Games / Projects / About / Contact dock is the only navigation. No sticky left rail.
+- Picture-first tiles: cover + hover. Most tiles crossfade on hover/focus. Klafi, RifTrade, and Hold’emle swipe between the two pictures. Activating a tile opens the inspect sheet.
 - Pulse calendar and courier behavior in `activity.js` / `pulse.js` remain product truth; the calendar is docked in About so it cannot dominate the opening.
 
 ## Brand Commitments

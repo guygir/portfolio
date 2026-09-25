@@ -7,6 +7,16 @@
     <meta name="description" content="Work, games, and projects by Guy Girmonsky." />
     <meta name="theme-color" content="#ffffff" />
     <link rel="preload" href="fonts/fraunces-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <script>
+      (function () {
+        var layout = "even";
+        try {
+          var stored = localStorage.getItem("board-layout");
+          if (stored === "even" || stored === "uneven") layout = stored;
+        } catch (err) {}
+        document.documentElement.dataset.layout = layout;
+      })();
+    </script>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body data-view="current">
@@ -17,22 +27,15 @@
         Guy Girmonsky
         <small>Research &amp; games</small>
       </a>
-      <nav aria-label="Chapters">
-        <button type="button" data-filter="current" class="on" aria-pressed="true">Current</button>
-        <button type="button" data-filter="work" aria-pressed="false">Work</button>
-        <button type="button" data-filter="games" aria-pressed="false">Games</button>
-        <button type="button" data-filter="projects" aria-pressed="false">Projects</button>
-        <a href="#about">About</a>
-      </nav>
     </header>
 
     <main id="top">
       <div id="gallery"></div>
 
       <section id="about">
+        <h2>About</h2>
         <div class="about-grid">
           <div class="about-copy">
-            <h2>About</h2>
             <div class="about-lede">
               <figure class="portrait">
                 <img src="images/profile/guy-girmonsky.jpg" alt="" width="220" height="220" />
@@ -111,6 +114,8 @@
 
     <nav class="dock" id="dock" aria-label="Page">
       <a href="#gallery" data-dock="work">Work</a>
+      <a href="#games" data-dock="games">Games</a>
+      <a href="#projects" data-dock="projects">Projects</a>
       <a href="#about" data-dock="about">About</a>
       <a href="#contact" data-dock="contact">Contact</a>
     </nav>
@@ -120,9 +125,7 @@
       <article class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
         <p class="sheet-file" id="sheet-file"></p>
         <span class="sheet-stamp" id="sheet-stamp"></span>
-        <figure class="sheet-frame">
-          <img id="sheet-img" alt="" width="1600" height="1000" />
-        </figure>
+        <figure class="sheet-frame" id="sheet-frame"></figure>
         <h2 id="sheet-title"></h2>
         <p class="sheet-detail" id="sheet-detail"></p>
         <p class="sheet-story" id="sheet-story"></p>

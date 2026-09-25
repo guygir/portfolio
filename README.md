@@ -16,9 +16,9 @@ Open http://127.0.0.1:4173
 - `js/data.js` — curated records from GitHub, itch.io, and papers
 - `js/activity.js` — last-year GitHub contribution calendar plus recent commit/PR routing
 - `js/pulse.js` — About-docked contribution board and couriers toward visible repo tiles
-- `js/app.js` — featured trio first, masonry board, inspect sheet, dock
+- `js/app.js` — featured trio first, Even/Uneven board, swipe reels, inspect sheet, dock
 - `js/timeline.js` — sourced catalog years plus non-rendering career TODOs
-- `css/styles.css` — graph-paper board, masonry, dock, About
+- `css/styles.css` — graph-paper board, layout switch, dock, About
 - `fonts/` — self-hosted Fraunces (SIL OFL) for display type
 - `images/covers` + `images/hover` — two pictures per tile; hover, focus, or a coarse tap changes the image
 - `images/profile` — identity portrait, used in About
