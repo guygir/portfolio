@@ -272,7 +272,7 @@ body[data-view="projects"] .chapter {
   display: flex;
   flex-direction: column;
   background: var(--paper);
-  padding: 11px 11px 12px;
+  padding: 8px 8px 9px;
   border: 1px solid rgb(25 21 18 / 0.08);
   box-shadow:
     0 1px 0 rgb(25 21 18 / 0.04),
@@ -294,7 +294,7 @@ body[data-view="projects"] .chapter {
 }
 
 .col .piece:nth-child(odd) .frame:not(.is-stack) { aspect-ratio: 16 / 10; }
-.col .piece:nth-child(even) .frame:not(.is-stack) { aspect-ratio: 4 / 5; }
+.col .piece:nth-child(even) .frame:not(.is-stack) { aspect-ratio: 4 / 3; }
 
 .frame {
   display: block;
@@ -306,14 +306,14 @@ body[data-view="projects"] .chapter {
 }
 
 .frame.is-stack {
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 6 / 5;
   overflow: hidden;
   background: var(--wash);
 }
 
 .layers {
   position: absolute;
-  inset: 14% 10% 12%;
+  inset: 16% 12% 14%;
 }
 
 .layer {
@@ -326,8 +326,8 @@ body[data-view="projects"] .chapter {
   box-shadow: 0 8px 20px -12px rgb(25 21 18 / 0.45);
 }
 
-.layer.back { transform: rotate(-6deg) translate(-8%, 6%); }
-.layer.front { transform: rotate(4deg) translate(7%, -3%); }
+.layer.back { transform: rotate(-7deg) translate(-14%, 10%); }
+.layer.front { transform: rotate(5deg) translate(10%, -4%); }
 
 .stamp {
   position: absolute;
@@ -574,8 +574,10 @@ body[data-view="projects"] .chapter {
   bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   z-index: 16;
   display: flex;
+  flex-wrap: nowrap;
   gap: 2px;
   padding: 5px;
+  white-space: nowrap;
   background: rgb(255 255 255 / 0.92);
   border: 1px solid rgb(25 21 18 / 0.1);
   border-radius: 999px;
@@ -1023,6 +1025,8 @@ body.inspect-open { overflow: hidden; }
   .col { gap: 12px; }
 
   .piece:nth-child(n) .print { transform: none; }
+
+  .dock a { padding: 7px 12px; font-size: 12px; }
 
   .meta strong { font-size: 14px; }
 
