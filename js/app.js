@@ -308,8 +308,15 @@
 
   // Swipe: horizontal-dominant drag of at least SWIPE_MIN px. Vertical drags are
   // left to the browser (touch-action: pan-y), which cancels the pointer.
+  function isSwipe(dx, dy) {
+    return Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy) * 1.2;
+  }
+
+  // Touch input goes through touch events (see bindTouchSwipe): iOS Safari fires
+  // pointercancel as soon as it claims a gesture, and only a cancelable touchmove
+  // with preventDefault reliably keeps a horizontal drag away from the browser.
   function watchSwipe(down, onSwipe) {
-    if (!down.isPrimary) return;
+    if (!down.isPrimary || down.pointerType === "touch") return;
     if (down.pointerType === "mouse" && down.button !== 0) return;
     const id = down.pointerId;
     const x0 = down.clientX;
@@ -329,7 +336,7 @@
       if (event.type !== "pointerup") return;
       const dx = event.clientX - x0;
       const dy = event.clientY - y0;
-      if (Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy) * 1.2) {
+      if (isSwipe(dx, dy)) {
         suppressClickUntil = performance.now() + 500;
         onSwipe(dx < 0 ? 1 : -1);
       } else if (dragged) {
@@ -341,6 +348,63 @@
     window.addEventListener("pointercancel", end);
   }
 
+  // Touch swipe on elements matching `selector` inside `root`. Direction locks after
+  // TAP_SLOP px: vertical drags are left to the page (scroll), horizontal drags
+  // preventDefault every touchmove so the browser never starts a pan.
+  function bindTouchSwipe(root, selector, onSwipe) {
+    let track = null;
+    root.addEventListener("touchstart", (event) => {
+      if (event.touches.length !== 1) {
+        track = null;
+        return;
+      }
+      const surface = event.target.closest && event.target.closest(selector);
+      if (!surface || !root.contains(surface)) {
+        track = null;
+        return;
+      }
+      const t = event.touches[0];
+      track = { surface: surface, id: t.identifier, x0: t.clientX, y0: t.clientY, x: t.clientX, y: t.clientY, lock: "" };
+    }, { passive: true });
+    root.addEventListener("touchmove", (event) => {
+      if (!track) return;
+      const t = [...event.changedTouches].find((touch) => touch.identifier === track.id);
+      if (!t) return;
+      if (event.touches.length > 1) {
+        track = null;
+        return;
+      }
+      track.x = t.clientX;
+      track.y = t.clientY;
+      const dx = track.x - track.x0;
+      const dy = track.y - track.y0;
+      if (!track.lock && (Math.abs(dx) > TAP_SLOP || Math.abs(dy) > TAP_SLOP)) {
+        track.lock = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+      }
+      if (track.lock === "y") {
+        track = null;
+        return;
+      }
+      if (track.lock === "x" && event.cancelable) event.preventDefault();
+    }, { passive: false });
+    root.addEventListener("touchend", (event) => {
+      if (!track) return;
+      const t = [...event.changedTouches].find((touch) => touch.identifier === track.id);
+      if (!t) return;
+      const done = track;
+      track = null;
+      const dx = t.clientX - done.x0;
+      const dy = t.clientY - done.y0;
+      if (done.lock !== "x") return;
+      suppressClickUntil = performance.now() + 500;
+      if (event.cancelable) event.preventDefault();
+      if (isSwipe(dx, dy)) onSwipe(done.surface, dx < 0 ? 1 : -1);
+    }, { passive: false });
+    root.addEventListener("touchcancel", () => {
+      track = null;
+    }, { passive: true });
+  }
+
   function rotateStack(piece, delta) {
     const item = byId(piece.dataset.item);
     if (!item || !isStack(item)) return;
@@ -350,35 +414,18 @@
     const backImg = piece.querySelector(".layer.back");
     if (!frontImg || !backImg) return;
     const next = wrap(frontOf(piece) + delta, shots.length);
-    const token = (Number(piece.dataset.swipeToken) || 0) + 1;
-    piece.dataset.swipeToken = String(token);
+    // Swap first so the stack state never depends on an animation finishing,
+    // then slide the new front photo in from the side the finger came from.
     piece.dataset.front = String(next);
-    const swap = function () {
-      frontImg.src = shots[next];
-      backImg.src = shots[wrap(next + 1, shots.length)];
-    };
-    if (!frontLayer.animate) {
-      swap();
-      return;
-    }
+    frontImg.src = shots[next];
+    backImg.src = shots[wrap(next + 1, shots.length)];
+    if (!frontLayer.animate) return;
     frontLayer.getAnimations().forEach((anim) => anim.cancel());
     const still = reduceMotion();
-    const out = still
-      ? [{ opacity: 1 }, { opacity: 0 }]
-      : [{ translate: "0 0", opacity: 1 }, { translate: (-delta * 34) + "% 0", opacity: 0 }];
-    const back = still
-      ? [{ opacity: 0 }, { opacity: 1 }]
-      : [{ translate: (delta * 12) + "% 0", opacity: 0 }, { translate: "0 0", opacity: 1 }];
-    const leave = frontLayer.animate(out, { duration: still ? 90 : 130, easing: "cubic-bezier(0.55, 0, 1, 0.45)", fill: "forwards" });
-    leave.finished.then(function () {
-      if (piece.dataset.swipeToken !== String(token)) return;
-      swap();
-      const enter = frontLayer.animate(back, { duration: still ? 150 : 200, easing: "cubic-bezier(0.23, 1, 0.32, 1)" });
-      leave.cancel();
-      return enter.finished;
-    }).catch(function () {
-      if (piece.dataset.swipeToken === String(token)) swap();
-    });
+    const enter = still
+      ? [{ opacity: 0.2 }, { opacity: 1 }]
+      : [{ translate: (delta * 30) + "% 0", opacity: 0.2 }, { translate: "0 0", opacity: 1 }];
+    frontLayer.animate(enter, { duration: still ? 160 : 240, easing: "cubic-bezier(0.23, 1, 0.32, 1)" });
   }
 
   function bindChrome() {
@@ -402,6 +449,11 @@
       const piece = surface && surface.closest(".piece.is-stack");
       if (!piece || !gallery.contains(piece)) return;
       watchSwipe(event, (delta) => rotateStack(piece, delta));
+    });
+
+    bindTouchSwipe(gallery, ".shot.is-stack", (surface, delta) => {
+      const piece = surface.closest(".piece.is-stack");
+      if (piece) rotateStack(piece, delta);
     });
 
     gallery.addEventListener("dragstart", (event) => {
@@ -633,24 +685,26 @@
       }
     });
     const frame = document.getElementById("sheet-frame");
-    frame.addEventListener("pointerdown", (event) => {
-      watchSwipe(event, (delta) => {
-        const item = byId(stack[cursor]);
-        if (!item) return;
-        // Mirror the arrow keys: step pictures when there are several, else step projects.
-        if (shotsOf(item).length > 1) showShot(item, shot + delta);
-        else step(delta);
-      });
-    });
+    const swipeSheet = (delta) => {
+      const item = byId(stack[cursor]);
+      if (!item) return;
+      // Mirror the arrow keys: step pictures when there are several, else step projects.
+      if (shotsOf(item).length > 1) showShot(item, shot + delta);
+      else step(delta);
+    };
+    frame.addEventListener("pointerdown", (event) => watchSwipe(event, swipeSheet));
+    bindTouchSwipe(frame, ".sheet-frame", (surface, delta) => swipeSheet(delta));
     frame.addEventListener("dragstart", (event) => event.preventDefault());
     document.getElementById("sheet-prev").addEventListener("click", () => step(-1));
     document.getElementById("sheet-next").addEventListener("click", () => step(1));
   }
 
   // A swipe must not also count as a click/open.
-  document.addEventListener("pointerdown", () => {
+  const clearSuppress = () => {
     suppressClickUntil = 0;
-  }, true);
+  };
+  document.addEventListener("pointerdown", clearSuppress, true);
+  document.addEventListener("touchstart", clearSuppress, { capture: true, passive: true });
   document.addEventListener("click", (event) => {
     if (suppressClickUntil && performance.now() < suppressClickUntil) {
       suppressClickUntil = 0;
