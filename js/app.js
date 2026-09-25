@@ -19,6 +19,9 @@
   let cursor = 0;
   let shot = 0;
   let lastFocus = null;
+  const SWIPE_MIN = 40;
+  const TAP_SLOP = 10;
+  let suppressClickUntil = 0;
 
   function esc(value) {
     return String(value || "")
@@ -291,7 +294,91 @@
   function openFromTile(tile) {
     if (!tile) return;
     const ids = visibleTiles().map((el) => el.dataset.item);
-    openInspect(tile.dataset.item, ids, tile);
+    openInspect(tile.dataset.item, ids, tile, frontOf(tile));
+  }
+
+  function wrap(index, length) {
+    return ((index % length) + length) % length;
+  }
+
+  function frontOf(piece) {
+    const n = Number(piece && piece.dataset.front);
+    return Number.isFinite(n) && n > 0 ? n : 0;
+  }
+
+  // Swipe: horizontal-dominant drag of at least SWIPE_MIN px. Vertical drags are
+  // left to the browser (touch-action: pan-y), which cancels the pointer.
+  function watchSwipe(down, onSwipe) {
+    if (!down.isPrimary) return;
+    if (down.pointerType === "mouse" && down.button !== 0) return;
+    const id = down.pointerId;
+    const x0 = down.clientX;
+    const y0 = down.clientY;
+    let dragged = false;
+    function move(event) {
+      if (event.pointerId !== id) return;
+      const dx = event.clientX - x0;
+      const dy = event.clientY - y0;
+      if (Math.abs(dx) > TAP_SLOP && Math.abs(dx) > Math.abs(dy)) dragged = true;
+    }
+    function end(event) {
+      if (event.pointerId !== id) return;
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", end);
+      window.removeEventListener("pointercancel", end);
+      if (event.type !== "pointerup") return;
+      const dx = event.clientX - x0;
+      const dy = event.clientY - y0;
+      if (Math.abs(dx) >= SWIPE_MIN && Math.abs(dx) > Math.abs(dy) * 1.2) {
+        suppressClickUntil = performance.now() + 500;
+        onSwipe(dx < 0 ? 1 : -1);
+      } else if (dragged) {
+        suppressClickUntil = performance.now() + 500;
+      }
+    }
+    window.addEventListener("pointermove", move);
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", end);
+  }
+
+  function rotateStack(piece, delta) {
+    const item = byId(piece.dataset.item);
+    if (!item || !isStack(item)) return;
+    const shots = shotsOf(item);
+    const frontLayer = piece.querySelector(".layer.front");
+    const frontImg = frontLayer && frontLayer.querySelector("img");
+    const backImg = piece.querySelector(".layer.back");
+    if (!frontImg || !backImg) return;
+    const next = wrap(frontOf(piece) + delta, shots.length);
+    const token = (Number(piece.dataset.swipeToken) || 0) + 1;
+    piece.dataset.swipeToken = String(token);
+    piece.dataset.front = String(next);
+    const swap = function () {
+      frontImg.src = shots[next];
+      backImg.src = shots[wrap(next + 1, shots.length)];
+    };
+    if (!frontLayer.animate) {
+      swap();
+      return;
+    }
+    frontLayer.getAnimations().forEach((anim) => anim.cancel());
+    const still = reduceMotion();
+    const out = still
+      ? [{ opacity: 1 }, { opacity: 0 }]
+      : [{ translate: "0 0", opacity: 1 }, { translate: (-delta * 34) + "% 0", opacity: 0 }];
+    const back = still
+      ? [{ opacity: 0 }, { opacity: 1 }]
+      : [{ translate: (delta * 12) + "% 0", opacity: 0 }, { translate: "0 0", opacity: 1 }];
+    const leave = frontLayer.animate(out, { duration: still ? 90 : 130, easing: "cubic-bezier(0.55, 0, 1, 0.45)", fill: "forwards" });
+    leave.finished.then(function () {
+      if (piece.dataset.swipeToken !== String(token)) return;
+      swap();
+      const enter = frontLayer.animate(back, { duration: still ? 150 : 200, easing: "cubic-bezier(0.23, 1, 0.32, 1)" });
+      leave.cancel();
+      return enter.finished;
+    }).catch(function () {
+      if (piece.dataset.swipeToken === String(token)) swap();
+    });
   }
 
   function bindChrome() {
@@ -308,6 +395,17 @@
       const tile = event.target.closest(".tile");
       if (!tile || !gallery.contains(tile)) return;
       openFromTile(tile);
+    });
+
+    gallery.addEventListener("pointerdown", (event) => {
+      const surface = event.target.closest(".shot.is-stack");
+      const piece = surface && surface.closest(".piece.is-stack");
+      if (!piece || !gallery.contains(piece)) return;
+      watchSwipe(event, (delta) => rotateStack(piece, delta));
+    });
+
+    gallery.addEventListener("dragstart", (event) => {
+      if (event.target.closest(".shot.is-stack")) event.preventDefault();
     });
 
     gallery.addEventListener("keydown", (event) => {
@@ -423,7 +521,7 @@
     syncThumbs(item);
   }
 
-  function fillSheet(item) {
+  function fillSheet(item, startShot) {
     document.getElementById("sheet-file").textContent =
       "FILE / " + kindOf(item).toUpperCase() + " / " + padNum(cursor + 1);
     document.getElementById("sheet-stamp").textContent = stampOf(item);
@@ -431,7 +529,7 @@
     frame.className = "sheet-frame";
     frame.innerHTML = '<img id="sheet-img" alt="" width="1600" height="1000">';
     shot = 0;
-    showShot(item, 0);
+    showShot(item, startShot || 0);
     document.getElementById("sheet-title").textContent = item.title;
     document.getElementById("sheet-detail").textContent = item.detail || kindOf(item);
     document.getElementById("sheet-story").textContent = item.story || item.blurb;
@@ -442,7 +540,7 @@
     document.getElementById("sheet-next").disabled = stack.length < 2;
   }
 
-  function openInspect(id, ids, fromTile) {
+  function openInspect(id, ids, fromTile, startShot) {
     const item = byId(id);
     if (!item || !inspectEl) return;
     lastFocus = fromTile || document.activeElement;
@@ -452,7 +550,7 @@
       stack = [id];
       cursor = 0;
     }
-    fillSheet(byId(stack[cursor]));
+    fillSheet(byId(stack[cursor]), startShot);
     inspectEl.hidden = false;
     document.body.classList.add("inspect-open");
     setChromeInert(true);
@@ -534,9 +632,32 @@
         if (item) showShot(item, Number(thumb.dataset.shot));
       }
     });
+    const frame = document.getElementById("sheet-frame");
+    frame.addEventListener("pointerdown", (event) => {
+      watchSwipe(event, (delta) => {
+        const item = byId(stack[cursor]);
+        if (!item) return;
+        // Mirror the arrow keys: step pictures when there are several, else step projects.
+        if (shotsOf(item).length > 1) showShot(item, shot + delta);
+        else step(delta);
+      });
+    });
+    frame.addEventListener("dragstart", (event) => event.preventDefault());
     document.getElementById("sheet-prev").addEventListener("click", () => step(-1));
     document.getElementById("sheet-next").addEventListener("click", () => step(1));
   }
+
+  // A swipe must not also count as a click/open.
+  document.addEventListener("pointerdown", () => {
+    suppressClickUntil = 0;
+  }, true);
+  document.addEventListener("click", (event) => {
+    if (suppressClickUntil && performance.now() < suppressClickUntil) {
+      suppressClickUntil = 0;
+      event.preventDefault();
+      event.stopPropagation();
+    }
+  }, true);
 
   document.addEventListener("keydown", (event) => {
     if (!inspectEl || inspectEl.hidden) return;
