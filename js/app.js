@@ -122,8 +122,8 @@
               "</span>" +
             "</span>" +
           "</button>" +
-          dotsHTML(item) +
-        "</span>"
+        "</span>" +
+        dotsHTML(item)
       );
     }
     return (

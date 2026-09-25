@@ -334,15 +334,18 @@ html[data-layout="uneven"] .board {
 .stack-open:focus { outline: none; }
 
 .stack-dots {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   z-index: 6;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 4px;
+  height: 24px;
+  margin: -18px 0 0;
+}
+
+.piece.is-stack .meta {
+  padding-top: 4px;
 }
 
 .stack-dot {
@@ -401,7 +404,7 @@ html[data-layout="uneven"] .shot.is-stack { aspect-ratio: 6 / 5; }
 
 .layers {
   position: absolute;
-  inset: 12% 16% 20%;
+  inset: 10% 16% 24%;
 }
 
 .layer {
@@ -1117,6 +1120,12 @@ body.inspect-open { overflow: hidden; }
     transform: rotate(0deg) translateY(-6px);
   }
 
+  .piece.is-stack:hover .stack-dots,
+  .piece.is-stack:has(.stack-open:focus-visible) .stack-dots {
+    transform: translateY(-6px);
+    transition: transform var(--dur-cover) var(--ease-out);
+  }
+
   .piece:hover .shot:not(.is-stack),
   .piece:focus-visible .shot:not(.is-stack) {
     box-shadow:
@@ -1243,6 +1252,8 @@ body.inspect-open { overflow: hidden; }
   #about a:active,
   .piece:hover .shot,
   .piece:focus-visible .shot,
+  .piece.is-stack:hover .stack-dots,
+  .piece.is-stack:has(.stack-open:focus-visible) .stack-dots,
   .stamp,
   .sheet-stamp,
   .layer,
