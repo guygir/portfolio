@@ -2,7 +2,7 @@
   const WEEKS = 53;
   const MAX_WORKERS = 4;
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-  const compact = window.matchMedia("(max-width: 780px)");
+  const compact = window.matchMedia("(max-width: 860px)");
 
   const board = document.getElementById("pulse-board");
   const months = document.getElementById("pulse-months");
@@ -97,7 +97,7 @@
     return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
   }
   function destPoint(tile) {
-    const frame = tile.querySelector(".frame") || tile;
+    const frame = tile.querySelector(".shot") || tile;
     const box = frame.getBoundingClientRect();
     return { x: box.left + 10, y: box.top + box.height / 2 };
   }

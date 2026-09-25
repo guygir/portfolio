@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-layout="even">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -7,32 +7,67 @@
     <meta name="description" content="Work, games, and projects by Guy Girmonsky." />
     <meta name="theme-color" content="#ffffff" />
     <link rel="preload" href="fonts/fraunces-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <script>
+      (function () {
+        var layout = "even";
+        try {
+          var stored = localStorage.getItem("board-layout");
+          if (stored === "uneven") layout = "uneven";
+          else if (stored && stored !== "even") localStorage.removeItem("board-layout");
+        } catch (err) {}
+        document.documentElement.setAttribute("data-layout", layout);
+      })();
+    </script>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
-  <body>
+  <body data-view="current">
     <a class="skip" href="#gallery">Skip to work</a>
-    <div class="page">
-      <aside>
-        <a class="identity" href="#top">
-          <img src="images/profile/guy-girmonsky.jpg" alt="" width="56" height="56" />
-          <span>
-            <strong>Guy Girmonsky</strong>
-            <small>Research &amp; games</small>
-          </span>
-        </a>
-        <p class="lede">
-          I build systems that make complex things usable—from distributed AI
-          infrastructure to small games.
-        </p>
-        <nav aria-label="Gallery">
-          <button type="button" data-filter="current" class="on" aria-pressed="true">Current</button>
-          <button type="button" data-filter="work" aria-pressed="false">Work</button>
-          <button type="button" data-filter="games" aria-pressed="false">Games</button>
-          <button type="button" data-filter="projects" aria-pressed="false">Projects</button>
-          <a href="#about">About</a>
-        </nav>
+
+    <header class="masthead" id="chrome">
+      <a class="wordmark" href="#top">
+        Guy Girmonsky
+        <small>Research &amp; games</small>
+      </a>
+    </header>
+
+    <main id="top">
+      <div id="gallery"></div>
+
+      <section id="about">
+        <h2>About</h2>
+        <div class="about-grid">
+          <div class="about-copy">
+            <div class="about-lede">
+              <figure class="portrait">
+                <img src="images/profile/guy-girmonsky.jpg" alt="" width="220" height="220" />
+              </figure>
+              <div>
+                <p>
+                  Research engineer on AI platforms at IBM, previously hybrid-cloud
+                  storage. M.Sc. student. Before that I shipped Unity games for Club
+                  Tech.
+                </p>
+                <p>
+                  I collect Riftbound. The binder is on
+                  <a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a>.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="journey" id="journey">
+            <h3>From the catalog</h3>
+            <ol class="timeline" id="timeline"></ol>
+            <ul class="about-links">
+              <li><a href="https://github.com/zipnn/zipnn">ZipNN</a>, IEEE CLOUD 2025</li>
+              <li><a href="https://arxiv.org/abs/2502.20818">SkyStore</a>, VLDB 2025</li>
+              <li><a href="https://www.llm-d.ai">llm-d</a></li>
+              <li><a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a></li>
+            </ul>
+          </div>
+        </div>
+
         <section class="pulse" aria-label="GitHub contribution calendar">
-          <h2>Now</h2>
+          <h3>Now</h3>
           <p>Last year on GitHub. Green is contribution heat; outlined days have pull requests.</p>
           <p class="pulse-total" id="pulse-total"></p>
           <div class="pulse-cal">
@@ -50,44 +85,65 @@
             <span class="pulse-key-pr"><i class="pulse-swatch is-pr"></i>pull request</span>
           </p>
         </section>
-      </aside>
+      </section>
 
-      <main id="top">
-        <div id="gallery"></div>
+      <section id="contact">
+        <h2>Contact</h2>
+        <p><a href="mailto:guygir@gmail.com">guygir@gmail.com</a></p>
+        <ul>
+          <li><a href="https://github.com/guygir">GitHub</a></li>
+          <li><a href="https://guygir.itch.io">itch.io</a></li>
+          <li><a href="https://huggingface.co/Guygir">Hugging Face</a></li>
+        </ul>
+      </section>
 
-        <section id="about">
-          <div>
-            <h2>About</h2>
-            <p>
-              Research engineer on AI platforms at IBM, previously hybrid-cloud
-              storage. M.Sc. student. Before that I shipped Unity games for Club
-              Tech.
-            </p>
-            <p>
-              I collect Riftbound. The binder is on
-              <a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a>.
-            </p>
-          </div>
-          <ul>
-            <li><a href="https://github.com/zipnn/zipnn">ZipNN</a>, IEEE CLOUD 2025</li>
-            <li><a href="https://arxiv.org/abs/2502.20818">SkyStore</a>, VLDB 2025</li>
-            <li><a href="https://www.llm-d.ai">llm-d</a></li>
-            <li><a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a></li>
-            <li><a href="https://github.com/guygir">GitHub</a></li>
-            <li><a href="https://guygir.itch.io">itch.io</a></li>
-            <li><a href="https://huggingface.co/Guygir">Hugging Face</a></li>
-            <li><a href="mailto:guygir@gmail.com">guygir@gmail.com</a></li>
-          </ul>
-        </section>
-
-        <footer>
-          Research systems, playable ideas and a growing Riftbound binder.
-        </footer>
-      </main>
-    </div>
+      <footer>
+        Research systems, playable ideas and a growing Riftbound binder.
+      </footer>
+    </main>
     <svg class="pulse-sky" id="pulse-sky" aria-hidden="true"></svg>
+    <svg class="sr-filters" aria-hidden="true">
+      <filter id="portrait-ink" color-interpolation-filters="sRGB">
+        <feColorMatrix type="saturate" values="0" />
+        <feComponentTransfer>
+          <feFuncR type="table" tableValues="0.965 0.098" />
+          <feFuncG type="table" tableValues="0.953 0.082" />
+          <feFuncB type="table" tableValues="0.925 0.071" />
+        </feComponentTransfer>
+      </filter>
+    </svg>
+
+    <nav class="dock" id="dock" aria-label="Page">
+      <a href="#gallery" data-dock="work">Work</a>
+      <a href="#games" data-dock="games">Games</a>
+      <a href="#projects" data-dock="projects">Projects</a>
+      <a href="#about" data-dock="about">About</a>
+      <a href="#contact" data-dock="contact">Contact</a>
+    </nav>
+
+    <div class="inspect" id="inspect" hidden>
+      <button type="button" class="inspect-dim" data-close tabindex="-1" aria-label="Close"></button>
+      <article class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+        <p class="sheet-file" id="sheet-file"></p>
+        <span class="sheet-stamp" id="sheet-stamp"></span>
+        <figure class="sheet-frame" id="sheet-frame">
+          <img id="sheet-img" alt="" width="1600" height="1000" />
+        </figure>
+        <div class="sheet-thumbs" id="sheet-thumbs" hidden></div>
+        <h2 id="sheet-title"></h2>
+        <p class="sheet-detail" id="sheet-detail"></p>
+        <p class="sheet-story" id="sheet-story"></p>
+        <div class="sheet-bar">
+          <button type="button" id="sheet-prev">Prev</button>
+          <a id="sheet-enter" target="_blank" rel="noopener noreferrer">Open</a>
+          <button type="button" id="sheet-next">Next</button>
+        </div>
+        <button type="button" class="sheet-close" data-close>Close</button>
+      </article>
+    </div>
 
     <script src="js/data.js"></script>
+    <script src="js/timeline.js"></script>
     <script src="js/activity.js"></script>
     <script src="js/app.js"></script>
     <script src="js/pulse.js"></script>

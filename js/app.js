@@ -1,103 +1,586 @@
 (function () {
   const gallery = document.getElementById("gallery");
-  const buttons = document.querySelectorAll("nav button");
+  const inspectEl = document.getElementById("inspect");
+  const dock = document.getElementById("dock");
   const featuredIds = ["zipnn", "klafi", "riftrade"];
+  const stackedIds = ["klafi", "riftrade", "holdemle"];
+  const notes = {
+    opening: "One system, one game, one useful thing.",
+    work: "Published systems and current infrastructure work.",
+    games: "Playable experiments, puzzles and tabletop ideas.",
+    projects: "Small utilities for real groups and communities.",
+    archive: "Older work, still part of the story.",
+    lede: "I build systems that make complex things usable—from distributed AI infrastructure to small games.",
+  };
+  const FOCUSABLE = "a[href], button:not([disabled]), [tabindex='0']";
+  const LAYOUT_KEY = "board-layout";
   let filter = "current";
+  let stack = [];
+  let cursor = 0;
+  let shot = 0;
+  let lastFocus = null;
 
-  function visibleItems() {
-    return window.ITEMS.filter((item) =>
-      filter === "current" ? item.status === "active" : item.section === filter
-    );
+  function esc(value) {
+    return String(value || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/"/g, "&quot;");
   }
 
-  function tileHTML(item, extraClass) {
-    const note = item.status === "archive" ? "Archive" : item.tag;
+  function byId(id) {
+    return window.ITEMS.find((item) => item.id === id);
+  }
+
+  function reduceMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function parseLayout(value) {
+    return value === "uneven" ? "uneven" : "even";
+  }
+
+  function currentLayout() {
+    return parseLayout(document.documentElement.getAttribute("data-layout"));
+  }
+
+  function readLayout() {
+    let layout = "even";
+    try {
+      const stored = localStorage.getItem(LAYOUT_KEY);
+      if (stored === "uneven" || stored === "even") layout = stored;
+      else if (stored) localStorage.removeItem(LAYOUT_KEY);
+    } catch (err) {}
+    document.documentElement.setAttribute("data-layout", layout);
+    return layout;
+  }
+
+  function writeLayout(layout) {
+    const next = parseLayout(layout);
+    document.documentElement.setAttribute("data-layout", next);
+    try {
+      localStorage.setItem(LAYOUT_KEY, next);
+    } catch (err) {}
+  }
+
+  function stampOf(item) {
+    if (item.status === "archive") return "SHELF";
+    if (item.section === "games") {
+      if (/daily/i.test(item.detail || item.blurb || "")) return "DAILY";
+      if (/print/i.test(item.detail || item.blurb || "")) return "PRINT";
+      return "PLAY";
+    }
+    if (item.section === "work") return "WORK";
+    return "TOOL";
+  }
+
+  function kindOf(item) {
+    if (item.section === "games") return "Game";
+    if (item.section === "work") return "Work";
+    return "Tool";
+  }
+
+  function padNum(n) {
+    return String(n).padStart(2, "0");
+  }
+
+  function isStack(item) {
+    return stackedIds.indexOf(item.id) !== -1 && item.cover && item.hover && item.cover !== item.hover;
+  }
+
+  function shotsOf(item) {
+    if (isStack(item)) return [item.cover, item.hover];
+    return [item.cover];
+  }
+
+  function shotHTML(item) {
+    if (isStack(item)) {
+      return (
+        '<span class="shot is-stack">' +
+          '<span class="layers">' +
+            '<img class="layer back" src="' + esc(item.hover) + '" alt="" width="1600" height="1000">' +
+            '<span class="layer front">' +
+              '<img src="' + esc(item.cover) + '" alt="' + esc(item.title) + '" width="1600" height="1000">' +
+              '<span class="stamp">' + esc(stampOf(item)) + "</span>" +
+            "</span>" +
+          "</span>" +
+        "</span>"
+      );
+    }
     return (
-      '<a class="tile ' + (extraClass || "") + '" data-item="' + item.id + '" href="' + item.href + '" target="_blank" rel="noopener noreferrer">' +
-        '<span class="frame">' +
-          '<img class="a" src="' + item.cover + '" alt="' + item.title + '" width="1600" height="1000">' +
-          '<img class="b" src="' + item.hover + '" alt="" width="1600" height="1000">' +
-          '<span class="reveal">' + item.blurb + '</span>' +
-        '</span>' +
-        '<span class="meta">' +
-          '<span class="project-text">' +
-            '<strong>' + item.title + '</strong>' +
-            '<small>' + (item.detail || item.blurb) + '</small>' +
-          '</span>' +
-          '<span class="tag' + (item.status === "archive" ? " is-archive" : "") + '">' + note + '</span>' +
-        '</span>' +
-      '</a>'
+      '<span class="shot">' +
+        '<span class="stamp">' + esc(stampOf(item)) + "</span>" +
+        '<img class="a" src="' + esc(item.cover) + '" alt="' + esc(item.title) + '" width="1600" height="1000">' +
+        '<img class="b" src="' + esc(item.hover) + '" alt="" width="1600" height="1000">' +
+      "</span>"
     );
   }
 
-  function sectionHTML(title, items, note) {
+  function pieceHTML(item) {
+    const stacked = isStack(item) ? " is-stack" : "";
+    return (
+      '<button type="button" class="piece tile' + stacked + '" data-item="' + item.id + '" aria-haspopup="dialog">' +
+        shotHTML(item) +
+        '<span class="meta">' +
+          "<strong>" + esc(item.title) + "</strong>" +
+          "<small>" + esc(item.detail || item.blurb) + "</small>" +
+        "</span>" +
+      "</button>"
+    );
+  }
+
+  function switchHTML() {
+    const layout = currentLayout();
+    return (
+      '<div class="layout-switch" role="radiogroup" aria-label="Board layout">' +
+        '<button type="button" role="radio" data-layout="even" aria-checked="' + (layout === "even" ? "true" : "false") + '">Even</button>' +
+        '<button type="button" role="radio" data-layout="uneven" aria-checked="' + (layout === "uneven" ? "true" : "false") + '">Uneven</button>' +
+      "</div>"
+    );
+  }
+
+  function boardHTML(items) {
+    if (!items.length) return "";
+    return '<div class="board">' + items.map(pieceHTML).join("") + "</div>";
+  }
+
+  function ledeHTML() {
+    return (
+      '<header class="opening-head">' +
+        "<p>" + notes.lede + "</p>" +
+        '<div class="opening-tools">' +
+          '<p class="opening-note">' + notes.opening + "</p>" +
+          switchHTML() +
+        "</div>" +
+      "</header>"
+    );
+  }
+
+  function chapter(id, title, note, inner) {
+    if (!inner) return "";
+    return (
+      '<section class="chapter" id="chapter-' + id + '">' +
+        '<header class="chapter-head"><h2>' + title + "</h2>" +
+          '<div class="opening-tools">' +
+            (note ? "<p>" + note + "</p>" : "") +
+            switchHTML() +
+          "</div>" +
+        "</header>" +
+        inner +
+      "</section>"
+    );
+  }
+
+  function archiveBlock(items) {
     if (!items.length) return "";
     return (
-      '<section class="gallery-section">' +
-        '<header class="section-head"><h2>' + title + '</h2>' +
-          (note ? '<p>' + note + '</p>' : '') +
-        '</header>' +
-        '<div class="project-grid">' + items.map((item) => tileHTML(item)).join("") + '</div>' +
-      '</section>'
+      '<div class="archive-block">' +
+        "<h3>Archive</h3>" +
+        "<p>" + notes.archive + "</p>" +
+        '<div class="board">' + items.map(pieceHTML).join("") + "</div>" +
+      "</div>"
     );
   }
 
-  function currentHTML(items) {
-    const featured = featuredIds.map((id) => items.find((item) => item.id === id)).filter(Boolean);
-    const rest = items.filter((item) => !featuredIds.includes(item.id));
+  function splitStatus(items) {
+    return {
+      active: items.filter((item) => item.status === "active"),
+      archive: items.filter((item) => item.status === "archive"),
+    };
+  }
+
+  function featuredFirst(items) {
+    const featured = featuredIds.map(byId).filter((item) => item && items.indexOf(item) !== -1);
+    const rest = items.filter((item) => featuredIds.indexOf(item.id) === -1);
+    return featured.concat(rest);
+  }
+
+  function currentHTML() {
+    const active = window.ITEMS.filter((item) => item.status === "active");
     return (
-      '<section class="gallery-section selected">' +
-        '<header class="section-head"><h2>Selected</h2><p>One system, one game, one useful thing.</p></header>' +
-        '<div class="featured-grid">' +
-          tileHTML(featured[0], "feature-main") +
-          '<div class="featured-stack">' + featured.slice(1).map((item) => tileHTML(item)).join("") + '</div>' +
-        '</div>' +
-      '</section>' +
-      sectionHTML("Research", rest.filter((item) => item.section === "work"), "Published systems and current infrastructure work.") +
-      sectionHTML("Games", rest.filter((item) => item.section === "games"), "Playable experiments, puzzles and tabletop ideas.") +
-      sectionHTML("Tools", rest.filter((item) => item.section === "projects"), "Small utilities for real groups and communities.")
+      '<section class="opening" id="opening">' +
+        ledeHTML() +
+        boardHTML(featuredFirst(active)) +
+      "</section>"
     );
+  }
+
+  function isolatedHTML() {
+    const items = window.ITEMS.filter((item) => item.section === filter);
+    const parts = splitStatus(items);
+    const title = filter === "work" ? "Work" : filter === "games" ? "Games" : "Projects";
+    const note = notes[filter];
+    const active = filter === "work" ? featuredFirst(parts.active.concat(parts.archive)) : featuredFirst(parts.active);
+    const inner = boardHTML(active) + (filter === "work" ? "" : archiveBlock(parts.archive));
+    return chapter(filter, title, note, inner);
+  }
+
+  function visibleTiles() {
+    const boards = [...gallery.querySelectorAll(".board")];
+    if (!boards.length) return [...gallery.querySelectorAll(".tile")];
+    return boards.flatMap((board) => piecesInReadingOrder(board));
+  }
+
+  function layoutBoards() {
+    gallery.querySelectorAll(".board").forEach(applyBoardLayout);
+  }
+
+  function piecesInReadingOrder(board) {
+    const cols = [...board.querySelectorAll(".col")];
+    if (!cols.length) return [...board.querySelectorAll(".piece")];
+    const reading = [];
+    let row = 0;
+    let more = true;
+    while (more) {
+      more = false;
+      cols.forEach((col) => {
+        const piece = col.children[row];
+        if (piece) {
+          reading.push(piece);
+          more = true;
+        }
+      });
+      row += 1;
+    }
+    return reading;
+  }
+
+  function applyBoardLayout(board) {
+    const pieces = piecesInReadingOrder(board);
+    if (!pieces.length) return;
+    board.replaceChildren();
+    if (currentLayout() === "uneven") {
+      const n = window.matchMedia("(max-width: 780px)").matches ? 2 : 3;
+      const cols = Array.from({ length: n }, function () {
+        const col = document.createElement("div");
+        col.className = "col";
+        board.appendChild(col);
+        return col;
+      });
+      pieces.forEach((piece, i) => cols[i % n].appendChild(piece));
+      return;
+    }
+    pieces.forEach((piece) => board.appendChild(piece));
+  }
+
+  function setLayout(next) {
+    if (next !== "even" && next !== "uneven") return;
+    if (currentLayout() === next) return;
+    const fade = !reduceMotion();
+    if (fade) gallery.classList.add("is-relayout");
+    writeLayout(next);
+    syncSwitch();
+    const apply = function () {
+      layoutBoards();
+      if (fade) {
+        requestAnimationFrame(function () {
+          gallery.classList.remove("is-relayout");
+        });
+      }
+    };
+    if (fade) window.setTimeout(apply, 90);
+    else apply();
+  }
+
+  function syncSwitch() {
+    const layout = currentLayout();
+    gallery.querySelectorAll(".layout-switch [data-layout]").forEach((btn) => {
+      btn.setAttribute("aria-checked", btn.dataset.layout === layout ? "true" : "false");
+    });
+  }
+
+  function openFromTile(tile) {
+    if (!tile) return;
+    const ids = visibleTiles().map((el) => el.dataset.item);
+    openInspect(tile.dataset.item, ids, tile);
+  }
+
+  function bindChrome() {
+    if (gallery.dataset.bound) return;
+    gallery.dataset.bound = "1";
+
+    gallery.addEventListener("click", (event) => {
+      const layoutBtn = event.target.closest(".layout-switch [data-layout]");
+      if (layoutBtn) {
+        event.preventDefault();
+        setLayout(layoutBtn.dataset.layout);
+        return;
+      }
+      const tile = event.target.closest(".tile");
+      if (!tile || !gallery.contains(tile)) return;
+      openFromTile(tile);
+    });
+
+    gallery.addEventListener("keydown", (event) => {
+      const group = event.target.closest(".layout-switch");
+      if (group && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+        event.preventDefault();
+        setLayout(currentLayout() === "even" ? "uneven" : "even");
+        const on = group.querySelector('[aria-checked="true"]');
+        if (on) on.focus();
+      }
+    });
+  }
+
+  function focusable() {
+    return [...inspectEl.querySelectorAll(FOCUSABLE)].filter((el) => !el.disabled && el.tabIndex !== -1);
+  }
+
+  function setChromeInert(on) {
+    ["chrome", "top", "dock"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) el.toggleAttribute("inert", on);
+    });
+  }
+
+  function renderTimeline() {
+    const list = document.getElementById("timeline");
+    if (!list || !window.TIMELINE) return;
+    const rows = (window.TIMELINE.entries || []).filter((row) => row && !row.todo && row.render !== false);
+    list.innerHTML = rows.map((row) => (
+      "<li>" +
+        '<span class="when">' + esc(row.year) + "</span>" +
+        '<span class="what">' +
+          "<strong>" + esc(row.title) + "</strong>" +
+          "<small>" + esc(row.detail) + "</small>" +
+        "</span>" +
+      "</li>"
+    )).join("");
+  }
+
+  function dockKeyForFilter() {
+    if (filter === "games" || filter === "projects") return filter;
+    return "work";
+  }
+
+  function setDock(key) {
+    if (!dock) return;
+    dock.querySelectorAll("[data-dock]").forEach((link) => {
+      link.classList.toggle("on", link.dataset.dock === key);
+    });
+  }
+
+  function bindDock() {
+    if (!dock || dock.dataset.bound) return;
+    dock.dataset.bound = "1";
+    const about = document.getElementById("about");
+    const contact = document.getElementById("contact");
+    const io = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (!visible) return;
+      if (visible.target.id === "about") setDock("about");
+      else if (visible.target.id === "contact") setDock("contact");
+      else setDock(dockKeyForFilter());
+    }, { rootMargin: "-28% 0px -52% 0px", threshold: [0.1, 0.25, 0.5] });
+    [gallery, about, contact].forEach((el) => {
+      if (el) io.observe(el);
+    });
+    dock.addEventListener("click", (event) => {
+      const link = event.target.closest("[data-dock]");
+      if (!link) return;
+      const key = link.dataset.dock;
+      if (key === "work") {
+        event.preventDefault();
+        apply("current");
+        setDock("work");
+        return;
+      }
+      if (key === "games" || key === "projects") {
+        event.preventDefault();
+        apply(key);
+        setDock(key);
+        return;
+      }
+      setDock(key);
+    });
+  }
+
+  function syncThumbs(item) {
+    const thumbs = document.getElementById("sheet-thumbs");
+    const shots = shotsOf(item);
+    if (!thumbs) return;
+    if (shots.length < 2) {
+      thumbs.hidden = true;
+      thumbs.innerHTML = "";
+      return;
+    }
+    thumbs.hidden = false;
+    thumbs.innerHTML = shots.map((src, i) => (
+      '<button type="button" class="sheet-thumb' + (i === shot ? " on" : "") + '" data-shot="' + i + '" aria-label="Image ' + (i + 1) + ' of ' + shots.length + '" aria-pressed="' + (i === shot ? "true" : "false") + '">' +
+        '<img src="' + esc(src) + '" alt="" width="160" height="100">' +
+      "</button>"
+    )).join("");
+  }
+
+  function showShot(item, index) {
+    const shots = shotsOf(item);
+    if (!shots.length) return;
+    shot = ((index % shots.length) + shots.length) % shots.length;
+    const img = document.getElementById("sheet-img");
+    img.src = shots[shot];
+    img.alt = item.title + (shots.length > 1 ? " (" + (shot + 1) + " of " + shots.length + ")" : "");
+    syncThumbs(item);
+  }
+
+  function fillSheet(item) {
+    document.getElementById("sheet-file").textContent =
+      "FILE / " + kindOf(item).toUpperCase() + " / " + padNum(cursor + 1);
+    document.getElementById("sheet-stamp").textContent = stampOf(item);
+    const frame = document.getElementById("sheet-frame");
+    frame.className = "sheet-frame";
+    frame.innerHTML = '<img id="sheet-img" alt="" width="1600" height="1000">';
+    shot = 0;
+    showShot(item, 0);
+    document.getElementById("sheet-title").textContent = item.title;
+    document.getElementById("sheet-detail").textContent = item.detail || kindOf(item);
+    document.getElementById("sheet-story").textContent = item.story || item.blurb;
+    const enter = document.getElementById("sheet-enter");
+    enter.href = item.href;
+    enter.textContent = "Open project";
+    document.getElementById("sheet-prev").disabled = stack.length < 2;
+    document.getElementById("sheet-next").disabled = stack.length < 2;
+  }
+
+  function openInspect(id, ids, fromTile) {
+    const item = byId(id);
+    if (!item || !inspectEl) return;
+    lastFocus = fromTile || document.activeElement;
+    stack = (ids && ids.length ? ids : [id]).filter((key) => byId(key));
+    cursor = stack.indexOf(id);
+    if (cursor < 0) {
+      stack = [id];
+      cursor = 0;
+    }
+    fillSheet(byId(stack[cursor]));
+    inspectEl.hidden = false;
+    document.body.classList.add("inspect-open");
+    setChromeInert(true);
+    document.getElementById("sheet-enter").focus();
+  }
+
+  function closeInspect() {
+    if (!inspectEl || inspectEl.hidden) return;
+    inspectEl.hidden = true;
+    document.body.classList.remove("inspect-open");
+    setChromeInert(false);
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  function step(delta) {
+    if (stack.length < 2) return;
+    cursor = (cursor + delta + stack.length) % stack.length;
+    fillSheet(byId(stack[cursor]));
+    document.getElementById("sheet-enter").focus();
   }
 
   function render() {
-    const items = visibleItems();
-    if (filter === "current") {
-      gallery.innerHTML = currentHTML(items);
-    } else {
-      const active = items.filter((item) => item.status === "active");
-      const archive = items.filter((item) => item.status === "archive");
-      gallery.innerHTML =
-        sectionHTML(filter === "work" ? "Research" : filter === "games" ? "Games" : "Tools", active) +
-        sectionHTML("Archive", archive, "Older work, still part of the story.");
-    }
-    bindTiles();
+    document.body.dataset.view = filter;
+    gallery.innerHTML = filter === "current" ? currentHTML() : isolatedHTML();
+    layoutBoards();
+    syncSwitch();
+    bindChrome();
+    renderTimeline();
+    bindDock();
+    setDock(dockKeyForFilter());
     if (window.Pulse) window.Pulse.refresh();
   }
 
-  function bindTiles() {
-    const coarse = window.matchMedia("(hover: none)");
-    gallery.querySelectorAll(".tile").forEach((tile) => {
-      tile.addEventListener("click", (event) => {
-        if (!coarse.matches) return;
-        if (!tile.classList.contains("is-flipped")) {
-          event.preventDefault();
-          gallery.querySelectorAll(".tile").forEach((t) => t.classList.remove("is-flipped"));
-          tile.classList.add("is-flipped");
-        }
-      });
-    });
-  }
-
-  function apply(next) {
+  function apply(next, options) {
+    closeInspect();
     filter = next;
-    buttons.forEach((b) => {
-      const on = b.dataset.filter === filter;
-      b.classList.toggle("on", on);
-      b.setAttribute("aria-pressed", on ? "true" : "false");
-    });
     render();
+    const silent = options && options.silent;
+    if (!silent) {
+      if (filter === "current") {
+        if (location.hash && location.hash !== "#top" && location.hash !== "#opening" && location.hash !== "#gallery") {
+          history.replaceState(null, "", location.pathname + location.search);
+        }
+      } else {
+        history.replaceState(null, "", "#" + filter);
+      }
+      const top = function () {
+        if (document.activeElement && document.activeElement.blur) {
+          document.activeElement.blur();
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+        document.documentElement.scrollTop = 0;
+      };
+      top();
+      requestAnimationFrame(top);
+      setTimeout(top, 80);
+      setTimeout(top, 200);
+    }
   }
 
-  buttons.forEach((btn) => btn.addEventListener("click", () => apply(btn.dataset.filter)));
-  apply("current");
+  function fromHash() {
+    const hash = (location.hash || "").replace("#", "");
+    if (hash === "games" || hash === "projects") {
+      if (filter !== hash) apply(hash, { silent: true });
+      return;
+    }
+    if (hash === "about" || hash === "contact") return;
+    if (filter !== "current") apply("current", { silent: true });
+  }
+
+  window.addEventListener("hashchange", fromHash);
+
+  if (inspectEl) {
+    inspectEl.addEventListener("click", (event) => {
+      if (event.target.closest("[data-close]")) closeInspect();
+      const thumb = event.target.closest("[data-shot]");
+      if (thumb) {
+        const item = byId(stack[cursor]);
+        if (item) showShot(item, Number(thumb.dataset.shot));
+      }
+    });
+    document.getElementById("sheet-prev").addEventListener("click", () => step(-1));
+    document.getElementById("sheet-next").addEventListener("click", () => step(1));
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (!inspectEl || inspectEl.hidden) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeInspect();
+      return;
+    }
+    const item = byId(stack[cursor]);
+    const shots = item ? shotsOf(item) : [];
+    if ((event.key === "ArrowLeft" || event.key === "ArrowRight") && shots.length > 1) {
+      event.preventDefault();
+      showShot(item, shot + (event.key === "ArrowRight" ? 1 : -1));
+      return;
+    }
+    if (event.key === "ArrowLeft") step(-1);
+    if (event.key === "ArrowRight") step(1);
+    if (event.key === "Tab") {
+      const nodes = focusable();
+      if (!nodes.length) return;
+      const first = nodes[0];
+      const last = nodes[nodes.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  let layoutTimer = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(layoutTimer);
+    layoutTimer = setTimeout(layoutBoards, 120);
+  });
+
+  readLayout();
+  const start = (location.hash || "").replace("#", "");
+  if (start === "games" || start === "projects") apply(start, { silent: true });
+  else apply("current", { silent: true });
+  if (start === "about" || start === "contact") {
+    const section = document.getElementById(start);
+    if (section) section.scrollIntoView();
+  }
 })();
