@@ -1,6 +1,18 @@
 window.TIMELINE = {
   entries: [
     {
+      year: "2026",
+      title: "Scheduling Games",
+      detail: "Israel AGT Day · Reichman · Unpublished",
+      source: "js/data.js (iagt.detail)",
+    },
+    {
+      year: "2026",
+      title: "EV Charging",
+      detail: "ISTRC scholarship summary · Unpublished",
+      source: "js/data.js (istrc.detail)",
+    },
+    {
       year: "2025",
       title: "ZipNN",
       detail: "IBM Research · IEEE CLOUD 2025",

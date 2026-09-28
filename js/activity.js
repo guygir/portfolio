@@ -45,6 +45,8 @@ window.REPO_TO_ITEM = {
   "guygir/HRCC": "hrcc",
   "guygir/Emotions": "emotions",
   "guygir/Matching": "matching",
+  "guygir/cursor-list-draft": "listdraft",
+  "guygir/Cursor_Trending": "trending",
 };
 
 window.normalizeEvents = function normalizeEvents(events) {

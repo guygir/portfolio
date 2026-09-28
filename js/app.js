@@ -651,8 +651,14 @@
     document.getElementById("sheet-detail").textContent = item.detail || kindOf(item);
     document.getElementById("sheet-story").textContent = item.story || item.blurb;
     const enter = document.getElementById("sheet-enter");
-    enter.href = item.href;
-    enter.textContent = "Open project";
+    if (item.href) {
+      enter.hidden = false;
+      enter.href = item.href;
+      enter.textContent = "Open project";
+    } else {
+      enter.hidden = true;
+      enter.removeAttribute("href");
+    }
     document.getElementById("sheet-prev").disabled = stack.length < 2;
     document.getElementById("sheet-next").disabled = stack.length < 2;
   }
@@ -671,7 +677,13 @@
     inspectEl.hidden = false;
     document.body.classList.add("inspect-open");
     setChromeInert(true);
-    document.getElementById("sheet-enter").focus();
+    focusSheetAction();
+  }
+
+  function focusSheetAction() {
+    const enter = document.getElementById("sheet-enter");
+    if (enter && !enter.hidden) enter.focus();
+    else document.querySelector(".sheet-close").focus();
   }
 
   function closeInspect() {
@@ -686,7 +698,7 @@
     if (stack.length < 2) return;
     cursor = (cursor + delta + stack.length) % stack.length;
     fillSheet(byId(stack[cursor]));
-    document.getElementById("sheet-enter").focus();
+    focusSheetAction();
   }
 
   function render() {
