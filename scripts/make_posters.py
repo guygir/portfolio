@@ -251,4 +251,86 @@ for slug, bg, accent, title, a, b in projects:
         f'<text x="100" y="250" class="u" fill="{accent}" font-size="20">{a}</text>',
     ))
 
+write("cover", "listdraft", poster(
+    "#F3E6C8", "#1E3A5F", "#1A1612",
+    "GAME  ·  הרשימה",
+    "List Draft",
+    ["Snake-draft a ticket.", "A toy mandate sim counts the seats."],
+    '''
+    <rect x="540" y="210" width="70" height="250" rx="6" fill="#1E3A5F"/>
+    <rect x="622" y="250" width="70" height="210" rx="6" fill="#1E3A5F" fill-opacity="0.55"/>
+    <rect x="704" y="300" width="70" height="160" rx="6" fill="#C2410C"/>
+    ''',
+))
+write("hover", "listdraft", hover_frame(
+    "#1E3A5F", "#F3E6C8", "#F3EEE4",
+    "הרשימה",
+    "Chemistry tree · not a forecast",
+    '''
+    <text x="100" y="230" class="d" fill="#F3E6C8" font-size="42">the list</text>
+    <text x="100" y="290" class="u" fill="#F3EEE4" fill-opacity="0.8" font-size="18">Draft against CPU tickets, then count seats.</text>
+    ''',
+))
+
+write("cover", "trending", poster(
+    "#1C2430", "#F0C36A", "#F3EEE4",
+    "PROJECT  ·  DAILY",
+    "Trending",
+    ["GitHub, Trendshift, Product Hunt.", "One ranked list each morning."],
+    '''
+    <rect x="540" y="420" width="40" height="80" fill="#F0C36A" fill-opacity="0.35"/>
+    <rect x="590" y="360" width="40" height="140" fill="#F0C36A" fill-opacity="0.55"/>
+    <rect x="640" y="300" width="40" height="200" fill="#C2410C"/>
+    <rect x="690" y="250" width="40" height="250" fill="#F0C36A"/>
+    ''',
+))
+write("hover", "trending", hover_frame(
+    "#141A22", "#F0C36A", "#F3EEE4",
+    "Trending Digest",
+    "Keyword watchlist · same-day overwrite",
+    '''
+    <text x="100" y="240" class="u" fill="#F0C36A" font-size="18">GitHub  ·  Trendshift  ·  Product Hunt</text>
+    ''',
+))
+
+write("cover", "iagt", poster(
+    "#241E2A", "#D7C4A8", "#F3EEE4",
+    "REICHMAN  ·  ISRAEL AGT DAY 2026",
+    "Scheduling",
+    ["Jobs pick a machine and a duration.", "Unpublished thesis talk."],
+    '''
+    <rect x="540" y="280" width="200" height="16" fill="#D7C4A8" fill-opacity="0.35"/>
+    <rect x="540" y="320" width="150" height="16" fill="#C2410C"/>
+    <rect x="540" y="360" width="110" height="16" fill="#D7C4A8" fill-opacity="0.7"/>
+    ''',
+))
+write("hover", "iagt", hover_frame(
+    "#1A1520", "#D7C4A8", "#F3EEE4",
+    "Strategic durations",
+    "SPT · EDD · LPT · batch · not published",
+    '''
+    <text x="100" y="240" class="u" fill="#D7C4A8" font-size="18">With Tami Tamir · Weizmann, January 2026</text>
+    ''',
+))
+
+write("cover", "istrc", poster(
+    "#1A2A24", "#A8C9B4", "#F3EEE4",
+    "ISTRC  ·  2025–26  ·  UNPUBLISHED",
+    "Charging",
+    ["Drivers pick a station and a duration.", "Partial charge still pays."],
+    '''
+    <rect x="560" y="250" width="28" height="180" rx="8" fill="#A8C9B4"/>
+    <rect x="600" y="290" width="28" height="140" rx="8" fill="#A8C9B4" fill-opacity="0.45"/>
+    <rect x="640" y="250" width="28" height="180" rx="8" fill="#C2410C" fill-opacity="0.8"/>
+    ''',
+))
+write("hover", "istrc", hover_frame(
+    "#121C18", "#A8C9B4", "#F3EEE4",
+    "EV charging game",
+    "Same thesis · ISTRC progress summary",
+    '''
+    <text x="100" y="240" class="u" fill="#A8C9B4" font-size="18">Reichman · Tami Tamir · not a published paper</text>
+    ''',
+))
+
 print("done")
