@@ -824,7 +824,6 @@ body {
   --pulse-weeks: 53;
   --pulse-gap: 2px;
   --pulse-max: 10px;
-  --pulse-cell: min(var(--pulse-max), calc((100% - (var(--pulse-weeks) - 1) * var(--pulse-gap)) / var(--pulse-weeks)));
   width: min(100%, calc(var(--pulse-weeks) * var(--pulse-max) + (var(--pulse-weeks) - 1) * var(--pulse-gap)));
   max-width: 100%;
   overflow: hidden;
@@ -832,7 +831,7 @@ body {
 
 .pulse-months {
   display: grid;
-  grid-template-columns: repeat(53, var(--pulse-cell));
+  grid-template-columns: repeat(53, minmax(0, 1fr));
   gap: var(--pulse-gap);
   margin-bottom: 4px;
   color: var(--mute);
@@ -852,15 +851,18 @@ body {
 
 .pulse-board {
   display: grid;
-  grid-template-rows: repeat(7, var(--pulse-cell));
+  width: 100%;
+  grid-template-columns: repeat(53, minmax(0, 1fr));
+  grid-template-rows: repeat(7, auto);
   grid-auto-flow: column;
-  grid-auto-columns: var(--pulse-cell);
   gap: var(--pulse-gap);
 }
 
 .pulse-cell {
-  width: var(--pulse-cell);
-  height: var(--pulse-cell);
+  width: 100%;
+  min-width: 0;
+  aspect-ratio: 1;
+  height: auto;
   border-radius: 2px;
   background: #ebedf0;
 }
