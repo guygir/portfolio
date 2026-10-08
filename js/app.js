@@ -141,18 +141,17 @@
         "<strong>" + esc(item.title) + "</strong>" +
         "<small>" + esc(item.detail || item.blurb) + "</small>" +
       "</span>";
+    const body = '<span class="reveal-shift">' + shotHTML(item) + meta + "</span>";
     if (isStack(item)) {
       return (
-        '<article class="piece tile is-stack" data-item="' + item.id + '" data-front="0">' +
-          shotHTML(item) +
-          meta +
+        '<article class="piece tile is-stack reveal" data-item="' + item.id + '" data-front="0">' +
+          body +
         "</article>"
       );
     }
     return (
-      '<button type="button" class="piece tile" data-item="' + item.id + '" aria-haspopup="dialog">' +
-        shotHTML(item) +
-        meta +
+      '<button type="button" class="piece tile reveal" data-item="' + item.id + '" aria-haspopup="dialog">' +
+        body +
       "</button>"
     );
   }
@@ -188,7 +187,7 @@
     if (!inner) return "";
     return (
       '<section class="chapter" id="chapter-' + id + '">' +
-        '<header class="chapter-head"><h2>' + title + "</h2>" +
+        '<header class="chapter-head"><h2 class="reveal">' + title + "</h2>" +
           '<div class="opening-tools">' +
             (note ? "<p>" + note + "</p>" : "") +
             switchHTML() +
@@ -203,7 +202,7 @@
     if (!items.length) return "";
     return (
       '<div class="archive-block">' +
-        "<h3>Archive</h3>" +
+        '<h3 class="reveal">Archive</h3>' +
         "<p>" + notes.archive + "</p>" +
         '<div class="board">' + items.map(pieceHTML).join("") + "</div>" +
       "</div>"
@@ -300,6 +299,8 @@
     syncSwitch();
     const apply = function () {
       layoutBoards();
+      assignRevealStagger();
+      sweepReveal();
       if (fade) {
         requestAnimationFrame(function () {
           gallery.classList.remove("is-relayout");
@@ -552,7 +553,7 @@
     if (!list || !window.TIMELINE) return;
     const rows = (window.TIMELINE.entries || []).filter((row) => row && !row.todo && row.render !== false);
     list.innerHTML = rows.map((row) => (
-      "<li>" +
+      '<li class="reveal">' +
         '<span class="when">' + esc(row.year) + "</span>" +
         '<span class="what">' +
           "<strong>" + esc(row.title) + "</strong>" +
@@ -560,6 +561,72 @@
         "</span>" +
       "</li>"
     )).join("");
+  }
+
+  let revealIO = null;
+  let revealSweepTick = 0;
+
+  function boardColumns() {
+    if (window.matchMedia("(max-width: 340px)").matches) return 1;
+    if (window.matchMedia("(max-width: 780px)").matches) return 2;
+    return 3;
+  }
+
+  function assignRevealStagger() {
+    const cols = boardColumns();
+    gallery.querySelectorAll(".board").forEach((board) => {
+      piecesInReadingOrder(board).forEach((piece, i) => {
+        piece.style.setProperty("--reveal-delay", ((i % cols) * 70) + "ms");
+      });
+    });
+    document.querySelectorAll(".timeline .reveal").forEach((el, i) => {
+      el.style.setProperty("--reveal-delay", (Math.min(i, 5) * 60) + "ms");
+    });
+  }
+
+  function nearViewport(el) {
+    const rect = el.getBoundingClientRect();
+    const vh = window.innerHeight || 800;
+    const slack = Math.max(vh * 0.45, 280);
+    return rect.top < vh + slack && rect.bottom > -slack;
+  }
+
+  function revealNow(el) {
+    if (!el || el.classList.contains("is-in")) return;
+    el.classList.add("is-in");
+    if (revealIO) revealIO.unobserve(el);
+  }
+
+  function sweepReveal() {
+    document.querySelectorAll(".reveal:not(.is-in)").forEach((el) => {
+      if (nearViewport(el)) revealNow(el);
+    });
+  }
+
+  function bindReveal() {
+    if (revealIO) {
+      revealIO.disconnect();
+      revealIO = null;
+    }
+    const nodes = [...document.querySelectorAll(".reveal")];
+    if (reduceMotion()) {
+      nodes.forEach((el) => el.classList.add("is-in"));
+      document.documentElement.classList.remove("reveal-ready");
+      return;
+    }
+    assignRevealStagger();
+    nodes.forEach((el) => {
+      if (nearViewport(el)) el.classList.add("is-in");
+    });
+    document.documentElement.classList.add("reveal-ready");
+    revealIO = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) revealNow(entry.target);
+      });
+    }, { rootMargin: "45% 0px 45% 0px", threshold: 0.01 });
+    nodes.forEach((el) => {
+      if (!el.classList.contains("is-in")) revealIO.observe(el);
+    });
   }
 
   function dockKeyForFilter() {
@@ -708,9 +775,11 @@
     syncSwitch();
     bindChrome();
     renderTimeline();
+    bindReveal();
     bindDock();
     setDock(dockKeyForFilter());
     if (window.Pulse) window.Pulse.refresh();
+    if (window.Strips) window.Strips.refresh();
   }
 
   function apply(next, options) {
@@ -724,7 +793,7 @@
           history.replaceState(null, "", location.pathname + location.search);
         }
       } else {
-        history.replaceState(null, "", "#" + filter);
+        history.replaceState(null, "", location.pathname + location.search + "#" + filter);
       }
       const top = function () {
         if (document.activeElement && document.activeElement.blur) {
@@ -824,8 +893,18 @@
   let layoutTimer = 0;
   window.addEventListener("resize", () => {
     clearTimeout(layoutTimer);
-    layoutTimer = setTimeout(layoutBoards, 120);
+    layoutTimer = setTimeout(() => {
+      layoutBoards();
+      assignRevealStagger();
+      sweepReveal();
+    }, 120);
   });
+
+  window.openCatalogItem = function (id) {
+    const tile = document.querySelector('.tile[data-item="' + id + '"]');
+    if (tile) openFromTile(tile);
+    else openInspect(id, [id], document.activeElement, 0);
+  };
 
   readLayout();
   const start = (location.hash || "").replace("#", "");
@@ -834,5 +913,21 @@
   if (start === "about" || start === "contact") {
     const section = document.getElementById(start);
     if (section) section.scrollIntoView();
+    sweepReveal();
   }
+
+  window.addEventListener("scroll", () => {
+    if (revealSweepTick) return;
+    revealSweepTick = requestAnimationFrame(() => {
+      revealSweepTick = 0;
+      sweepReveal();
+    });
+  }, { passive: true });
+
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const onMotionChange = () => {
+    bindReveal();
+  };
+  if (motionQuery.addEventListener) motionQuery.addEventListener("change", onMotionChange);
+  else if (motionQuery.addListener) motionQuery.addListener(onMotionChange);
 })();

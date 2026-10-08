@@ -40,6 +40,10 @@ Guy is an AI Platforms research engineer at IBM who also ships games and small t
 - Artifact-first composition. Chrome recedes. A spread of project pictures is the artifact.
 - No decorative eyebrows or `01 / Work` section numbers. The heading speaks.
 
+### From Lyr Zamir (feel, not costume)
+
+- Work that fades in as it enters the viewport. We keep that physics on graph paper: a once-only tile/timeline reveal. Not the Framer look, not a client-logo wall.
+
 ### From Emil Kowalski
 
 - Purpose before motion. Tile hover exists to show the second picture and keep the swap from being a hard cut.
@@ -185,6 +189,7 @@ The first fold on ~1280×800 must include the masthead, the layout switch, and a
 | `--dur-cover` | 240ms |
 | `--dur-ui` | 200ms |
 | `--dur-press` | 160ms |
+| `--dur-reveal` | 480ms |
 
 - Image crossfade: 240ms opacity on flat tiles. Always on, including reduced motion.
 - Rest: the photo (or stack) sits at its deterministic tilt.
@@ -193,7 +198,9 @@ The first fold on ~1280×800 must include the masthead, the layout switch, and a
 - Stacked tiles: back image fans a little more on hover/focus; reduced motion flattens the stack.
 - Layout switch: short opacity dip, or instant under reduced motion.
 - Wordmark: `scale(0.97)` on `:active`.
-- Reduced-motion: crossfade only; no tilt, lift, press, or courier sky.
+- Scroll-in reveal: board tiles, About timeline rows, and section headings fade in and drift up (~12px, 480ms `--ease-out`) once as they enter view. IntersectionObserver uses a generous rootMargin so a fast scroll cannot leave blank holes. First-fold items are marked visible before `html.reveal-ready`, so the opening paint is never empty. Stagger is one short step per column in a row. The drift lives on a `.reveal-shift` wrapper inside each tile (headings and timeline rows have no other transform) so tilt, hover lift, stack fan, swipe, dots, and the inspect sheet stay untouched. Switching Even/Uneven keeps already-revealed tiles shown. If JS never runs, nothing is hidden. `prefers-reduced-motion` shows every reveal instantly.
+- Reduced-motion: crossfade only; no tilt, lift, press, courier sky, or scroll-in drift.
+- Experimental moving strips (review only, `?strip=`): a temporary comparison of Games / Activity / Categories / Keywords marquees. Keyword families stay ink chips. Project strips (Games, and the Work / Games / Projects category ribbons) use each tile’s board rectangle — 16/10 paper/shadow print, cover crop, title plus an optional one-line `blurb` from `js/data.js` (fallback `detail`) clamped to two lines. Photo stacks (Klafi, RifTrade, Hold’emle, or any `images` array) show every shot as consecutive prints. Activity keeps the text ticker, a cover thumb when the repo maps to a catalog item, and the same short `blurb` under the name when Descriptions is on. A Descriptions switch (default on, `?desc=0/1`) sits next to the preview control. Edges fade into the paper; pause on hover/focus. Not part of the shipped catalog. `prefers-reduced-motion` shows a static row. Remove via `window.STRIP_PREVIEW` / `js/strips.js`.
 - Phone: no rest tilt. 2 columns, then 1 column under 340px. Tile subtitles wrap in full; no ellipsis.
 
 ---
@@ -239,7 +246,7 @@ A one-line lede and “One system, one game, one useful thing.” then the scrap
 
 ### About
 
-Full-width About heading with space below, then two columns. Left: duotone portrait + sourced bio. Right: catalog timeline (dated project facts only) and paper links. Pulse calendar underneath. The heading must not overlap the portrait.
+Full-width About heading with space below, then two columns. Left: duotone portrait + sourced bio. Right: catalog timeline (dated project facts only) and paper links. Pulse calendar underneath. On a phone the 53-week board scales to the About measure so the latest week stays on-screen; no page-level horizontal scroll. The heading must not overlap the portrait.
 
 ### Footer
 

@@ -78,6 +78,9 @@
         last = label;
         return "<span>" + (show ? label : "") + "</span>";
       }).join("");
+      const shown = [...months.querySelectorAll("span")].filter((el) => el.textContent);
+      if (shown.length) shown[shown.length - 1].classList.add("is-end");
+      requestAnimationFrame(fitMonthLabels);
     }
     board.innerHTML = cells.map((cell, index) => {
       const classes = ["pulse-cell", "lv-" + cell.level];
@@ -92,6 +95,18 @@
     }).join("");
   }
 
+  function fitMonthLabels() {
+    if (!months) return;
+    const end = months.querySelector(".is-end");
+    if (!end || !end.textContent) return;
+    const endBox = end.getBoundingClientRect();
+    [...months.querySelectorAll("span")].forEach((el) => {
+      if (el === end || !el.textContent) return;
+      const box = el.getBoundingClientRect();
+      if (box.right > endBox.left - 4) el.textContent = "";
+    });
+  }
+
   function center(el) {
     const box = el.getBoundingClientRect();
     return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
@@ -104,8 +119,9 @@
   function visibleTile(id) {
     const tile = document.querySelector('.tile[data-item="' + id + '"]');
     if (!tile) return null;
-    const box = tile.getBoundingClientRect();
-    if (box.bottom < 80 || box.top > window.innerHeight - 20) return null;
+    const dest = destPoint(tile);
+    if (dest.y <= 80 || dest.y >= window.innerHeight - 20) return null;
+    if (dest.x < 0 || dest.x > window.innerWidth) return null;
     return tile;
   }
   function point(t, a, b) {
@@ -234,4 +250,9 @@
   });
   compact.addEventListener("change", () => window.Pulse.refresh());
   reduce.addEventListener("change", () => window.Pulse.refresh());
+  let monthTimer = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(monthTimer);
+    monthTimer = setTimeout(renderBoard, 120);
+  });
 })();

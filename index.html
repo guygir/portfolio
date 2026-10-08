@@ -18,7 +18,7 @@
         document.documentElement.setAttribute("data-layout", layout);
       })();
     </script>
-    <link rel="stylesheet" href="css/styles.css?v=20260928a" />
+    <link rel="stylesheet" href="css/styles.css?v=20261008i" />
   </head>
   <body data-view="current">
     <a class="skip" href="#gallery">Skip to work</a>
@@ -31,10 +31,23 @@
     </header>
 
     <main id="top">
+      <!-- STRIP PREVIEW (experimental). Remove this aside, js/strips.js, the STRIP PREVIEW CSS block, and the window.Strips hook in js/app.js. -->
+      <aside id="strip-preview" class="strip-preview" hidden>
+        <p class="strip-preview-label">Strip preview <small>review only</small></p>
+        <div class="strip-preview-modes" role="radiogroup" aria-label="Strip preview mode">
+          <button type="button" role="radio" data-strip="off" aria-checked="true">Off</button>
+          <button type="button" role="radio" data-strip="games" aria-checked="false">Games</button>
+          <button type="button" role="radio" data-strip="activity" aria-checked="false">Activity</button>
+          <button type="button" role="radio" data-strip="categories" aria-checked="false">Categories</button>
+          <button type="button" role="radio" data-strip="keywords" aria-checked="false">Keywords</button>
+        </div>
+        <button type="button" class="strip-preview-desc" role="switch" aria-checked="true" data-desc-toggle>Descriptions</button>
+      </aside>
+
       <div id="gallery"></div>
 
       <section id="about">
-        <h2>About</h2>
+        <h2 class="reveal">About</h2>
         <div class="about-grid">
           <div class="about-copy">
             <div class="about-lede">
@@ -88,7 +101,7 @@
       </section>
 
       <section id="contact">
-        <h2>Contact</h2>
+        <h2 class="reveal">Contact</h2>
         <p><a href="mailto:guygir@gmail.com">guygir@gmail.com</a></p>
         <ul>
           <li><a href="https://github.com/guygir">GitHub</a></li>
@@ -142,10 +155,11 @@
       </article>
     </div>
 
-    <script src="js/data.js?v=20260928a"></script>
-    <script src="js/timeline.js?v=20260928a"></script>
-    <script src="js/activity.js?v=20260928a"></script>
-    <script src="js/app.js?v=20260928a"></script>
-    <script src="js/pulse.js?v=20260928a"></script>
+    <script src="js/data.js?v=20261008i"></script>
+    <script src="js/timeline.js?v=20261008i"></script>
+    <script src="js/activity.js?v=20261008i"></script>
+    <script src="js/app.js?v=20261008i"></script>
+    <script src="js/pulse.js?v=20261008i"></script>
+    <script src="js/strips.js?v=20261008i"></script>
   </body>
 </html>
