@@ -112,7 +112,7 @@
     return { x: box.left + box.width / 2, y: box.top + box.height / 2 };
   }
   function destPoint(tile) {
-    const frame = tile.querySelector(".shot") || tile;
+    const frame = tile.querySelector(".card-shot") || tile.querySelector(".shot") || tile;
     const box = frame.getBoundingClientRect();
     return { x: box.left + 10, y: box.top + box.height / 2 };
   }

@@ -1715,3 +1715,256 @@ span.strip-tick { cursor: default; }
   .strip-tick,
   .strip-chip { transform: none; }
 }
+
+/* Cards / lineup layout */
+html[data-layout="cards"] {
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+html[data-layout="cards"] .board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+  align-items: stretch;
+  background: #fff;
+  border-top: 1px solid var(--line);
+}
+
+html[data-layout="cards"] .card-tile,
+html[data-layout="cards"] .card-more {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  padding: 18px 16px 20px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+  box-shadow: none;
+  transform: none;
+}
+
+html[data-layout="cards"] .card-tile .reveal-shift {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+html[data-layout="cards"] .lineup + .lineup { margin-top: 36px; }
+
+html[data-layout="cards"] .lineup-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin: 0 0 10px;
+}
+
+html[data-layout="cards"] .lineup-kicker,
+html[data-layout="cards"] .lineup-note,
+html[data-layout="cards"] .card-kind,
+html[data-layout="cards"] .card-num,
+html[data-layout="cards"] .card-tag,
+html[data-layout="cards"] .card-explore {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+html[data-layout="cards"] .lineup-kicker { margin: 0; color: var(--ink); }
+html[data-layout="cards"] .lineup-note { margin: 0; color: var(--mute); text-align: right; }
+
+html[data-layout="cards"] .card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+html[data-layout="cards"] .card-num {
+  display: inline-block;
+  padding: 3px 6px 2px;
+  background: var(--accent, var(--ink));
+  color: var(--accent-on, #fff);
+}
+
+html[data-layout="cards"] .card-kind {
+  color: var(--mute);
+  text-align: right;
+}
+
+html[data-layout="cards"] .card-media {
+  position: relative;
+  margin: 0 0 8px;
+}
+
+html[data-layout="cards"] .card-shot {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--wash);
+  box-shadow: none;
+  transform: none;
+}
+
+html[data-layout="cards"] .card-shot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+html[data-layout="cards"] .card-icon {
+  position: absolute;
+  left: 10px;
+  bottom: 0;
+  display: grid;
+  place-items: center;
+  transform: translateY(50%);
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  border: 2px solid var(--accent, var(--ink));
+  border-radius: 12px;
+  background-color: var(--accent, var(--ink));
+  box-shadow: 0 0 0 2px #fff;
+  color: var(--accent-on, #fff);
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+html[data-layout="cards"] .card-icon.is-crop {
+  background-repeat: no-repeat;
+  background-position: var(--icon-pos, 50% 50%);
+  background-size: var(--icon-zoom, 280%);
+}
+
+html[data-layout="cards"] .card-name {
+  display: block;
+  margin: 28px 0 8px;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: clamp(1.35rem, 1.8vw, 1.7rem);
+  font-weight: 750;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+}
+
+html[data-layout="cards"] .card-name em {
+  font-style: normal;
+  color: var(--accent-ink, var(--accent, var(--ink)));
+}
+
+html[data-layout="cards"] .card-blurb {
+  display: -webkit-box;
+  overflow: hidden;
+  min-height: 3.6em;
+  margin: 0 0 12px;
+  color: var(--mute);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+html[data-layout="cards"] .card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: auto 0 14px;
+}
+
+html[data-layout="cards"] .card-tag {
+  padding: 3px 6px 2px;
+  border: 1px solid rgb(25 21 18 / 0.22);
+  color: var(--mute);
+}
+
+html[data-layout="cards"] .card-tag.is-mark,
+html[data-layout="cards"] .card-tag.is-status {
+  border-color: var(--accent-ink, var(--accent, var(--ink)));
+  color: var(--accent-ink, var(--accent, var(--ink)));
+}
+
+html[data-layout="cards"] .card-explore { color: var(--ink); }
+
+html[data-layout="cards"] .lineup .board > .card-tile:first-child {
+  box-shadow: inset 0 2px 0 var(--accent, var(--ink));
+}
+
+html[data-layout="cards"] .card-more { color: var(--mute); }
+
+html[data-layout="cards"] .card-more strong {
+  display: block;
+  margin: 18px 0 8px;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 1.4rem;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+}
+
+html[data-layout="cards"] .card-more small {
+  display: block;
+  margin: 0 0 16px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+html[data-layout="cards"] .card-more a {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+html[data-layout="cards"] .piece:nth-child(n) .shot,
+html[data-layout="cards"] .piece:hover .shot,
+html[data-layout="cards"] .piece:focus-visible .shot {
+  transform: none;
+  box-shadow: none;
+}
+
+html[data-layout="cards"] .card-tile:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -2px;
+}
+
+@media (max-width: 1279px) {
+  html[data-layout="cards"] .board {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  html[data-layout="cards"] .board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  html[data-layout="cards"] .lineup-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  html[data-layout="cards"] .lineup-note { text-align: left; }
+}
+
+@media (max-width: 640px) {
+  html[data-layout="cards"] .board {
+    grid-template-columns: 1fr;
+  }
+}

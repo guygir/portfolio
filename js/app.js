@@ -39,30 +39,42 @@
   }
 
   function parseLayout(value) {
-    return value === "uneven" ? "uneven" : "even";
+    if (value === "uneven" || value === "cards") return value;
+    return value === "even" ? "even" : "";
   }
 
   function currentLayout() {
-    return parseLayout(document.documentElement.getAttribute("data-layout"));
+    return parseLayout(document.documentElement.getAttribute("data-layout")) || "even";
+  }
+
+  function persistLayoutUrl(layout) {
+    const params = new URLSearchParams(location.search);
+    if (layout === "even") params.delete("layout");
+    else params.set("layout", layout);
+    const search = params.toString();
+    history.replaceState(null, "", location.pathname + (search ? "?" + search : "") + location.hash);
   }
 
   function readLayout() {
-    let layout = "even";
-    try {
-      const stored = localStorage.getItem(LAYOUT_KEY);
-      if (stored === "uneven" || stored === "even") layout = stored;
-      else if (stored) localStorage.removeItem(LAYOUT_KEY);
-    } catch (err) {}
+    const query = parseLayout(new URLSearchParams(location.search).get("layout"));
+    let layout = query || "";
+    if (!layout) {
+      try {
+        const stored = localStorage.getItem(LAYOUT_KEY);
+        layout = parseLayout(stored);
+        if (stored && !layout) localStorage.removeItem(LAYOUT_KEY);
+      } catch (err) {}
+    }
+    if (!layout) layout = "even";
     document.documentElement.setAttribute("data-layout", layout);
     return layout;
   }
 
   function writeLayout(layout) {
-    const next = parseLayout(layout);
+    const next = parseLayout(layout) || "even";
     document.documentElement.setAttribute("data-layout", next);
-    try {
-      localStorage.setItem(LAYOUT_KEY, next);
-    } catch (err) {}
+    try { localStorage.setItem(LAYOUT_KEY, next); } catch (err) {}
+    persistLayoutUrl(next);
   }
 
   function stampOf(item) {
@@ -162,12 +174,190 @@
       '<div class="layout-switch" role="radiogroup" aria-label="Board layout">' +
         '<button type="button" role="radio" data-layout="even" aria-checked="' + (layout === "even" ? "true" : "false") + '">Even</button>' +
         '<button type="button" role="radio" data-layout="uneven" aria-checked="' + (layout === "uneven" ? "true" : "false") + '">Uneven</button>' +
+        '<button type="button" role="radio" data-layout="cards" aria-checked="' + (layout === "cards" ? "true" : "false") + '">Cards</button>' +
+      "</div>"
+    );
+  }
+
+  const NAME_SPLIT = {
+    zipnn: ["Zip", "NN"],
+    llmd: ["llm-", "d"],
+    holdemle: ["Hold", "'emle"],
+    conveyor: ["Conveyor ", "Race"],
+    listdraft: ["List ", "Draft"],
+    skystore: ["Sky", "Store"],
+    iagt: ["Scheduling ", "Games"],
+    istrc: ["EV ", "Charging"],
+    packrat: ["Set ", "Hunter"],
+    wc26: ["WC26 ", "Group Bet"],
+    u20: ["U20 ", "Manager"],
+    bbfantasy: ["BB U21 ", "Fantasy"],
+    riftrade: ["Rif", "Trade"],
+    gamerev: ["Game", "Rev"],
+    classmatch: ["Class ", "matching"],
+    boxscore: ["BB Box ", "Score"],
+    arrows: ["Arrow's ", "Theorem"],
+    "wonderful-life": ["Wonderful ", "Life"],
+    xxkiller: ["xxKillerxx's ", "PC"],
+    galaxy: ["Around the ", "Galaxy"],
+    digest: ["AI Daily ", "Digest"],
+    chores: ["Chores ", "Manager"],
+    japan: ["Japan Travel ", "Planner"],
+    seam: ["Seam ", "Carving"],
+    people: ["People ", "Analytics"],
+    hwcheck: ["HW ", "Checker"],
+  };
+
+  function kindLabel(item) {
+    if (item.detail) return item.detail.split("·")[0].trim();
+    return item.tag || kindOf(item);
+  }
+
+  function splitName(item) {
+    if (NAME_SPLIT[item.id]) return NAME_SPLIT[item.id];
+    const title = item.title || "";
+    const space = title.lastIndexOf(" ");
+    if (space > 0) return [title.slice(0, space + 1), title.slice(space + 1)];
+    return [title, ""];
+  }
+
+  function nameHTML(item) {
+    const parts = splitName(item);
+    if (!parts[1]) return '<strong class="card-name"><em>' + esc(parts[0]) + "</em></strong>";
+    return '<strong class="card-name">' + esc(parts[0]) + "<em>" + esc(parts[1]) + "</em></strong>";
+  }
+
+  function hexRgb(hex) {
+    const n = String(hex || "").replace("#", "");
+    if (n.length !== 6) return [25, 21, 18];
+    return [parseInt(n.slice(0, 2), 16), parseInt(n.slice(2, 4), 16), parseInt(n.slice(4, 6), 16)];
+  }
+
+  function relLum(rgb) {
+    const f = function (c) {
+      c /= 255;
+      return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    };
+    return 0.2126 * f(rgb[0]) + 0.7152 * f(rgb[1]) + 0.0722 * f(rgb[2]);
+  }
+
+  function contrastRatio(a, b) {
+    const x = relLum(a) + 0.05;
+    const y = relLum(b) + 0.05;
+    return x > y ? x / y : y / x;
+  }
+
+  function onAccent(hex) {
+    const rgb = hexRgb(hex);
+    if (contrastRatio(rgb, [255, 255, 255]) >= 4.5) return "#ffffff";
+    return "#191512";
+  }
+
+  function iconHTML(item) {
+    const icon = item.icon || {};
+    if (icon.initials) {
+      return '<span class="card-icon is-initials" aria-hidden="true">' + esc(icon.initials) + "</span>";
+    }
+    const crop = String(icon.crop || "50% 50% / 280%");
+    const parts = crop.split("/");
+    const pos = (parts[0] || "50% 50%").trim();
+    const zoom = (parts[1] || "280%").trim();
+    return (
+      '<span class="card-icon is-crop" aria-hidden="true" style="background-image:url(\'' +
+        esc(item.cover) +
+        "');--icon-pos:" +
+        esc(pos) +
+        ";--icon-zoom:" +
+        esc(zoom) +
+      ';"></span>'
+    );
+  }
+
+  function cardTags(item) {
+    const tags = [];
+    const seen = {};
+    function add(text, tone) {
+      const key = String(text || "").trim();
+      if (!key) return;
+      const id = key.toLowerCase();
+      if (seen[id]) return;
+      seen[id] = true;
+      tags.push({ text: key, tone: tone });
+    }
+    add(stampOf(item), "mark");
+    if (item.status === "archive") add("Archive", "status");
+    else if (/live/i.test(item.detail || "")) add("Live", "status");
+    else if (item.status === "active") add("Active", "status");
+    String(item.detail || "").split("·").forEach((part) => add(part.trim(), "meta"));
+    const hay = (item.detail || "") + "\n" + (item.blurb || "");
+    [
+      ["Kubernetes", /kubernetes/i],
+      ["Unity", /\bunity\b/i],
+      ["Next.js", /next\.js/i],
+      ["Supabase", /supabase/i],
+    ].forEach((row) => {
+      if (row[1].test(hay)) add(row[0], "meta");
+    });
+    return tags;
+  }
+
+  function cardHTML(item, index) {
+    const accent = item.accent || "#2563eb";
+    const accentInk = item.accentInk || accent;
+    const num = padNum(index + 1);
+    const tags = cardTags(item).map((tag) => (
+      '<span class="card-tag is-' + tag.tone + '">' + esc(tag.text) + "</span>"
+    )).join("");
+    return (
+      '<button type="button" class="piece tile card-tile reveal" data-item="' + item.id + '" aria-haspopup="dialog" style="--accent: ' + esc(accent) + "; --accent-ink: " + esc(accentInk) + "; --accent-on: " + onAccent(accent) + '">' +
+        '<span class="reveal-shift">' +
+          '<span class="card-top">' +
+            '<span class="card-num">' + num + "</span>" +
+            '<span class="card-kind">' + esc(kindLabel(item)) + "</span>" +
+          "</span>" +
+          '<span class="card-media">' +
+            '<span class="shot card-shot">' +
+              '<img src="' + esc(item.cover) + '" alt="' + esc(item.title) + '" width="1600" height="1000">' +
+            "</span>" +
+            iconHTML(item) +
+          "</span>" +
+          nameHTML(item) +
+          '<small class="card-blurb">' + esc(item.blurb) + "</small>" +
+          '<span class="card-tags">' + tags + "</span>" +
+          '<span class="card-explore">Explore ' + esc(item.title) + " ↗</span>" +
+        "</span>" +
+      "</button>"
+    );
+  }
+
+  function moreCardHTML() {
+    return (
+      '<aside class="card-more">' +
+        '<p class="card-kind">GitHub</p>' +
+        "<strong>More on GitHub</strong>" +
+        "<small>Research systems, playable ideas and a growing Riftbound binder.</small>" +
+        '<a href="https://github.com/guygir" target="_blank" rel="noopener noreferrer">github.com/guygir ↗</a>' +
+      "</aside>"
+    );
+  }
+
+  function lineupHTML(items, kicker, note, extra) {
+    if (!items.length && !extra) return "";
+    const cards = items.map(cardHTML).join("") + (extra || "");
+    return (
+      '<div class="lineup">' +
+        '<header class="lineup-head">' +
+          '<p class="lineup-kicker">' + esc(kicker) + "</p>" +
+          (note ? '<p class="lineup-note">' + esc(note) + "</p>" : "") +
+        "</header>" +
+        '<div class="board">' + cards + "</div>" +
       "</div>"
     );
   }
 
   function boardHTML(items) {
     if (!items.length) return "";
+    if (currentLayout() === "cards") return lineupHTML(items, "01 / Catalog", notes.lede);
     return '<div class="board">' + items.map(pieceHTML).join("") + "</div>";
   }
 
@@ -200,6 +390,9 @@
 
   function archiveBlock(items) {
     if (!items.length) return "";
+    if (currentLayout() === "cards") {
+      return '<div class="archive-block">' + lineupHTML(items, "02 / Archive", notes.archive) + "</div>";
+    }
     return (
       '<div class="archive-block">' +
         '<h3 class="reveal">Archive</h3>' +
@@ -224,6 +417,19 @@
 
   function currentHTML() {
     const active = window.ITEMS.filter((item) => item.status === "active");
+    if (currentLayout() === "cards") {
+      const work = featuredFirst(active.filter((item) => item.section === "work"));
+      const games = featuredFirst(active.filter((item) => item.section === "games"));
+      const projects = featuredFirst(active.filter((item) => item.section === "projects"));
+      return (
+        '<section class="opening" id="opening">' +
+          ledeHTML() +
+          lineupHTML(work, "01 / Work", notes.work) +
+          lineupHTML(games, "02 / Games", notes.games) +
+          lineupHTML(projects, "03 / Projects", notes.projects, moreCardHTML()) +
+        "</section>"
+      );
+    }
     return (
       '<section class="opening" id="opening">' +
         ledeHTML() +
@@ -238,6 +444,11 @@
     const title = filter === "work" ? "Work" : filter === "games" ? "Games" : "Projects";
     const note = notes[filter];
     const active = filter === "work" ? featuredFirst(parts.active.concat(parts.archive)) : featuredFirst(parts.active);
+    if (currentLayout() === "cards") {
+      const kicker = "01 / " + title;
+      const inner = lineupHTML(active, kicker, note) + (filter === "work" ? "" : archiveBlock(parts.archive));
+      return chapter(filter, title, note, inner);
+    }
     const inner = boardHTML(active) + (filter === "work" ? "" : archiveBlock(parts.archive));
     return chapter(filter, title, note, inner);
   }
@@ -273,6 +484,7 @@
   }
 
   function applyBoardLayout(board) {
+    if (currentLayout() === "cards") return;
     const pieces = piecesInReadingOrder(board);
     if (!pieces.length) return;
     board.replaceChildren();
@@ -291,16 +503,21 @@
   }
 
   function setLayout(next) {
-    if (next !== "even" && next !== "uneven") return;
-    if (currentLayout() === next) return;
+    const parsed = parseLayout(next);
+    if (!parsed) return;
+    const from = currentLayout();
+    if (from === parsed) return;
     const fade = !reduceMotion();
     if (fade) gallery.classList.add("is-relayout");
-    writeLayout(next);
+    writeLayout(parsed);
     syncSwitch();
     const apply = function () {
-      layoutBoards();
-      assignRevealStagger();
-      sweepReveal();
+      if (from === "cards" || parsed === "cards") render();
+      else {
+        layoutBoards();
+        assignRevealStagger();
+        sweepReveal();
+      }
       if (fade) {
         requestAnimationFrame(function () {
           gallery.classList.remove("is-relayout");
@@ -530,7 +747,10 @@
       const group = event.target.closest(".layout-switch");
       if (group && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
         event.preventDefault();
-        setLayout(currentLayout() === "even" ? "uneven" : "even");
+        const order = ["even", "uneven", "cards"];
+        const i = order.indexOf(currentLayout());
+        const dir = event.key === "ArrowRight" ? 1 : -1;
+        setLayout(order[(i + dir + order.length) % order.length]);
         const on = group.querySelector('[aria-checked="true"]');
         if (on) on.focus();
       }
@@ -567,6 +787,12 @@
   let revealSweepTick = 0;
 
   function boardColumns() {
+    if (currentLayout() === "cards") {
+      if (window.matchMedia("(max-width: 640px)").matches) return 1;
+      if (window.matchMedia("(max-width: 900px)").matches) return 2;
+      if (window.matchMedia("(max-width: 1279px)").matches) return 3;
+      return 4;
+    }
     if (window.matchMedia("(max-width: 340px)").matches) return 1;
     if (window.matchMedia("(max-width: 780px)").matches) return 2;
     return 3;

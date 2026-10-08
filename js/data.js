@@ -1,6 +1,9 @@
 window.ITEMS = [
   {
     id: "zipnn",
+    accent: "#2563eb",
+    accentInk: "#1d4ed8",
+    icon: { crop: "50% 38% / 520%" },
     title: "ZipNN",
     tag: "Work",
     section: "work",
@@ -13,6 +16,9 @@ window.ITEMS = [
   },
   {
     id: "klafi",
+    accent: "#14b8a6",
+    accentInk: "#0f766e",
+    icon: { crop: "50% 28% / 920%" },
     title: "Klafi",
     tag: "Game",
     section: "games",
@@ -25,6 +31,9 @@ window.ITEMS = [
   },
   {
     id: "llmd",
+    accent: "#7c3aed",
+    accentInk: "#6d28d9",
+    icon: { initials: "LD" },
     title: "llm-d",
     tag: "Work",
     section: "work",
@@ -37,6 +46,9 @@ window.ITEMS = [
   },
   {
     id: "holdemle",
+    accent: "#84cc16",
+    accentInk: "#4d7c0f",
+    icon: { crop: "50% 48% / 480%" },
     title: "Hold'emle",
     tag: "Game",
     section: "games",
@@ -49,6 +61,9 @@ window.ITEMS = [
   },
   {
     id: "conveyor",
+    accent: "#f97316",
+    accentInk: "#c2410c",
+    icon: { crop: "13% 20% / 440%" },
     title: "Conveyor Race",
     tag: "Game",
     section: "games",
@@ -61,6 +76,9 @@ window.ITEMS = [
   },
   {
     id: "listdraft",
+    accent: "#3b82f6",
+    accentInk: "#1d4ed8",
+    icon: { initials: "LD" },
     title: "List Draft",
     tag: "Game",
     section: "games",
@@ -74,6 +92,9 @@ window.ITEMS = [
   },
   {
     id: "skystore",
+    accent: "#f59e0b",
+    accentInk: "#b45309",
+    icon: { initials: "SS" },
     title: "SkyStore",
     tag: "Work",
     section: "work",
@@ -86,6 +107,9 @@ window.ITEMS = [
   },
   {
     id: "iagt",
+    accent: "#e11d48",
+    accentInk: "#be123c",
+    icon: { initials: "SG" },
     title: "Scheduling Games",
     tag: "Work",
     section: "work",
@@ -98,6 +122,9 @@ window.ITEMS = [
   },
   {
     id: "istrc",
+    accent: "#22c55e",
+    accentInk: "#15803d",
+    icon: { initials: "EV" },
     title: "EV Charging",
     tag: "Work",
     section: "work",
@@ -110,6 +137,9 @@ window.ITEMS = [
   },
   {
     id: "packrat",
+    accent: "#eab308",
+    accentInk: "#a16207",
+    icon: { crop: "78% 18% / 380%" },
     title: "Set Hunter",
     tag: "Game",
     section: "games",
@@ -122,6 +152,9 @@ window.ITEMS = [
   },
   {
     id: "wc26",
+    accent: "#1d4ed8",
+    accentInk: "#1e3a8a",
+    icon: { crop: "50% 48% / 400%" },
     title: "WC26 Group Bet",
     tag: "Project",
     section: "projects",
@@ -134,6 +167,9 @@ window.ITEMS = [
   },
   {
     id: "u20",
+    accent: "#4f46e5",
+    accentInk: "#4338ca",
+    icon: { initials: "U2" },
     title: "U20 Manager",
     tag: "Game",
     section: "games",
@@ -146,6 +182,9 @@ window.ITEMS = [
   },
   {
     id: "bbfantasy",
+    accent: "#0ea5e9",
+    accentInk: "#0369a1",
+    icon: { initials: "BB" },
     title: "BB U21 Fantasy",
     tag: "Project",
     section: "projects",
@@ -158,6 +197,9 @@ window.ITEMS = [
   },
   {
     id: "riftrade",
+    accent: "#ec4899",
+    accentInk: "#be185d",
+    icon: { initials: "RT" },
     title: "RifTrade",
     tag: "Project",
     section: "projects",
@@ -170,6 +212,9 @@ window.ITEMS = [
   },
   {
     id: "gamerev",
+    accent: "#7c3aed",
+    accentInk: "#6d28d9",
+    icon: { initials: "GR" },
     title: "GameRev",
     tag: "Project",
     section: "projects",
@@ -182,6 +227,9 @@ window.ITEMS = [
   },
   {
     id: "trending",
+    accent: "#ea580c",
+    accentInk: "#c2410c",
+    icon: { initials: "TR" },
     title: "Trending",
     tag: "Project",
     section: "projects",
@@ -194,6 +242,9 @@ window.ITEMS = [
   },
   {
     id: "classmatch",
+    accent: "#22c55e",
+    accentInk: "#15803d",
+    icon: { initials: "CM" },
     title: "Class matching",
     tag: "Project",
     section: "projects",
@@ -206,6 +257,9 @@ window.ITEMS = [
   },
   {
     id: "boxscore",
+    accent: "#eab308",
+    accentInk: "#a16207",
+    icon: { crop: "50% 50% / 260%" },
     title: "BB Box Score",
     tag: "Project",
     section: "projects",
@@ -218,6 +272,9 @@ window.ITEMS = [
   },
   {
     id: "rps",
+    accent: "#38bdf8",
+    accentInk: "#0369a1",
+    icon: { crop: "22% 68% / 340%" },
     title: "RPS",
     tag: "Game",
     section: "games",
@@ -229,6 +286,9 @@ window.ITEMS = [
   },
   {
     id: "arrows",
+    accent: "#ef4444",
+    accentInk: "#b91c1c",
+    icon: { crop: "50% 14% / 400%" },
     title: "Arrow's Theorem",
     tag: "Game",
     section: "games",
@@ -240,6 +300,9 @@ window.ITEMS = [
   },
   {
     id: "insecurities",
+    accent: "#eab308",
+    accentInk: "#a16207",
+    icon: { crop: "58% 84% / 440%" },
     title: "Insecurities",
     tag: "Game",
     section: "games",
@@ -251,6 +314,9 @@ window.ITEMS = [
   },
   {
     id: "wonderful-life",
+    accent: "#14b8a6",
+    accentInk: "#0f766e",
+    icon: { initials: "WL" },
     title: "Wonderful Life",
     tag: "Game",
     section: "games",
@@ -262,6 +328,9 @@ window.ITEMS = [
   },
   {
     id: "sivan",
+    accent: "#ea580c",
+    accentInk: "#c2410c",
+    icon: { crop: "68% 78% / 500%" },
     title: "SIVAN",
     tag: "Game",
     section: "games",
@@ -273,6 +342,9 @@ window.ITEMS = [
   },
   {
     id: "xxkiller",
+    accent: "#a855f7",
+    accentInk: "#7e22ce",
+    icon: { crop: "50% 16% / 380%" },
     title: "xxKillerxx's PC",
     tag: "Game",
     section: "games",
@@ -284,6 +356,9 @@ window.ITEMS = [
   },
   {
     id: "galaxy",
+    accent: "#3b82f6",
+    accentInk: "#1d4ed8",
+    icon: { initials: "AG" },
     title: "Around the Galaxy",
     tag: "Game",
     section: "games",
@@ -295,6 +370,9 @@ window.ITEMS = [
   },
   {
     id: "emotions",
+    accent: "#f43f5e",
+    accentInk: "#be123c",
+    icon: { initials: "EM" },
     title: "Emotions",
     tag: "Game",
     section: "games",
@@ -307,6 +385,9 @@ window.ITEMS = [
   },
   {
     id: "matching",
+    accent: "#06b6d4",
+    accentInk: "#0e7490",
+    icon: { initials: "MA" },
     title: "Matching",
     tag: "Game",
     section: "games",
@@ -319,6 +400,9 @@ window.ITEMS = [
   },
   {
     id: "digest",
+    accent: "#4f46e5",
+    accentInk: "#4338ca",
+    icon: { initials: "AD" },
     title: "AI Daily Digest",
     tag: "Project",
     section: "projects",
@@ -331,6 +415,9 @@ window.ITEMS = [
   },
   {
     id: "chores",
+    accent: "#f59e0b",
+    accentInk: "#b45309",
+    icon: { initials: "CH" },
     title: "Chores Manager",
     tag: "Project",
     section: "projects",
@@ -343,6 +430,9 @@ window.ITEMS = [
   },
   {
     id: "japan",
+    accent: "#ec4899",
+    accentInk: "#be185d",
+    icon: { initials: "JP" },
     title: "Japan Travel Planner",
     tag: "Project",
     section: "projects",
@@ -355,6 +445,9 @@ window.ITEMS = [
   },
   {
     id: "seam",
+    accent: "#d97706",
+    accentInk: "#92400e",
+    icon: { initials: "SC" },
     title: "Seam Carving",
     tag: "Project",
     section: "projects",
@@ -367,6 +460,9 @@ window.ITEMS = [
   },
   {
     id: "people",
+    accent: "#a855f7",
+    accentInk: "#7e22ce",
+    icon: { initials: "PA" },
     title: "People Analytics",
     tag: "Project",
     section: "projects",
@@ -379,6 +475,9 @@ window.ITEMS = [
   },
   {
     id: "hwcheck",
+    accent: "#14b8a6",
+    accentInk: "#0f766e",
+    icon: { initials: "HW" },
     title: "HW Checker",
     tag: "Project",
     section: "projects",
@@ -391,6 +490,9 @@ window.ITEMS = [
   },
   {
     id: "hrcc",
+    accent: "#22c55e",
+    accentInk: "#15803d",
+    icon: { initials: "HR" },
     title: "HRCC",
     tag: "Project",
     section: "projects",
