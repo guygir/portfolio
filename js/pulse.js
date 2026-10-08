@@ -72,13 +72,15 @@
     }
     if (months) {
       let last = "";
-      months.innerHTML = cells.filter((_, i) => i % 7 === 0).map((cell, week) => {
+      months.innerHTML = cells.filter((_, i) => i % 7 === 0).map((cell) => {
         const label = new Date(cell.date + "T12:00:00").toLocaleString("en", { month: "short" });
         const show = label !== last;
         last = label;
-        const tail = show && week > WEEKS - 4 ? ' class="is-tail"' : "";
-        return "<span" + tail + ">" + (show ? label : "") + "</span>";
+        return "<span>" + (show ? label : "") + "</span>";
       }).join("");
+      const shown = [...months.querySelectorAll("span")].filter((el) => el.textContent);
+      if (shown.length) shown[shown.length - 1].classList.add("is-end");
+      requestAnimationFrame(fitMonthLabels);
     }
     board.innerHTML = cells.map((cell, index) => {
       const classes = ["pulse-cell", "lv-" + cell.level];
@@ -91,6 +93,18 @@
       const title = monthLabel(new Date(cell.date + "T12:00:00")) + " · " + bits.join(" · ") + (names ? " · " + names : "");
       return '<span class="' + classes.join(" ") + '" data-i="' + index + '" title="' + title + '"></span>';
     }).join("");
+  }
+
+  function fitMonthLabels() {
+    if (!months) return;
+    const end = months.querySelector(".is-end");
+    if (!end || !end.textContent) return;
+    const endBox = end.getBoundingClientRect();
+    [...months.querySelectorAll("span")].forEach((el) => {
+      if (el === end || !el.textContent) return;
+      const box = el.getBoundingClientRect();
+      if (box.right > endBox.left - 4) el.textContent = "";
+    });
   }
 
   function center(el) {
@@ -235,4 +249,9 @@
   });
   compact.addEventListener("change", () => window.Pulse.refresh());
   reduce.addEventListener("change", () => window.Pulse.refresh());
+  let monthTimer = 0;
+  window.addEventListener("resize", () => {
+    clearTimeout(monthTimer);
+    monthTimer = setTimeout(renderBoard, 120);
+  });
 })();

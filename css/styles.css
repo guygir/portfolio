@@ -831,6 +831,7 @@ body {
 
 .pulse-months {
   display: grid;
+  position: relative;
   grid-template-columns: repeat(53, minmax(0, 1fr));
   gap: var(--pulse-gap);
   margin-bottom: 4px;
@@ -845,7 +846,11 @@ body {
   white-space: nowrap;
 }
 
-.pulse-months span.is-tail {
+.pulse-months span.is-end {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: max-content;
   text-align: right;
 }
 
