@@ -563,73 +563,6 @@
     )).join("");
   }
 
-  // Only names that already appear in catalog copy. Do not invent skills.
-  const TOOL_NAMES = [
-    { label: "Kubernetes", pattern: /kubernetes/i },
-    { label: "Unity", pattern: /\bunity\b/i },
-    { label: "Next.js", pattern: /next\.js/i },
-    { label: "Supabase", pattern: /supabase/i },
-  ];
-
-  function catalogTools() {
-    const blobs = [];
-    (window.ITEMS || []).forEach((item) => {
-      ["detail", "blurb", "story", "tag"].forEach((key) => {
-        if (item[key]) blobs.push(String(item[key]));
-      });
-    });
-    ((window.TIMELINE && window.TIMELINE.entries) || []).forEach((row) => {
-      if (row && row.detail) blobs.push(String(row.detail));
-      if (row && row.title) blobs.push(String(row.title));
-    });
-    document.querySelectorAll("#about .about-copy p").forEach((p) => {
-      blobs.push(p.textContent || "");
-    });
-    const hay = blobs.join("\n");
-    return TOOL_NAMES.filter((tool) => tool.pattern.test(hay)).map((tool) => tool.label);
-  }
-
-  function chipHTML(name, echo) {
-    return (
-      '<li' + (echo ? ' class="is-echo" aria-hidden="true"' : "") + ">" +
-        '<span class="tools-chip">' + esc(name) + "</span>" +
-      "</li>"
-    );
-  }
-
-  function renderTools() {
-    const host = document.getElementById("tools-strip");
-    if (!host) return;
-    const tools = catalogTools();
-    if (!tools.length) {
-      host.hidden = true;
-      host.innerHTML = "";
-      return;
-    }
-    const still = reduceMotion();
-    let row = "";
-    tools.forEach((name) => {
-      row += chipHTML(name, false);
-    });
-    if (!still) {
-      while (row.split("<li").length - 1 < 10) {
-        tools.forEach((name) => {
-          row += chipHTML(name, true);
-        });
-      }
-    }
-    host.hidden = false;
-    host.classList.add("reveal");
-    host.innerHTML =
-      "<h3>Tools</h3>" +
-      '<div class="tools-viewport" tabindex="0">' +
-        '<div class="tools-track">' +
-          '<ul class="tools-list">' + row + "</ul>" +
-          (still ? "" : '<ul class="tools-list" aria-hidden="true">' + row + "</ul>") +
-        "</div>" +
-      "</div>";
-  }
-
   let revealIO = null;
   let revealSweepTick = 0;
 
@@ -842,7 +775,6 @@
     syncSwitch();
     bindChrome();
     renderTimeline();
-    renderTools();
     bindReveal();
     bindDock();
     setDock(dockKeyForFilter());
@@ -987,7 +919,6 @@
 
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
   const onMotionChange = () => {
-    renderTools();
     bindReveal();
   };
   if (motionQuery.addEventListener) motionQuery.addEventListener("change", onMotionChange);

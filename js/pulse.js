@@ -72,11 +72,12 @@
     }
     if (months) {
       let last = "";
-      months.innerHTML = cells.filter((_, i) => i % 7 === 0).map((cell) => {
+      months.innerHTML = cells.filter((_, i) => i % 7 === 0).map((cell, week) => {
         const label = new Date(cell.date + "T12:00:00").toLocaleString("en", { month: "short" });
         const show = label !== last;
         last = label;
-        return "<span>" + (show ? label : "") + "</span>";
+        const tail = show && week > WEEKS - 4 ? ' class="is-tail"' : "";
+        return "<span" + tail + ">" + (show ? label : "") + "</span>";
       }).join("");
     }
     board.innerHTML = cells.map((cell, index) => {
