@@ -1336,4 +1336,205 @@ body.inspect-open { overflow: hidden; }
     transform: none;
     transition: none;
   }
+
+  /* STRIP PREVIEW */
+  .strip-track { animation: none; width: auto; max-width: 100%; flex-wrap: wrap; }
+  .strip-list { flex-wrap: wrap; }
+  .strip-list[aria-hidden="true"] { display: none; }
+  .strip-viewport {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .strip-film,
+  .strip-card,
+  .strip-chip { transform: none; }
+}
+
+/* STRIP PREVIEW (experimental). Delete this block with js/strips.js. */
+.strip-preview {
+  max-width: var(--page);
+  margin: 0 auto;
+  padding: 10px var(--gutter) 8px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.strip-preview[hidden] { display: none; }
+
+.strip-preview-label {
+  margin: 0;
+  color: var(--mute);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.strip-preview-label small {
+  display: inline-block;
+  margin-left: 6px;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-weight: 500;
+}
+
+.strip-preview-modes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 4px;
+  background: var(--paper);
+  border: 1px solid rgb(25 21 18 / 0.1);
+  border-radius: 999px;
+}
+
+.strip-preview-modes button {
+  border: 0;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--mute);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.strip-preview-modes button[aria-checked="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.strip-preview-modes button:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.strip-mount {
+  max-width: var(--page);
+  margin: 0 auto 12px;
+  padding: 0 var(--gutter);
+  overflow: hidden;
+}
+
+.strip-kicker {
+  margin: 0 0 6px;
+  color: var(--mute);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.strip-viewport {
+  overflow: hidden;
+  padding: 8px 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+
+.strip-viewport:focus { outline: none; }
+
+.strip-viewport:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.strip-track {
+  display: flex;
+  width: max-content;
+  gap: 12px;
+  animation: strip-drift 48s linear infinite;
+}
+
+.strip-viewport:hover .strip-track,
+.strip-viewport:focus-visible .strip-track,
+.strip-mount:focus-within .strip-track {
+  animation-play-state: paused;
+}
+
+.strip-list {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 0 0 auto;
+}
+
+.strip-chip,
+.strip-card,
+.strip-film {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 5px 9px 4px;
+  border: 1.3px solid var(--ink);
+  background: rgb(255 255 255 / 0.72);
+  color: var(--ink);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.strip-chip { transform: rotate(-1deg); }
+.strip-list li:nth-child(3n + 2) .strip-chip { transform: rotate(1.1deg); }
+.strip-list li:nth-child(3n) .strip-chip { transform: rotate(-0.6deg); }
+
+.strip-card img,
+.strip-film img {
+  display: block;
+  object-fit: cover;
+  background: var(--wash);
+  box-shadow: 0 0 0 1px rgb(25 21 18 / 0.16);
+}
+
+.strip-card img {
+  width: 36px;
+  height: 22px;
+}
+
+.strip-film {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 4px 4px 5px;
+  letter-spacing: 0.06em;
+}
+
+.strip-film img {
+  width: 112px;
+  height: 70px;
+}
+
+.strip-film span,
+.strip-card span {
+  max-width: 112px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@keyframes strip-drift {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-50% - 6px)); }
+}
+
+@media (max-width: 780px) {
+  .strip-preview-modes { border-radius: 16px; }
+
+  .strip-film img {
+    width: 88px;
+    height: 55px;
+  }
+
+  .strip-film span,
+  .strip-card span { max-width: 88px; }
 }

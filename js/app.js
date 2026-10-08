@@ -779,6 +779,7 @@
     bindDock();
     setDock(dockKeyForFilter());
     if (window.Pulse) window.Pulse.refresh();
+    if (window.Strips) window.Strips.refresh();
   }
 
   function apply(next, options) {
@@ -792,7 +793,7 @@
           history.replaceState(null, "", location.pathname + location.search);
         }
       } else {
-        history.replaceState(null, "", "#" + filter);
+        history.replaceState(null, "", location.pathname + location.search + "#" + filter);
       }
       const top = function () {
         if (document.activeElement && document.activeElement.blur) {
@@ -898,6 +899,12 @@
       sweepReveal();
     }, 120);
   });
+
+  window.openCatalogItem = function (id) {
+    const tile = document.querySelector('.tile[data-item="' + id + '"]');
+    if (tile) openFromTile(tile);
+    else openInspect(id, [id], document.activeElement, 0);
+  };
 
   readLayout();
   const start = (location.hash || "").replace("#", "");

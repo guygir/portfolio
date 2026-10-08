@@ -18,7 +18,7 @@
         document.documentElement.setAttribute("data-layout", layout);
       })();
     </script>
-    <link rel="stylesheet" href="css/styles.css?v=20261008d" />
+    <link rel="stylesheet" href="css/styles.css?v=20261008e" />
   </head>
   <body data-view="current">
     <a class="skip" href="#gallery">Skip to work</a>
@@ -31,6 +31,18 @@
     </header>
 
     <main id="top">
+      <!-- STRIP PREVIEW (experimental). Remove this aside, js/strips.js, the STRIP PREVIEW CSS block, and the window.Strips hook in js/app.js. -->
+      <aside id="strip-preview" class="strip-preview" hidden>
+        <p class="strip-preview-label">Strip preview <small>review only</small></p>
+        <div class="strip-preview-modes" role="radiogroup" aria-label="Strip preview mode">
+          <button type="button" role="radio" data-strip="off" aria-checked="true">Off</button>
+          <button type="button" role="radio" data-strip="games" aria-checked="false">Games</button>
+          <button type="button" role="radio" data-strip="activity" aria-checked="false">Activity</button>
+          <button type="button" role="radio" data-strip="categories" aria-checked="false">Categories</button>
+          <button type="button" role="radio" data-strip="keywords" aria-checked="false">Keywords</button>
+        </div>
+      </aside>
+
       <div id="gallery"></div>
 
       <section id="about">
@@ -142,10 +154,11 @@
       </article>
     </div>
 
-    <script src="js/data.js?v=20261008d"></script>
-    <script src="js/timeline.js?v=20261008d"></script>
-    <script src="js/activity.js?v=20261008d"></script>
-    <script src="js/app.js?v=20261008d"></script>
-    <script src="js/pulse.js?v=20261008d"></script>
+    <script src="js/data.js?v=20261008e"></script>
+    <script src="js/timeline.js?v=20261008e"></script>
+    <script src="js/activity.js?v=20261008e"></script>
+    <script src="js/app.js?v=20261008e"></script>
+    <script src="js/pulse.js?v=20261008e"></script>
+    <script src="js/strips.js?v=20261008e"></script>
   </body>
 </html>

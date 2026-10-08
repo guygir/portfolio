@@ -200,6 +200,7 @@ The first fold on ~1280×800 must include the masthead, the layout switch, and a
 - Wordmark: `scale(0.97)` on `:active`.
 - Scroll-in reveal: board tiles, About timeline rows, and section headings fade in and drift up (~12px, 480ms `--ease-out`) once as they enter view. IntersectionObserver uses a generous rootMargin so a fast scroll cannot leave blank holes. First-fold items are marked visible before `html.reveal-ready`, so the opening paint is never empty. Stagger is one short step per column in a row. The drift lives on a `.reveal-shift` wrapper inside each tile (headings and timeline rows have no other transform) so tilt, hover lift, stack fan, swipe, dots, and the inspect sheet stay untouched. Switching Even/Uneven keeps already-revealed tiles shown. If JS never runs, nothing is hidden. `prefers-reduced-motion` shows every reveal instantly.
 - Reduced-motion: crossfade only; no tilt, lift, press, courier sky, or scroll-in drift.
+- Experimental moving strips (review only, `?strip=`): a temporary comparison of Games / Activity / Categories / Keywords marquees. Ink chips or cover films, edges fading into the paper, pause on hover/focus. Not part of the shipped catalog. `prefers-reduced-motion` shows a static row. Remove via `window.STRIP_PREVIEW` / `js/strips.js`.
 - Phone: no rest tilt. 2 columns, then 1 column under 340px. Tile subtitles wrap in full; no ellipsis.
 
 ---
