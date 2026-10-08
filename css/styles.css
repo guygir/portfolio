@@ -1406,9 +1406,27 @@ body.inspect-open { overflow: hidden; }
   color: var(--paper);
 }
 
-.strip-preview-modes button:focus-visible {
+.strip-preview-modes button:focus-visible,
+.strip-preview-desc:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 2px;
+}
+
+.strip-preview-desc {
+  border: 1px solid rgb(25 21 18 / 0.16);
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--mute);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.strip-preview-desc[aria-checked="true"] {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
 }
 
 .strip-mount {
@@ -1540,16 +1558,38 @@ html[data-layout="uneven"] .strip-group[role="group"] .strip-print-shot {
 }
 
 .strip-print-cap {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
   max-width: 128px;
+  min-height: 1.2em;
+}
+
+.strip-print-name {
+  display: block;
+  max-width: 100%;
   overflow: hidden;
-  color: var(--mute);
+  color: var(--ink);
   font-size: 10px;
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.2;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.strip-print-desc {
+  display: -webkit-box;
+  overflow: hidden;
+  min-height: calc(9px * 1.25 * 2);
+  color: var(--mute);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.25;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .strip-group[role="group"] + .strip-print-cap {
@@ -1576,6 +1616,41 @@ span.strip-tick { cursor: default; }
   text-transform: uppercase;
   white-space: nowrap;
   cursor: pointer;
+}
+
+.strip-tick {
+  align-items: flex-start;
+  white-space: normal;
+}
+
+.strip-tick-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  min-width: 0;
+}
+
+.strip-tick-line {
+  display: block;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.strip-tick-desc {
+  display: block;
+  max-width: 240px;
+  overflow: hidden;
+  color: var(--mute);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.25;
+  text-transform: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .strip-chip { transform: rotate(-1deg); }
@@ -1614,6 +1689,9 @@ span.strip-tick { cursor: default; }
   .strip-print-cap { max-width: 104px; }
 
   .strip-group[role="group"] + .strip-print-cap { max-width: 215px; }
+
+  .strip-tick-line,
+  .strip-tick-desc { max-width: 180px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

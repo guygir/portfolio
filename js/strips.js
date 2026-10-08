@@ -8,6 +8,7 @@ window.STRIP_PREVIEW = true;
 
   const MODES = ["off", "games", "activity", "categories", "keywords"];
   const KEY = "strip-preview";
+  const DESC_KEY = "strip-desc";
   const TECH = [
     { label: "Kubernetes", pattern: /kubernetes/i },
     { label: "Unity", pattern: /\bunity\b/i },
@@ -25,6 +26,7 @@ window.STRIP_PREVIEW = true;
   ];
 
   let mode = "off";
+  let showDesc = true;
   let events = (window.ACTIVITY_SNAPSHOT && window.ACTIVITY_SNAPSHOT.days) || [];
 
   function esc(value) {
@@ -42,6 +44,12 @@ window.STRIP_PREVIEW = true;
     return MODES.indexOf(value) !== -1 ? value : "";
   }
 
+  function parseDesc(value) {
+    if (value === "0" || value === "off" || value === "false") return false;
+    if (value === "1" || value === "on" || value === "true") return true;
+    return null;
+  }
+
   function readMode() {
     const query = parseMode(new URLSearchParams(location.search).get("strip"));
     if (query) return query;
@@ -52,17 +60,46 @@ window.STRIP_PREVIEW = true;
     return "off";
   }
 
+  function readDesc() {
+    const query = parseDesc(new URLSearchParams(location.search).get("desc"));
+    if (query !== null) return query;
+    try {
+      const stored = parseDesc(localStorage.getItem(DESC_KEY));
+      if (stored !== null) return stored;
+    } catch (err) {}
+    return true;
+  }
+
+  function persistUrl() {
+    const params = new URLSearchParams(location.search);
+    if (mode === "off") params.delete("strip");
+    else params.set("strip", mode);
+    params.set("desc", showDesc ? "1" : "0");
+    const search = params.toString();
+    history.replaceState(null, "", location.pathname + (search ? "?" + search : "") + location.hash);
+  }
+
   function writeMode(next) {
     mode = parseMode(next) || "off";
     document.documentElement.setAttribute("data-strip", mode);
     try { localStorage.setItem(KEY, mode); } catch (err) {}
-    const params = new URLSearchParams(location.search);
-    if (mode === "off") params.delete("strip");
-    else params.set("strip", mode);
-    const search = params.toString();
-    history.replaceState(null, "", location.pathname + (search ? "?" + search : "") + location.hash);
+    persistUrl();
     syncSelector();
     paint();
+  }
+
+  function writeDesc(next) {
+    showDesc = !!next;
+    document.documentElement.setAttribute("data-desc", showDesc ? "1" : "0");
+    try { localStorage.setItem(DESC_KEY, showDesc ? "1" : "0"); } catch (err) {}
+    persistUrl();
+    syncSelector();
+    paint();
+  }
+
+  function descOf(item) {
+    if (!item) return "";
+    return String(item.blurb || item.detail || "").trim();
   }
 
   function items() {
@@ -116,6 +153,7 @@ window.STRIP_PREVIEW = true;
         lines.push({
           id: id,
           src: rec ? rec.cover : "",
+          desc: rec ? descOf(rec) : "",
           text: name + " · " + phrase + " · " + ago(day.date),
         });
       });
@@ -167,8 +205,23 @@ window.STRIP_PREVIEW = true;
     return {
       id: item.id,
       title: item.title,
+      desc: descOf(item),
       shots: shotsOf(item),
     };
+  }
+
+  function captionHTML(entry) {
+    const name = esc(entry.title || "");
+    if (!name) return "";
+    const desc = showDesc && entry.desc
+      ? '<small class="strip-print-desc">' + esc(entry.desc) + "</small>"
+      : "";
+    return (
+      '<span class="strip-print-cap">' +
+        '<strong class="strip-print-name">' + name + "</strong>" +
+        desc +
+      "</span>"
+    );
   }
 
   function printShot(src, id) {
@@ -188,12 +241,13 @@ window.STRIP_PREVIEW = true;
       const shots = (entry.shots && entry.shots.length ? entry.shots : (entry.src ? [entry.src] : [])).filter(Boolean);
       if (!shots.length) return "";
       const prints = shots.map((src) => printShot(src, entry.id)).join("");
+      const aria = esc(entry.title || entry.text || "");
       return (
         "<li>" +
-          '<div class="strip-group"' + (shots.length > 1 ? ' role="group" aria-label="' + label + '"' : "") + ">" +
+          '<div class="strip-group"' + (shots.length > 1 ? ' role="group" aria-label="' + aria + '"' : "") + ">" +
             prints +
           "</div>" +
-          (label ? '<span class="strip-print-cap">' + label + "</span>" : "") +
+          captionHTML(entry) +
         "</li>"
       );
     }
@@ -201,10 +255,14 @@ window.STRIP_PREVIEW = true;
       const thumb = entry.src
         ? '<img class="strip-tick-shot" src="' + esc(entry.src) + '" alt="" width="64" height="40" loading="lazy" decoding="async" sizes="40px">'
         : "";
+      const desc = showDesc && entry.desc
+        ? '<small class="strip-tick-desc">' + esc(entry.desc) + "</small>"
+        : "";
+      const copy = '<span class="strip-tick-copy"><span class="strip-tick-line">' + label + "</span>" + desc + "</span>";
       if (entry.id) {
-        return "<li><button type=\"button\" class=\"strip-tick\"" + id + ">" + thumb + "<span>" + label + "</span></button></li>";
+        return "<li><button type=\"button\" class=\"strip-tick\"" + id + ">" + thumb + copy + "</button></li>";
       }
-      return "<li><span class=\"strip-tick\">" + thumb + "<span>" + label + "</span></span></li>";
+      return "<li><span class=\"strip-tick\">" + thumb + copy + "</span></li>";
     }
     if (entry.id) {
       return "<li><button type=\"button\" class=\"strip-chip\"" + id + ">" + label + "</button></li>";
@@ -321,6 +379,8 @@ window.STRIP_PREVIEW = true;
     document.querySelectorAll("#strip-preview [data-strip]").forEach((btn) => {
       btn.setAttribute("aria-checked", btn.dataset.strip === mode ? "true" : "false");
     });
+    const toggle = document.querySelector("#strip-preview [data-desc-toggle]");
+    if (toggle) toggle.setAttribute("aria-checked", showDesc ? "true" : "false");
   }
 
   function bindSelector() {
@@ -329,6 +389,11 @@ window.STRIP_PREVIEW = true;
     bar.dataset.bound = "1";
     bar.hidden = false;
     bar.addEventListener("click", (event) => {
+      const descBtn = event.target.closest("[data-desc-toggle]");
+      if (descBtn) {
+        writeDesc(!showDesc);
+        return;
+      }
       const btn = event.target.closest("[data-strip]");
       if (!btn) return;
       writeMode(btn.dataset.strip);
@@ -346,9 +411,12 @@ window.STRIP_PREVIEW = true;
   };
 
   mode = readMode();
+  showDesc = readDesc();
   document.documentElement.setAttribute("data-strip", mode);
+  document.documentElement.setAttribute("data-desc", showDesc ? "1" : "0");
   bindSelector();
   syncSelector();
+  persistUrl();
   paint();
 
   if (typeof window.loadActivity === "function") {
