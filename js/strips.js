@@ -115,6 +115,7 @@ window.STRIP_PREVIEW = true;
         }
         lines.push({
           id: id,
+          src: rec ? rec.cover : "",
           text: name + " · " + phrase + " · " + ago(day.date),
         });
       });
@@ -149,28 +150,61 @@ window.STRIP_PREVIEW = true;
     return row;
   }
 
+  const STACKED = { klafi: 1, riftrade: 1, holdemle: 1 };
+
+  function shotsOf(item) {
+    if (!item) return [];
+    if (Array.isArray(item.images) && item.images.length) {
+      return item.images.filter(Boolean);
+    }
+    const pair = [item.cover, item.hover].filter(Boolean);
+    const unique = pair.filter((src, i) => pair.indexOf(src) === i);
+    if (STACKED[item.id] && unique.length > 1) return unique;
+    return item.cover ? [item.cover] : unique.slice(0, 1);
+  }
+
+  function projectEntry(item) {
+    return {
+      id: item.id,
+      title: item.title,
+      shots: shotsOf(item),
+    };
+  }
+
+  function printShot(src, id) {
+    return (
+      '<button type="button" class="strip-print"' + (id ? ' data-item="' + esc(id) + '"' : "") + ">" +
+        '<span class="strip-print-shot">' +
+          '<img src="' + esc(src) + '" alt="" width="256" height="160" loading="lazy" decoding="async" sizes="128px">' +
+        "</span>" +
+      "</button>"
+    );
+  }
+
   function chipHTML(entry, kind) {
     const label = esc(entry.text || entry.title || "");
     const id = entry.id ? ' data-item="' + esc(entry.id) + '"' : "";
-    if (kind === "film") {
+    if (kind === "print") {
+      const shots = (entry.shots && entry.shots.length ? entry.shots : (entry.src ? [entry.src] : [])).filter(Boolean);
+      if (!shots.length) return "";
+      const prints = shots.map((src) => printShot(src, entry.id)).join("");
       return (
         "<li>" +
-          '<button type="button" class="strip-film"' + id + ">" +
-            '<img src="' + esc(entry.src) + '" alt="" width="160" height="100">' +
-            "<span>" + label + "</span>" +
-          "</button>" +
+          '<div class="strip-group"' + (shots.length > 1 ? ' role="group" aria-label="' + label + '"' : "") + ">" +
+            prints +
+          "</div>" +
+          (label ? '<span class="strip-print-cap">' + label + "</span>" : "") +
         "</li>"
       );
     }
-    if (kind === "card") {
-      return (
-        "<li>" +
-          '<button type="button" class="strip-card"' + id + ">" +
-            (entry.src ? '<img src="' + esc(entry.src) + '" alt="" width="72" height="45">' : "") +
-            "<span>" + label + "</span>" +
-          "</button>" +
-        "</li>"
-      );
+    if (kind === "tick") {
+      const thumb = entry.src
+        ? '<img class="strip-tick-shot" src="' + esc(entry.src) + '" alt="" width="64" height="40" loading="lazy" decoding="async" sizes="40px">'
+        : "";
+      if (entry.id) {
+        return "<li><button type=\"button\" class=\"strip-tick\"" + id + ">" + thumb + "<span>" + label + "</span></button></li>";
+      }
+      return "<li><span class=\"strip-tick\">" + thumb + "<span>" + label + "</span></span></li>";
     }
     if (entry.id) {
       return "<li><button type=\"button\" class=\"strip-chip\"" + id + ">" + label + "</button></li>";
@@ -235,14 +269,10 @@ window.STRIP_PREVIEW = true;
     const view = document.body.dataset.view || "current";
 
     if (mode === "games") {
-      const games = bySection("games").map((item) => ({
-        id: item.id,
-        text: item.title,
-        src: item.cover,
-      }));
+      const games = bySection("games").map(projectEntry);
       const host = after(board || opening);
       if (host) {
-        fillStrip(host, { kind: "film", items: games, kicker: "Games" });
+        fillStrip(host, { kind: "print", items: games, kicker: "Games" });
         bindMount(host);
       }
       return;
@@ -266,14 +296,10 @@ window.STRIP_PREVIEW = true;
       ].filter((cat) => view === "current" || view === cat.key);
       let last = opening;
       cats.forEach((cat) => {
-        const entries = bySection(cat.key).map((item) => ({
-          id: item.id,
-          text: item.title,
-          src: item.cover,
-        }));
+        const entries = bySection(cat.key).map(projectEntry);
         const host = after(last);
         if (!host) return;
-        fillStrip(host, { kind: "card", items: entries, kicker: cat.kicker });
+        fillStrip(host, { kind: "print", items: entries, kicker: cat.kicker });
         bindMount(host);
         last = host;
       });
