@@ -1791,7 +1791,7 @@ html[data-layout="cards"] .card-num {
   display: inline-block;
   padding: 3px 6px 2px;
   background: var(--accent, var(--ink));
-  color: #fff;
+  color: var(--accent-on, #fff);
 }
 
 html[data-layout="cards"] .card-kind {
@@ -1825,15 +1825,28 @@ html[data-layout="cards"] .card-icon {
   position: absolute;
   left: 10px;
   bottom: 0;
+  display: grid;
+  place-items: center;
   transform: translateY(50%);
   width: 56px;
   height: 56px;
+  overflow: hidden;
+  border: 2px solid var(--accent, var(--ink));
   border-radius: 12px;
   background-color: var(--accent, var(--ink));
-  background-size: 220%;
-  background-position: 50% 40%;
-  background-repeat: no-repeat;
   box-shadow: 0 0 0 2px #fff;
+  color: var(--accent-on, #fff);
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 750;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+html[data-layout="cards"] .card-icon.is-crop {
+  background-repeat: no-repeat;
+  background-position: var(--icon-pos, 50% 50%);
+  background-size: var(--icon-zoom, 280%);
 }
 
 html[data-layout="cards"] .card-name {
@@ -1849,7 +1862,7 @@ html[data-layout="cards"] .card-name {
 
 html[data-layout="cards"] .card-name em {
   font-style: normal;
-  color: var(--accent, var(--ink));
+  color: var(--accent-ink, var(--accent, var(--ink)));
 }
 
 html[data-layout="cards"] .card-blurb {
@@ -1881,8 +1894,8 @@ html[data-layout="cards"] .card-tag {
 
 html[data-layout="cards"] .card-tag.is-mark,
 html[data-layout="cards"] .card-tag.is-status {
-  border-color: var(--accent, var(--ink));
-  color: var(--accent, var(--ink));
+  border-color: var(--accent-ink, var(--accent, var(--ink)));
+  color: var(--accent-ink, var(--accent, var(--ink)));
 }
 
 html[data-layout="cards"] .card-explore { color: var(--ink); }

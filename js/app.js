@@ -227,6 +227,52 @@
     return '<strong class="card-name">' + esc(parts[0]) + "<em>" + esc(parts[1]) + "</em></strong>";
   }
 
+  function hexRgb(hex) {
+    const n = String(hex || "").replace("#", "");
+    if (n.length !== 6) return [25, 21, 18];
+    return [parseInt(n.slice(0, 2), 16), parseInt(n.slice(2, 4), 16), parseInt(n.slice(4, 6), 16)];
+  }
+
+  function relLum(rgb) {
+    const f = function (c) {
+      c /= 255;
+      return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+    };
+    return 0.2126 * f(rgb[0]) + 0.7152 * f(rgb[1]) + 0.0722 * f(rgb[2]);
+  }
+
+  function contrastRatio(a, b) {
+    const x = relLum(a) + 0.05;
+    const y = relLum(b) + 0.05;
+    return x > y ? x / y : y / x;
+  }
+
+  function onAccent(hex) {
+    const rgb = hexRgb(hex);
+    if (contrastRatio(rgb, [255, 255, 255]) >= 4.5) return "#ffffff";
+    return "#191512";
+  }
+
+  function iconHTML(item) {
+    const icon = item.icon || {};
+    if (icon.initials) {
+      return '<span class="card-icon is-initials" aria-hidden="true">' + esc(icon.initials) + "</span>";
+    }
+    const crop = String(icon.crop || "50% 50% / 280%");
+    const parts = crop.split("/");
+    const pos = (parts[0] || "50% 50%").trim();
+    const zoom = (parts[1] || "280%").trim();
+    return (
+      '<span class="card-icon is-crop" aria-hidden="true" style="background-image:url(\'' +
+        esc(item.cover) +
+        "');--icon-pos:" +
+        esc(pos) +
+        ";--icon-zoom:" +
+        esc(zoom) +
+      ';"></span>'
+    );
+  }
+
   function cardTags(item) {
     const tags = [];
     const seen = {};
@@ -256,13 +302,14 @@
   }
 
   function cardHTML(item, index) {
-    const accent = item.accent || "#191512";
+    const accent = item.accent || "#2563eb";
+    const accentInk = item.accentInk || accent;
     const num = padNum(index + 1);
     const tags = cardTags(item).map((tag) => (
       '<span class="card-tag is-' + tag.tone + '">' + esc(tag.text) + "</span>"
     )).join("");
     return (
-      '<button type="button" class="piece tile card-tile reveal" data-item="' + item.id + '" aria-haspopup="dialog" style="--accent: ' + esc(accent) + '">' +
+      '<button type="button" class="piece tile card-tile reveal" data-item="' + item.id + '" aria-haspopup="dialog" style="--accent: ' + esc(accent) + "; --accent-ink: " + esc(accentInk) + "; --accent-on: " + onAccent(accent) + '">' +
         '<span class="reveal-shift">' +
           '<span class="card-top">' +
             '<span class="card-num">' + num + "</span>" +
@@ -272,7 +319,7 @@
             '<span class="shot card-shot">' +
               '<img src="' + esc(item.cover) + '" alt="' + esc(item.title) + '" width="1600" height="1000">' +
             "</span>" +
-            '<span class="card-icon" aria-hidden="true" style="background-image:url(\'' + esc(item.cover) + "')\"></span>" +
+            iconHTML(item) +
           "</span>" +
           nameHTML(item) +
           '<small class="card-blurb">' + esc(item.blurb) + "</small>" +
