@@ -119,8 +119,9 @@
   function visibleTile(id) {
     const tile = document.querySelector('.tile[data-item="' + id + '"]');
     if (!tile) return null;
-    const box = tile.getBoundingClientRect();
-    if (box.bottom < 80 || box.top > window.innerHeight - 20) return null;
+    const dest = destPoint(tile);
+    if (dest.y <= 80 || dest.y >= window.innerHeight - 20) return null;
+    if (dest.x < 0 || dest.x > window.innerWidth) return null;
     return tile;
   }
   function point(t, a, b) {
