@@ -1538,3 +1538,25 @@ body.inspect-open { overflow: hidden; }
   .strip-film span,
   .strip-card span { max-width: 88px; }
 }
+
+@media (prefers-reduced-motion: reduce) {
+  .strip-track {
+    animation: none;
+    width: auto;
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .strip-list { flex-wrap: wrap; }
+
+  .strip-list[aria-hidden="true"] { display: none; }
+
+  .strip-viewport {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+
+  .strip-film,
+  .strip-card,
+  .strip-chip { transform: none; }
+}
