@@ -40,6 +40,10 @@ Guy is an AI Platforms research engineer at IBM who also ships games and small t
 - Artifact-first composition. Chrome recedes. A spread of project pictures is the artifact.
 - No decorative eyebrows or `01 / Work` section numbers. The heading speaks.
 
+### From Lyr Zamir (feel, not costume)
+
+- A slow auto-scrolling strip with edges fading into the ground, and work that fades in as it enters the viewport. We keep that physics on graph paper: stamp-like tool chips and a once-only tile/timeline reveal. Not the Framer look, not a client-logo wall.
+
 ### From Emil Kowalski
 
 - Purpose before motion. Tile hover exists to show the second picture and keep the swap from being a hard cut.
@@ -121,7 +125,7 @@ Omitted on purpose: `Test`, `my-fork`, `vllm` fork, `clawdchan`, `Better-Minimal
 
 ### 3.5 About
 
-Duotone portrait (real `images/profile/guy-girmonsky.jpg`), the existing bio, a catalog timeline of dated project facts only, selected writing, then the GitHub year. Career-role dates live as non-rendering TODOs in `js/timeline.js`.
+Duotone portrait (real `images/profile/guy-girmonsky.jpg`), the existing bio, a catalog timeline of dated project facts only, a tools strip of technologies already named in the catalog, selected writing, then the GitHub year. Career-role dates live as non-rendering TODOs in `js/timeline.js`.
 
 ---
 
@@ -185,6 +189,7 @@ The first fold on ~1280×800 must include the masthead, the layout switch, and a
 | `--dur-cover` | 240ms |
 | `--dur-ui` | 200ms |
 | `--dur-press` | 160ms |
+| `--dur-reveal` | 480ms |
 
 - Image crossfade: 240ms opacity on flat tiles. Always on, including reduced motion.
 - Rest: the photo (or stack) sits at its deterministic tilt.
@@ -193,7 +198,9 @@ The first fold on ~1280×800 must include the masthead, the layout switch, and a
 - Stacked tiles: back image fans a little more on hover/focus; reduced motion flattens the stack.
 - Layout switch: short opacity dip, or instant under reduced motion.
 - Wordmark: `scale(0.97)` on `:active`.
-- Reduced-motion: crossfade only; no tilt, lift, press, or courier sky.
+- Scroll-in reveal: board tiles, About timeline rows, and section headings fade in and drift up (~12px, 480ms `--ease-out`) once as they enter view. IntersectionObserver uses a generous rootMargin so a fast scroll cannot leave blank holes. First-fold items are marked visible before `html.reveal-ready`, so the opening paint is never empty. Stagger is one short step per column in a row. The drift lives on a `.reveal-shift` wrapper inside each tile (headings and timeline rows have no other transform) so tilt, hover lift, stack fan, swipe, dots, and the inspect sheet stay untouched. Switching Even/Uneven keeps already-revealed tiles shown. If JS never runs, nothing is hidden. `prefers-reduced-motion` shows every reveal instantly.
+- Tools strip (under About): a slow, seamless horizontal drift of stamp-like ink chips for technologies that already appear in project data or About copy (derived and deduped; no invented skills). Edges fade into the paper. The looping copy is `aria-hidden`. Hover or focus pauses the drift. The strip must not widen the page. Reduced motion drops the animation and shows one wrapping row.
+- Reduced-motion: crossfade only; no tilt, lift, press, courier sky, scroll-in drift, or tools-strip motion.
 - Phone: no rest tilt. 2 columns, then 1 column under 340px. Tile subtitles wrap in full; no ellipsis.
 
 ---
@@ -239,7 +246,7 @@ A one-line lede and “One system, one game, one useful thing.” then the scrap
 
 ### About
 
-Full-width About heading with space below, then two columns. Left: duotone portrait + sourced bio. Right: catalog timeline (dated project facts only) and paper links. Pulse calendar underneath. The heading must not overlap the portrait.
+Full-width About heading with space below, then two columns. Left: duotone portrait + sourced bio. Right: catalog timeline (dated project facts only) and paper links. Under the grid: a fading tools strip of catalog technologies, then the pulse calendar. The heading must not overlap the portrait.
 
 ### Footer
 
