@@ -130,7 +130,10 @@ button {
   left: var(--space-16);
   top: var(--space-12);
   z-index: 12;
-  padding: var(--space-8) var(--space-12);
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 var(--space-12);
   background: var(--ink);
   color: var(--paper);
   text-decoration: none;
@@ -142,7 +145,7 @@ button {
 .debug-bar {
   position: relative;
   z-index: 9;
-  padding: var(--space-4) var(--gutter);
+  padding: 0 var(--gutter);
 }
 
 .debug-chip {
@@ -232,6 +235,9 @@ html[data-debug="0"] .debug-panel { display: none; }
 }
 
 .wordmark {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   font-family: var(--display);
   font-size: var(--type-name);
   font-weight: var(--weight-500);
@@ -822,8 +828,15 @@ img.layer,
 }
 
 #contact li {
-  padding: var(--space-12) 0;
+  padding: 0;
   border-top: 1px solid var(--line);
+}
+
+#contact a {
+  display: inline-flex;
+  align-items: center;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .dock {
@@ -883,6 +896,9 @@ body {
 }
 
 #about a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -1324,8 +1340,8 @@ body.inspect-open { overflow: hidden; }
 
   .masthead {
     align-items: center;
-    min-height: auto;
-    padding: var(--space-8) var(--gutter);
+    min-height: 44px;
+    padding: 0 var(--gutter);
   }
 
   .opening { padding-top: 0; }
@@ -1364,7 +1380,7 @@ body.inspect-open { overflow: hidden; }
   .intro-role,
   .intro-bio { font-size: var(--type-lede); }
 
-  .intro-bio { margin-bottom: var(--space-4); }
+  .intro-bio { margin-bottom: var(--space-4); line-height: 1.3; }
 
   .intro-links { gap: var(--space-16); }
 
@@ -1957,6 +1973,12 @@ html[data-layout="cards"] .card-tag.is-status {
 
 html[data-layout="cards"] .card-explore { color: var(--ink); }
 
+html[data-layout="cards"] .card-more a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
 html[data-layout="cards"] .lineup .board > .card-tile:first-child {
   box-shadow: inset 0 2px 0 var(--accent, var(--ink));
 }
@@ -2015,6 +2037,12 @@ html[data-layout="cards"] .card-tile:focus-visible {
   html[data-layout="cards"] .board {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  html[data-layout="cards"] .opening > .lineup:first-child .lineup-head {
+    margin-bottom: var(--space-4);
+  }
+
+  html[data-layout="cards"] .lineup-note { display: none; }
 
   html[data-layout="cards"] .card-tile,
   html[data-layout="cards"] .card-more {
