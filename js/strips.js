@@ -111,13 +111,8 @@ window.STRIP_PREVIEW = true;
   }
 
   function stampOf(item) {
-    if (item.status === "archive") return "SHELF";
-    if (item.section === "games") {
-      if (/daily/i.test(item.detail || item.blurb || "")) return "DAILY";
-      if (/print/i.test(item.detail || item.blurb || "")) return "PRINT";
-      return "PLAY";
-    }
     if (item.section === "work") return "WORK";
+    if (item.section === "games") return "PLAY";
     return "TOOL";
   }
 
@@ -318,17 +313,15 @@ window.STRIP_PREVIEW = true;
 
   function paint() {
     clearMounts();
-    const bar = document.getElementById("strip-preview");
-    if (bar) bar.hidden = false;
     if (mode === "off") return;
 
-    const opening = document.querySelector(".opening-head, .chapter-head");
+    const opening = document.querySelector(".intro, .chapter-head, #gallery");
     const board = document.querySelector("#gallery .board");
     const view = document.body.dataset.view || "current";
 
     if (mode === "games") {
       const games = bySection("games").map(projectEntry);
-      const host = after(board || opening);
+      const host = after(opening);
       if (host) {
         fillStrip(host, { kind: "print", items: games, kicker: "Games" });
         bindMount(host);
@@ -352,14 +345,12 @@ window.STRIP_PREVIEW = true;
         { key: "games", kicker: "Games" },
         { key: "projects", kicker: "Projects" },
       ].filter((cat) => view === "current" || view === cat.key);
-      let last = opening;
-      cats.forEach((cat) => {
+      cats.forEach((cat, i) => {
         const entries = bySection(cat.key).map(projectEntry);
-        const host = after(last);
+        const host = after(i === 0 ? opening : board);
         if (!host) return;
         fillStrip(host, { kind: "print", items: entries, kicker: cat.kicker });
         bindMount(host);
-        last = host;
       });
       return;
     }
@@ -387,7 +378,6 @@ window.STRIP_PREVIEW = true;
     const bar = document.getElementById("strip-preview");
     if (!bar || bar.dataset.bound) return;
     bar.dataset.bound = "1";
-    bar.hidden = false;
     bar.addEventListener("click", (event) => {
       const descBtn = event.target.closest("[data-desc-toggle]");
       if (descBtn) {
