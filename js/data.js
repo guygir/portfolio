@@ -11,6 +11,7 @@ window.ITEMS = [
     blurb: "Lossless compression built for AI model data.",
     detail: "IBM Research · IEEE CLOUD 2025",
     href: "https://github.com/zipnn/zipnn",
+    explore: "projects/zipnn.html",
     cover: "images/covers/zipnn.jpg",
     hover: "images/hover/zipnn.jpg",
   },

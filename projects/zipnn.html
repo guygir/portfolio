@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en" class="explore" data-style="clean" data-hand="0" data-debug="0">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ZipNN — explore</title>
+    <meta name="description" content="A sketchnote on ZipNN, lossless compression for AI model data." />
+    <meta name="theme-color" content="#F6F3EC" />
+    <link rel="preload" href="../fonts/kalam-latin-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="../fonts/kalam-latin-700.woff2" as="font" type="font/woff2" crossorigin />
+    <script>
+      (function () {
+        function parseStyle(value) {
+          if (value === "sketch" || value === "1") return "sketch";
+          if (value === "clean" || value === "0") return "clean";
+          return "";
+        }
+        function parseHand(value) {
+          if (value === "1" || value === "hand") return "1";
+          if (value === "0" || value === "readable" || value === "sans") return "0";
+          return "";
+        }
+        var style = "clean";
+        var hand = "0";
+        var debug = "0";
+        try {
+          var params = new URLSearchParams(location.search);
+          style = parseStyle(params.get("style"));
+          if (!style) {
+            var v2 = params.get("v2");
+            if (v2 !== null) style = parseStyle(v2) || (v2 === "false" ? "clean" : "sketch");
+          }
+          if (!style) style = parseStyle(localStorage.getItem("explore-style"));
+          if (!style) style = "clean";
+          hand = parseHand(params.get("hand"));
+          if (!hand) hand = parseHand(localStorage.getItem("explore-hand"));
+          if (!hand) hand = "0";
+          var dq = params.get("debug");
+          if (dq === "1" || dq === "0") debug = dq;
+          else if (localStorage.getItem("debug-open") === "1") debug = "1";
+        } catch (err) {}
+        document.documentElement.setAttribute("data-style", style);
+        document.documentElement.setAttribute("data-hand", hand);
+        document.documentElement.setAttribute("data-debug", debug);
+      })();
+    </script>
+    <link rel="stylesheet" href="../css/styles.css?v=20261010b" />
+    <link rel="stylesheet" href="../css/explore.css?v=20261010b" />
+  </head>
+  <body class="explore">
+    <svg class="sr-filters" aria-hidden="true">
+      <filter id="ink-rough" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="n" />
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+      <filter id="ink-rough-strong" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.048" numOctaves="3" seed="7" result="n" />
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="2.8" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+
+    <a class="skip" href="#note">Skip to note</a>
+
+    <aside id="debug-bar" class="debug-bar">
+      <button type="button" class="debug-chip" data-debug-toggle aria-expanded="false" aria-controls="debug-panel">Debug</button>
+      <div id="debug-panel" class="debug-panel" hidden>
+        <div class="debug-group" role="radiogroup" aria-label="Explore version">
+          <span class="debug-label">Version</span>
+          <button type="button" role="radio" data-style="clean" aria-checked="true">Clean</button>
+          <button type="button" role="radio" data-style="sketch" aria-checked="false">Sketch</button>
+        </div>
+        <div class="debug-group" role="radiogroup" aria-label="Body font">
+          <span class="debug-label">Body</span>
+          <button type="button" role="radio" data-hand="0" aria-checked="true">Readable</button>
+          <button type="button" role="radio" data-hand="1" aria-checked="false">Hand</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="explore-page" id="note">
+      <a class="explore-back" href="../index.html">← Back to the board</a>
+
+      <header class="explore-hero">
+        <p class="venue-sticky sketch-only">
+          <svg class="pin-doodle" viewBox="0 0 20 28" aria-hidden="true">
+            <path filter="url(#ink-rough)" fill="var(--stamp)" d="M10 2.2c-3.2 0-5.6 2.4-5.6 5.4 0 4.2 5.6 12.6 5.6 12.6s5.6-8.4 5.6-12.6c0-3-2.4-5.4-5.6-5.4z" />
+            <circle cx="10" cy="7.4" r="2.1" fill="var(--board)" />
+          </svg>
+          IEEE CLOUD 2025
+        </p>
+        <p class="explore-kicker">IEEE CLOUD 2025 · IBM Research</p>
+        <h1>ZipNN</h1>
+        <p class="explore-sub">
+          Lossless compression built for AI model data.
+          <svg viewBox="0 0 320 16" aria-hidden="true">
+            <path class="draw-line" d="M4 9 C 40 4, 90 13, 150 8 S 250 4, 316 11" />
+          </svg>
+        </p>
+        <figure class="explore-sticker">
+          <img src="../images/covers/zipnn.jpg" alt="" width="160" height="160" />
+        </figure>
+      </header>
+
+      <div class="explore-grid">
+        <article class="note">
+          <p class="note-num" aria-hidden="true">1</p>
+          <h2><span class="mark mark-1">Why this matters</span></h2>
+          <p>
+            As models grow, their size burdens the infrastructure that stores and
+            moves them — more network, more storage.
+          </p>
+          <p>
+            One paper example: Mistral at 14.5&nbsp;GB with 2.77&nbsp;million
+            monthly Hugging Face downloads is about
+            <span class="mark mark-1">40&nbsp;PB</span> of transfer in a month.
+          </p>
+          <svg class="doodle disk-doodle sketch-only" viewBox="0 0 200 128" aria-hidden="true">
+            <g filter="url(#ink-rough-strong)" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round">
+              <ellipse cx="64" cy="26" rx="38" ry="12" />
+              <path d="M26 26 V74 C26 83, 102 83, 102 74 V26" />
+              <ellipse cx="64" cy="74" rx="38" ry="12" />
+              <ellipse cx="64" cy="26" rx="14" ry="5" />
+              <path class="draw-line" d="M122 18 C138 28, 148 46, 142 68" />
+              <path d="M134 62 L142 72 L154 58" />
+            </g>
+            <text x="64" y="108" text-anchor="middle">40 PB / month</text>
+            <text x="64" y="122" text-anchor="middle">Mistral downloads</text>
+          </svg>
+          <p>
+            Distillation, pruning, and quantization make a smaller model by
+            throwing information away. ZipNN is the other kind of compression:
+            a compact form plus a decompressor that returns the original weights.
+          </p>
+          <p class="bubble sketch-only">Same bits back — decompress returns the original weights.</p>
+        </article>
+
+        <article class="note">
+          <p class="note-num" aria-hidden="true">2</p>
+          <h2><span class="mark mark-2">What we built</span></h2>
+          <p>
+            ZipNN is a lossless compressor tailored to neural-network tensors.
+            An open library sits at
+            <a href="https://github.com/zipnn/zipnn">github.com/zipnn/zipnn</a>
+            (pip install zipnn) and can keep models compressed on
+            disk for Hugging Face, Safetensors, and vLLM.
+          </p>
+          <p>
+            The paper
+            <cite>ZipNN: Lossless Compression for AI Models</cite>
+            lists Guy Girmonsky among the authors, with an IBM Research
+            affiliation, and the catalog places the work at IEEE CLOUD 2025.
+          </p>
+        </article>
+
+        <article class="note note-flow">
+          <p class="note-num" aria-hidden="true">3</p>
+          <h2><span class="mark mark-3">How it works</span></h2>
+          <p>
+            Model weights are arrays of floating-point numbers. The exponent
+            bits are highly skewed; the fraction often is not. ZipNN rearranges
+            those bytes and spends entropy coding where it pays.
+          </p>
+          <ol class="sr-only">
+            <li>Start from model weights (BF16 / FP32 tensors).</li>
+            <li>Split bytes: extract the exponent, group the rest.</li>
+            <li>Huffman / entropy-code the skewed bytes; skip incompressible parts.</li>
+            <li>Store the compact form; decompress to the original weights.</li>
+          </ol>
+          <div class="flow" aria-hidden="true">
+            <div class="flow-step">
+              <strong>1 · Weights</strong>
+              <span>Tensors of BF16 / FP32 parameters</span>
+            </div>
+            <svg class="flow-arrow" viewBox="0 0 28 28"><path class="draw-line" d="M3 15 C10 12, 16 18, 22 14 M16 8 L23 14 L16 21" /></svg>
+            <div class="flow-step">
+              <strong>2 · Split bytes</strong>
+              <span>Exponent out; remaining bytes grouped</span>
+            </div>
+            <svg class="flow-arrow" viewBox="0 0 28 28"><path class="draw-line" d="M3 15 C10 12, 16 18, 22 14 M16 8 L23 14 L16 21" /></svg>
+            <div class="flow-step">
+              <strong>3 · Entropy code</strong>
+              <span>Huffman on skewed bytes; skip the rest</span>
+            </div>
+            <svg class="flow-arrow" viewBox="0 0 28 28"><path class="draw-line" d="M3 15 C10 12, 16 18, 22 14 M16 8 L23 14 L16 21" /></svg>
+            <div class="flow-step">
+              <strong>4 · Store / load</strong>
+              <span>Compact on disk; original after inflate</span>
+            </div>
+          </div>
+
+          <div class="doodle-row">
+            <svg class="doodle tensor-doodle sketch-only" viewBox="0 0 176 108" aria-hidden="true">
+              <g filter="url(#ink-rough-strong)" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round">
+                <path d="M8 12 L166 10 L168 74 L6 72 Z" />
+                <path d="M60 11 V73 M114 10 V74" />
+                <path d="M7 32 H167 M7 53 H167" />
+              </g>
+              <text x="34" y="26" text-anchor="middle">0.41</text>
+              <text x="86" y="26" text-anchor="middle">−1.2</text>
+              <text x="140" y="26" text-anchor="middle">3.08</text>
+              <text x="34" y="47" text-anchor="middle">0.07</text>
+              <text x="86" y="47" text-anchor="middle">2.50</text>
+              <text x="140" y="47" text-anchor="middle">−0.9</text>
+              <text x="34" y="68" text-anchor="middle">1.40</text>
+              <text x="86" y="68" text-anchor="middle">0.33</text>
+              <text x="140" y="68" text-anchor="middle">4.10</text>
+              <text x="88" y="98" text-anchor="middle">BF16 / FP32 tensors</text>
+            </svg>
+
+            <svg class="doodle fp-doodle clean-only" viewBox="0 0 280 56" aria-hidden="true">
+              <rect x="2" y="14" width="36" height="28" fill="none" stroke="currentColor" stroke-width="2" rx="6" />
+              <rect x="46" y="14" width="88" height="28" fill="var(--marker-1)" stroke="currentColor" stroke-width="2" rx="6" />
+              <rect x="142" y="14" width="136" height="28" fill="var(--marker-2)" stroke="currentColor" stroke-width="2" rx="6" />
+              <text x="20" y="33" text-anchor="middle">±</text>
+              <text x="90" y="33" text-anchor="middle">exponent</text>
+              <text x="210" y="33" text-anchor="middle">fraction</text>
+            </svg>
+
+            <svg class="doodle bits-doodle sketch-only" viewBox="0 0 320 142" aria-hidden="true">
+              <g filter="url(#ink-rough-strong)" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round">
+                <path d="M8 14 L46 12 L48 50 L6 48 Z" />
+                <path d="M58 10 L156 8 L158 54 L56 52 Z" fill="var(--marker-1)" />
+                <path d="M168 13 L312 11 L314 51 L166 49 Z" fill="var(--marker-2)" />
+                <path class="draw-line" d="M104 56 C98 74, 70 88, 42 96" />
+                <path d="M34 88 L42 98 L54 86" />
+                <path class="draw-line" d="M230 56 C236 78, 248 92, 268 104" />
+                <path d="M258 96 L270 106 L280 92" />
+                <path d="M248 108 h40 M248 108 v20 M288 108 v20 M248 128 h40 M261 108 v20 M275 108 v20" />
+              </g>
+              <text x="27" y="36" text-anchor="middle">sign</text>
+              <text x="107" y="36" text-anchor="middle">exponent</text>
+              <text x="240" y="36" text-anchor="middle">fraction</text>
+              <text x="48" y="136" text-anchor="middle">extract</text>
+              <text x="268" y="138" text-anchor="middle">group bytes</text>
+            </svg>
+
+            <svg class="doodle huff-doodle sketch-only" viewBox="0 0 176 128" aria-hidden="true">
+              <g filter="url(#ink-rough-strong)" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <circle cx="88" cy="16" r="10" />
+                <path d="M80 24 C60 36, 48 44, 36 52" />
+                <path d="M96 24 C118 36, 128 44, 140 52" />
+                <circle cx="32" cy="64" r="12" fill="var(--marker-1)" />
+                <circle cx="144" cy="64" r="11" />
+                <path d="M136 74 C124 84, 116 90, 108 98" />
+                <path d="M152 74 C158 84, 162 90, 164 98" />
+                <circle cx="104" cy="110" r="11" fill="var(--marker-3)" />
+                <circle cx="164" cy="110" r="11" />
+              </g>
+              <text x="88" y="20" text-anchor="middle">H</text>
+              <text x="32" y="68" text-anchor="middle">A</text>
+              <text x="144" y="68" text-anchor="middle">·</text>
+              <text x="104" y="114" text-anchor="middle">B</text>
+              <text x="164" y="114" text-anchor="middle">C</text>
+            </svg>
+          </div>
+          <p class="doodle-caption sketch-only" aria-hidden="true">Huffman on the skewed bytes</p>
+          <p class="bubble sketch-only">The exponent is the compressible part.</p>
+        </article>
+
+        <article class="note">
+          <p class="note-num" aria-hidden="true">4</p>
+          <h2><span class="mark mark-1">Results</span></h2>
+          <ul>
+            <li>Often about 33% smaller; at times over 50% (clean models, e.g. RoBERTa around 55%).</li>
+            <li>Typical: BF16 ≈ 33% saved; regular FP32 ≈ 17%.</li>
+            <li>On Llama 3, more than 17% better space than vanilla compression, and 62% faster compress / decompress.</li>
+            <li>With several workers: up to 80&nbsp;GB/s inflate, 13&nbsp;GB/s deflate.</li>
+            <li>The paper estimates over an exabyte a year of Hugging Face hub traffic if methods like this were applied.</li>
+          </ul>
+          <svg class="doodle bars-doodle sketch-only" viewBox="0 0 280 140" aria-hidden="true">
+            <g filter="url(#ink-rough-strong)" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round">
+              <rect x="72" y="10" width="132.6" height="18" fill="var(--marker-2)" />
+              <rect x="72" y="38" width="156.6" height="18" fill="var(--marker-1)" />
+              <rect x="72" y="66" width="200" height="18" fill="var(--marker-3)" />
+              <rect x="72" y="94" width="200" height="18" fill="var(--marker-3)" />
+            </g>
+            <text x="8" y="23">ZipNN</text>
+            <text x="272" y="23" text-anchor="end">66.3%</text>
+            <text x="8" y="51">Zstd</text>
+            <text x="272" y="51" text-anchor="end">78.3%</text>
+            <text x="8" y="79">LZ4</text>
+            <text x="272" y="79" text-anchor="end">100%</text>
+            <text x="8" y="107">Snappy</text>
+            <text x="272" y="107" text-anchor="end">100%</text>
+            <text x="140" y="136" text-anchor="middle">leftover size · README BF16</text>
+          </svg>
+          <p class="aside">
+            README single-thread BF16 check: ZipNN left 66.3% of the file; Zstd left 78.3%. LZ4 and Snappy left 100%.
+          </p>
+        </article>
+
+        <article class="note">
+          <p class="note-num" aria-hidden="true">5</p>
+          <h2><span class="mark mark-2">What it is not</span></h2>
+          <ul>
+            <li>Not quantization, pruning, or distillation — those do not restore the original weights.</li>
+            <li>Not an inference-format shrink. It stores a compact blob; you decompress to run.</li>
+            <li>Regular FP32 models save less, because the exponent is only a quarter of the bits.</li>
+            <li>LZ-only tools (LZ4, Snappy) usually find no repeated multi-byte runs in tensors.</li>
+            <li>The published library is CPU today; the README says GPU work is on the way.</li>
+          </ul>
+        </article>
+
+        <aside class="note note-bottom">
+          <svg class="megaphone sketch-only" viewBox="0 0 52 36" aria-hidden="true">
+            <g filter="url(#ink-rough-strong)" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 8 L42 3 V33 L22 28 Z" fill="var(--marker-3)" />
+              <path d="M22 10 V26 C12 26, 8 22, 8 18 S12 10, 22 10 Z" />
+              <path d="M12 26 L8 33 H16 L18 26" />
+              <path class="draw-line" d="M46 10 C50 14, 50 18, 46 22" />
+              <path d="M48 6 C54 12, 54 20, 48 26" />
+            </g>
+          </svg>
+          <h2><span class="mark mark-3">Bottom line</span></h2>
+          <p>
+            Same weights, smaller files. ZipNN is lossless compression for AI
+            model data — IBM Research, IEEE CLOUD 2025.
+          </p>
+          <p class="explore-links">
+            <a href="https://arxiv.org/abs/2411.05239">Paper (arXiv)</a>
+            <a href="https://github.com/zipnn/zipnn">Repo</a>
+            <a href="https://research.ibm.com/publications/a-lossless-compression-for-ai-models">IEEE CLOUD 2025</a>
+          </p>
+        </aside>
+
+        <section class="note note-sources">
+          <h2>Sources</h2>
+          <ol>
+            <li id="src-data">
+              Catalog entry:
+              <a href="../js/data.js">js/data.js</a>
+              (title, blurb, IBM Research · IEEE CLOUD 2025, repo URL).
+            </li>
+            <li id="src-paper">
+              Moshik Hershcovitch et al.,
+              <cite>ZipNN: Lossless Compression for AI Models</cite>,
+              arXiv:2411.05239.
+              <a href="https://arxiv.org/abs/2411.05239">https://arxiv.org/abs/2411.05239</a>
+            </li>
+            <li id="src-ibm">
+              IBM Research publication record for CLOUD 2025.
+              <a href="https://research.ibm.com/publications/a-lossless-compression-for-ai-models">research.ibm.com/…/a-lossless-compression-for-ai-models</a>
+            </li>
+            <li id="src-repo">
+              ZipNN README,
+              <a href="https://github.com/zipnn/zipnn">https://github.com/zipnn/zipnn</a>
+            </li>
+          </ol>
+        </section>
+      </div>
+    </main>
+    <script>
+      (function () {
+        var STYLE_KEY = "explore-style";
+        var HAND_KEY = "explore-hand";
+        var DEBUG_KEY = "debug-open";
+
+        function parseStyle(value) {
+          if (value === "sketch" || value === "1") return "sketch";
+          if (value === "clean" || value === "0") return "clean";
+          return "";
+        }
+
+        function parseHand(value) {
+          if (value === "1" || value === "hand") return "1";
+          if (value === "0" || value === "readable" || value === "sans") return "0";
+          return "";
+        }
+
+        function currentStyle() {
+          return parseStyle(document.documentElement.getAttribute("data-style")) || "clean";
+        }
+
+        function currentHand() {
+          return parseHand(document.documentElement.getAttribute("data-hand")) || "0";
+        }
+
+        function debugOpen() {
+          return document.documentElement.getAttribute("data-debug") === "1";
+        }
+
+        function persistUrl() {
+          var params = new URLSearchParams(location.search);
+          var style = currentStyle();
+          var hand = currentHand();
+          params.delete("v2");
+          if (style === "clean") params.delete("style");
+          else params.set("style", "sketch");
+          if (hand === "0") params.delete("hand");
+          else params.set("hand", "1");
+          if (!debugOpen()) params.delete("debug");
+          else params.set("debug", "1");
+          var search = params.toString();
+          history.replaceState(null, "", location.pathname + (search ? "?" + search : "") + location.hash);
+        }
+
+        function writeStyle(next) {
+          var style = parseStyle(next) || "clean";
+          document.documentElement.setAttribute("data-style", style);
+          try { localStorage.setItem(STYLE_KEY, style); } catch (err) {}
+          persistUrl();
+          syncControls();
+        }
+
+        function writeHand(next) {
+          var hand = parseHand(next) || "0";
+          document.documentElement.setAttribute("data-hand", hand);
+          try { localStorage.setItem(HAND_KEY, hand); } catch (err) {}
+          persistUrl();
+          syncControls();
+        }
+
+        function writeDebug(open) {
+          var next = open ? "1" : "0";
+          document.documentElement.setAttribute("data-debug", next);
+          try { localStorage.setItem(DEBUG_KEY, next); } catch (err) {}
+          persistUrl();
+          syncControls();
+        }
+
+        function syncControls() {
+          var style = currentStyle();
+          var hand = currentHand();
+          var open = debugOpen();
+          document.querySelectorAll("[data-style]").forEach(function (btn) {
+            btn.setAttribute("aria-checked", btn.getAttribute("data-style") === style ? "true" : "false");
+          });
+          document.querySelectorAll("[data-hand]").forEach(function (btn) {
+            btn.setAttribute("aria-checked", btn.getAttribute("data-hand") === hand ? "true" : "false");
+          });
+          var chip = document.querySelector("[data-debug-toggle]");
+          var panel = document.getElementById("debug-panel");
+          if (chip) chip.setAttribute("aria-expanded", open ? "true" : "false");
+          if (panel) panel.hidden = !open;
+        }
+
+        function bindDebug() {
+          var bar = document.getElementById("debug-bar");
+          if (!bar || bar.dataset.bound) return;
+          bar.dataset.bound = "1";
+          bar.addEventListener("click", function (event) {
+            if (event.target.closest("[data-debug-toggle]")) {
+              writeDebug(!debugOpen());
+              return;
+            }
+            var styleBtn = event.target.closest("[data-style]");
+            if (styleBtn) {
+              writeStyle(styleBtn.getAttribute("data-style"));
+              return;
+            }
+            var handBtn = event.target.closest("[data-hand]");
+            if (handBtn) {
+              writeHand(handBtn.getAttribute("data-hand"));
+            }
+          });
+          bar.addEventListener("keydown", function (event) {
+            if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+            var group = event.target.closest("[role='radiogroup']");
+            if (!group) return;
+            var buttons = Array.prototype.slice.call(group.querySelectorAll("[role='radio']"));
+            var index = buttons.indexOf(event.target);
+            if (index < 0) return;
+            event.preventDefault();
+            var next = event.key === "ArrowRight"
+              ? buttons[(index + 1) % buttons.length]
+              : buttons[(index - 1 + buttons.length) % buttons.length];
+            next.focus();
+            next.click();
+          });
+        }
+
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          document.documentElement.classList.add("ink-draw");
+        }
+
+        try { localStorage.setItem(STYLE_KEY, currentStyle()); } catch (err) {}
+        try { localStorage.setItem(HAND_KEY, currentHand()); } catch (err) {}
+        try { localStorage.setItem(DEBUG_KEY, debugOpen() ? "1" : "0"); } catch (err) {}
+        persistUrl();
+        bindDebug();
+        syncControls();
+      })();
+    </script>
+  </body>
+</html>

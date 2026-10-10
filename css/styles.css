@@ -706,6 +706,17 @@ img.layer,
   -webkit-line-clamp: 1;
 }
 
+.tile-explore {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink);
+  font-size: var(--type-caption);
+  font-weight: var(--weight-600);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .archive-block {
   margin-top: var(--space-32);
 }
@@ -1972,6 +1983,14 @@ html[data-layout="cards"] .card-tag.is-status {
 }
 
 html[data-layout="cards"] .card-explore { color: var(--ink); }
+
+html[data-layout="cards"] .card-explore[data-explore] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
 html[data-layout="cards"] .card-more a {
   display: inline-flex;
