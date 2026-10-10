@@ -218,13 +218,15 @@ The first fold on ~1280×800 is name, intro, and the first board row. About sits
 A standalone sketchnote at `projects/zipnn.html`, opened from ZipNN’s “Explore ZipNN ↗” control and the inspect-sheet action. Not the catalog surface. Back link returns to `index.html`.
 
 - Ground, type colour, and accent stay `--board` / `--ink` / `--mute` / `--stamp`.
-- At most three soft marker tints, used only as highlight washes behind headings: `--marker-1` `#F3E3A3`, `--marker-2` `#C9DCC4`, `--marker-3` `#F0C9B0`. Ink on those washes is the text colour (AA).
-- Hand display: Kalam 400/700 (SIL OFL, `fonts/kalam-latin-*.woff2`, `font-display: swap`) for titles, panel labels, and asides only. Body stays the site sans at 16px. Nothing under 12px.
-- Rounded ink outlines (`--radius-note: 18px`) and a light SVG turbulence/displacement filter. This radius is explore-only; the board stays square.
+- At most three soft marker tints, used only as highlight washes: `--marker-1` `#F3E3A3`, `--marker-2` `#C9DCC4`, `--marker-3` `#F0C9B0`. Ink on those washes is the text colour (AA).
+- Two versions on the same page, switched by `html[data-style=clean|sketch]`. **Clean** is the quieter note. **Sketch** adds hand-drawn SVG doodles (tensor grid, float sign|exponent|fraction with a split/group arrow, Huffman tree, 40 PB disk, leftover-size bars), speech-bubble asides, a venue sticky, a slightly rotated Bottom line banner with a megaphone, stronger ink roughness, and thicker marker highlights. Doodles illustrate existing sourced facts only.
+- Body font is toggled by `html[data-hand=0|1]`. **Readable** is the site sans at 16px. **Hand** is Kalam 400 at 18px / line-height 1.55 / measure ~65ch. Diagram labels may use Kalam in both modes. Load only Kalam 400/700 (`fonts/kalam-latin-*.woff2`, `font-display: swap`). Nothing under 12px.
+- A quiet Debug chip (same control as the board) holds Version (Clean | Sketch) and Body (Readable | Hand). Collapsed by default. Persists in `explore-style`, `explore-hand`, and `debug-open`, and in `?style=clean|sketch` (or `?v2=`), `?hand=1`, `?debug=1`.
+- Rounded ink outlines (`--radius-note: 18px`) and an SVG turbulence/displacement filter (stronger in Sketch). This radius is explore-only; the board stays square.
 - Panels: 2 columns from 780px, one column on phone. The how-it-works flow is a row on desktop and a column on phone.
-- 44px targets on the back link and source/paper/repo links.
-- Optional ink-line draw-on; `prefers-reduced-motion` shows the lines already drawn.
-- Copy is sourced from `js/data.js`, arXiv:2411.05239, and the ZipNN README. No invented role split.
+- 44px targets on the back link, debug controls, and source/paper/repo links.
+- Optional ink-line draw-on; `prefers-reduced-motion` shows the lines already drawn and flattens rotation.
+- Copy is sourced from `js/data.js`, arXiv:2411.05239, and the ZipNN README. The paper lists Guy Girmonsky among the authors. No invented role split.
 
 ---
 
