@@ -78,13 +78,8 @@
   }
 
   function stampOf(item) {
-    if (item.status === "archive") return "SHELF";
-    if (item.section === "games") {
-      if (/daily/i.test(item.detail || item.blurb || "")) return "DAILY";
-      if (/print/i.test(item.detail || item.blurb || "")) return "PRINT";
-      return "PLAY";
-    }
     if (item.section === "work") return "WORK";
+    if (item.section === "games") return "PLAY";
     return "TOOL";
   }
 
@@ -165,17 +160,6 @@
       '<button type="button" class="piece tile reveal" data-item="' + item.id + '" aria-haspopup="dialog">' +
         body +
       "</button>"
-    );
-  }
-
-  function switchHTML() {
-    const layout = currentLayout();
-    return (
-      '<div class="layout-switch" role="radiogroup" aria-label="Board layout">' +
-        '<button type="button" role="radio" data-layout="even" aria-checked="' + (layout === "even" ? "true" : "false") + '">Even</button>' +
-        '<button type="button" role="radio" data-layout="uneven" aria-checked="' + (layout === "uneven" ? "true" : "false") + '">Uneven</button>' +
-        '<button type="button" role="radio" data-layout="cards" aria-checked="' + (layout === "cards" ? "true" : "false") + '">Cards</button>' +
-      "</div>"
     );
   }
 
@@ -288,17 +272,9 @@
     if (item.status === "archive") add("Archive", "status");
     else if (/live/i.test(item.detail || "")) add("Live", "status");
     else if (item.status === "active") add("Active", "status");
-    String(item.detail || "").split("·").forEach((part) => add(part.trim(), "meta"));
-    const hay = (item.detail || "") + "\n" + (item.blurb || "");
-    [
-      ["Kubernetes", /kubernetes/i],
-      ["Unity", /\bunity\b/i],
-      ["Next.js", /next\.js/i],
-      ["Supabase", /supabase/i],
-    ].forEach((row) => {
-      if (row[1].test(hay)) add(row[0], "meta");
-    });
-    return tags;
+    const venue = String(item.detail || "").split("·").map((part) => part.trim()).find((part) => part && part.toLowerCase() !== "active");
+    if (venue) add(venue, "meta");
+    return tags.slice(0, 3);
   }
 
   function cardHTML(item, index) {
@@ -362,15 +338,7 @@
   }
 
   function ledeHTML() {
-    return (
-      '<header class="opening-head">' +
-        "<p>" + notes.lede + "</p>" +
-        '<div class="opening-tools">' +
-          '<p class="opening-note">' + notes.opening + "</p>" +
-          switchHTML() +
-        "</div>" +
-      "</header>"
-    );
+    return "";
   }
 
   function chapter(id, title, note, inner) {
@@ -378,10 +346,7 @@
     return (
       '<section class="chapter" id="chapter-' + id + '">' +
         '<header class="chapter-head"><h2 class="reveal">' + title + "</h2>" +
-          '<div class="opening-tools">' +
-            (note ? "<p>" + note + "</p>" : "") +
-            switchHTML() +
-          "</div>" +
+          (note ? "<p>" + note + "</p>" : "") +
         "</header>" +
         inner +
       "</section>"
@@ -530,9 +495,63 @@
 
   function syncSwitch() {
     const layout = currentLayout();
-    gallery.querySelectorAll(".layout-switch [data-layout]").forEach((btn) => {
+    document.querySelectorAll(".layout-switch [data-layout]").forEach((btn) => {
       btn.setAttribute("aria-checked", btn.dataset.layout === layout ? "true" : "false");
     });
+  }
+
+  function debugOpen() {
+    return document.documentElement.getAttribute("data-debug") === "1";
+  }
+
+  function writeDebug(open) {
+    const next = open ? "1" : "0";
+    document.documentElement.setAttribute("data-debug", next);
+    try { localStorage.setItem("debug-open", next); } catch (err) {}
+    const params = new URLSearchParams(location.search);
+    if (next === "0") params.delete("debug");
+    else params.set("debug", "1");
+    const search = params.toString();
+    history.replaceState(null, "", location.pathname + (search ? "?" + search : "") + location.hash);
+    syncDebug();
+  }
+
+  function syncDebug() {
+    const open = debugOpen();
+    const chip = document.querySelector("[data-debug-toggle]");
+    const panel = document.getElementById("debug-panel");
+    if (chip) chip.setAttribute("aria-expanded", open ? "true" : "false");
+    if (panel) panel.hidden = !open;
+  }
+
+  function bindDebug() {
+    const bar = document.getElementById("debug-bar");
+    if (!bar || bar.dataset.bound) return;
+    bar.dataset.bound = "1";
+    bar.addEventListener("click", (event) => {
+      if (event.target.closest("[data-debug-toggle]")) {
+        writeDebug(!debugOpen());
+        return;
+      }
+      const layoutBtn = event.target.closest("[data-layout]");
+      if (layoutBtn) {
+        setLayout(layoutBtn.dataset.layout);
+        return;
+      }
+    });
+    bar.addEventListener("keydown", (event) => {
+      const group = event.target.closest(".layout-switch");
+      if (group && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
+        event.preventDefault();
+        const order = ["even", "uneven", "cards"];
+        const i = order.indexOf(currentLayout());
+        const dir = event.key === "ArrowRight" ? 1 : -1;
+        setLayout(order[(i + dir + order.length) % order.length]);
+        const on = group.querySelector('[aria-checked="true"]');
+        if (on) on.focus();
+      }
+    });
+    syncDebug();
   }
 
   function openFromTile(tile) {
@@ -708,12 +727,6 @@
     gallery.dataset.bound = "1";
 
     gallery.addEventListener("click", (event) => {
-      const layoutBtn = event.target.closest(".layout-switch [data-layout]");
-      if (layoutBtn) {
-        event.preventDefault();
-        setLayout(layoutBtn.dataset.layout);
-        return;
-      }
       const dot = event.target.closest(".stack-dot");
       if (dot && gallery.contains(dot)) {
         event.preventDefault();
@@ -743,18 +756,6 @@
       if (event.target.closest(".shot.is-stack")) event.preventDefault();
     });
 
-    gallery.addEventListener("keydown", (event) => {
-      const group = event.target.closest(".layout-switch");
-      if (group && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
-        event.preventDefault();
-        const order = ["even", "uneven", "cards"];
-        const i = order.indexOf(currentLayout());
-        const dir = event.key === "ArrowRight" ? 1 : -1;
-        setLayout(order[(i + dir + order.length) % order.length]);
-        const on = group.querySelector('[aria-checked="true"]');
-        if (on) on.focus();
-      }
-    });
   }
 
   function focusable() {
@@ -762,7 +763,7 @@
   }
 
   function setChromeInert(on) {
-    ["chrome", "top", "dock"].forEach((id) => {
+    ["chrome", "top", "dock", "debug-bar"].forEach((id) => {
       const el = document.getElementById(id);
       if (el) el.toggleAttribute("inert", on);
     });
@@ -788,7 +789,7 @@
 
   function boardColumns() {
     if (currentLayout() === "cards") {
-      if (window.matchMedia("(max-width: 640px)").matches) return 1;
+      if (window.matchMedia("(max-width: 340px)").matches) return 1;
       if (window.matchMedia("(max-width: 900px)").matches) return 2;
       if (window.matchMedia("(max-width: 1279px)").matches) return 3;
       return 4;
@@ -999,6 +1000,7 @@
     gallery.innerHTML = filter === "current" ? currentHTML() : isolatedHTML();
     layoutBoards();
     syncSwitch();
+    bindDebug();
     bindChrome();
     renderTimeline();
     bindReveal();

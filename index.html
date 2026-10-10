@@ -5,87 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Guy Girmonsky</title>
     <meta name="description" content="Work, games, and projects by Guy Girmonsky." />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#F6F3EC" />
     <link rel="preload" href="fonts/fraunces-latin-wght.woff2" as="font" type="font/woff2" crossorigin />
     <script>
       (function () {
         var layout = "even";
+        var debug = "0";
         try {
-          var query = new URLSearchParams(location.search).get("layout");
+          var params = new URLSearchParams(location.search);
+          var query = params.get("layout");
           if (query === "uneven" || query === "cards" || query === "even") layout = query;
           else {
             var stored = localStorage.getItem("board-layout");
             if (stored === "uneven" || stored === "cards") layout = stored;
             else if (stored && stored !== "even") localStorage.removeItem("board-layout");
           }
+          var dq = params.get("debug");
+          if (dq === "1" || dq === "0") debug = dq;
+          else if (localStorage.getItem("debug-open") === "1") debug = "1";
         } catch (err) {}
         document.documentElement.setAttribute("data-layout", layout);
+        document.documentElement.setAttribute("data-debug", debug);
       })();
     </script>
-    <link rel="stylesheet" href="css/styles.css?v=20261008k" />
+    <link rel="stylesheet" href="css/styles.css?v=20261009a" />
   </head>
   <body data-view="current">
     <a class="skip" href="#gallery">Skip to work</a>
 
+    <aside id="debug-bar" class="debug-bar">
+      <button type="button" class="debug-chip" data-debug-toggle aria-expanded="false" aria-controls="debug-panel">Debug</button>
+      <div id="debug-panel" class="debug-panel" hidden>
+        <div class="debug-group layout-switch" role="radiogroup" aria-label="Board layout">
+          <span class="debug-label">Layout</span>
+          <button type="button" role="radio" data-layout="even" aria-checked="true">Even</button>
+          <button type="button" role="radio" data-layout="uneven" aria-checked="false">Uneven</button>
+          <button type="button" role="radio" data-layout="cards" aria-checked="false">Cards</button>
+        </div>
+        <div id="strip-preview" class="debug-group">
+          <span class="debug-label">Strip</span>
+          <div class="debug-modes" role="radiogroup" aria-label="Strip preview mode">
+            <button type="button" role="radio" data-strip="off" aria-checked="true">Off</button>
+            <button type="button" role="radio" data-strip="games" aria-checked="false">Games</button>
+            <button type="button" role="radio" data-strip="activity" aria-checked="false">Activity</button>
+            <button type="button" role="radio" data-strip="categories" aria-checked="false">Categories</button>
+            <button type="button" role="radio" data-strip="keywords" aria-checked="false">Keywords</button>
+          </div>
+          <button type="button" class="debug-desc" role="switch" aria-checked="true" data-desc-toggle>Descriptions</button>
+        </div>
+      </div>
+    </aside>
+
     <header class="masthead" id="chrome">
-      <a class="wordmark" href="#top">
-        Guy Girmonsky
-        <small>Research &amp; games</small>
-      </a>
+      <a class="wordmark" href="#top">Guy Girmonsky</a>
+      <a class="mast-contact" href="#contact">Contact</a>
     </header>
 
     <main id="top">
-      <!-- STRIP PREVIEW (experimental). Remove this aside, js/strips.js, the STRIP PREVIEW CSS block, and the window.Strips hook in js/app.js. -->
-      <aside id="strip-preview" class="strip-preview" hidden>
-        <p class="strip-preview-label">Strip preview <small>review only</small></p>
-        <div class="strip-preview-modes" role="radiogroup" aria-label="Strip preview mode">
-          <button type="button" role="radio" data-strip="off" aria-checked="true">Off</button>
-          <button type="button" role="radio" data-strip="games" aria-checked="false">Games</button>
-          <button type="button" role="radio" data-strip="activity" aria-checked="false">Activity</button>
-          <button type="button" role="radio" data-strip="categories" aria-checked="false">Categories</button>
-          <button type="button" role="radio" data-strip="keywords" aria-checked="false">Keywords</button>
-        </div>
-        <button type="button" class="strip-preview-desc" role="switch" aria-checked="true" data-desc-toggle>Descriptions</button>
-      </aside>
+      <section class="intro" id="intro">
+        <p class="intro-role">Research engineer on AI platforms at IBM</p>
+        <p class="intro-bio">Previously hybrid-cloud storage. M.Sc. student. Before that I shipped Unity games for Club Tech.</p>
+        <p class="intro-links">
+          <a href="mailto:guygir@gmail.com">guygir@gmail.com</a>
+          <a href="https://github.com/guygir">GitHub</a>
+        </p>
+      </section>
 
       <div id="gallery"></div>
 
       <section id="about">
         <h2 class="reveal">About</h2>
         <div class="about-grid">
+          <figure class="portrait">
+            <img src="images/profile/guy-girmonsky.jpg" alt="" width="220" height="220" />
+          </figure>
           <div class="about-copy">
-            <div class="about-lede">
-              <figure class="portrait">
-                <img src="images/profile/guy-girmonsky.jpg" alt="" width="220" height="220" />
-              </figure>
-              <div>
-                <p>
-                  Research engineer on AI platforms at IBM, previously hybrid-cloud
-                  storage. M.Sc. student. Before that I shipped Unity games for Club
-                  Tech.
-                </p>
-                <p>
-                  I collect Riftbound. The binder is on
-                  <a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a>.
-                </p>
-              </div>
-            </div>
+            <p>
+              I collect Riftbound. The binder is on
+              <a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a>.
+            </p>
           </div>
           <div class="journey" id="journey">
             <h3>From the catalog</h3>
             <ol class="timeline" id="timeline"></ol>
-            <ul class="about-links">
-              <li><a href="https://github.com/zipnn/zipnn">ZipNN</a>, IEEE CLOUD 2025</li>
-              <li><a href="https://arxiv.org/abs/2502.20818">SkyStore</a>, VLDB 2025</li>
-              <li><a href="https://www.llm-d.ai">llm-d</a></li>
-              <li><a href="https://app.getcollectr.com/showcase/profile/@guygir">Collectr</a></li>
-            </ul>
           </div>
         </div>
 
         <section class="pulse" aria-label="GitHub contribution calendar">
           <h3>Now</h3>
-          <p>Last year on GitHub. Green is contribution heat; outlined days have pull requests.</p>
+          <p>Last year on GitHub. Darker cells are busier days; stamp-outlined days have pull requests.</p>
           <p class="pulse-total" id="pulse-total"></p>
           <div class="pulse-cal">
             <div class="pulse-months" id="pulse-months"></div>
@@ -159,11 +167,11 @@
       </article>
     </div>
 
-    <script src="js/data.js?v=20261008k"></script>
-    <script src="js/timeline.js?v=20261008k"></script>
-    <script src="js/activity.js?v=20261008k"></script>
-    <script src="js/app.js?v=20261008k"></script>
-    <script src="js/pulse.js?v=20261008k"></script>
-    <script src="js/strips.js?v=20261008k"></script>
+    <script src="js/data.js?v=20261009a"></script>
+    <script src="js/timeline.js?v=20261009a"></script>
+    <script src="js/activity.js?v=20261009a"></script>
+    <script src="js/app.js?v=20261009a"></script>
+    <script src="js/pulse.js?v=20261009a"></script>
+    <script src="js/strips.js?v=20261009a"></script>
   </body>
 </html>

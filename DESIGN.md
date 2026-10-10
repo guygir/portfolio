@@ -17,7 +17,7 @@ A personal index of work, not a résumé dump and not a game-studio splash.
 
 Guy is an AI Platforms research engineer at IBM who also ships games and small tools. The site should feel like a small-press scrapbook: warm paper, a faint grid, photographs lying directly on the board, several projects visible at once.
 
-**Visitor takeaway in ten seconds:** this person publishes real systems research *and* playable things. Name, role, and about six project tiles are visible without scrolling on a typical laptop.
+**Visitor takeaway in ten seconds:** this person publishes real systems research *and* playable things. Name, role, a one-line bio, and the first row of tiles are visible without scrolling on a typical laptop.
 
 ---
 
@@ -85,29 +85,32 @@ Do **not** copy Jackie’s doodles, woodblock stamps, red borders, black field, 
 One page. Current is the full active board. The other filters isolate a chapter.
 
 ```
+Debug bar (collapsed chip; not part of the page hierarchy)
+
 Masthead
-  wordmark + role
+  wordmark + Contact
+
+Intro (first fold)
+  Role + one-line bio + email / GitHub
 
 Dock (fixed, only nav)
   Work / Games / Projects / About / Contact
 
-Current (Work)
-  Compact lede
-  Even | Uneven switch
+Current
   Scrapbook (ZipNN, Klafi, RifTrade first)
-  About (portrait, sourced intro, catalog timeline, links, pulse)
+  About (portrait, Riftbound line, plain dated list, pulse)
   Contact
 
 Games / Projects
   Compact chapter title
-  Same switch + scrapbook
+  Scrapbook
   Archive board under Games and Projects
   About + Contact
 ```
 
 ### 3.1 Current / opening
 
-Selected first: ZipNN, Klafi, RifTrade. Even mode is a 3-column equal-tile grid (2 on phone). Uneven mode is masonry with varying heights. The switch persists in `localStorage` (`board-layout`) only after an explicit choice and is applied before first paint. A missing or invalid stored value always renders Even, including the switch `aria-checked` state. Klafi, RifTrade, and Hold’emle *are* fanned photo stacks (cover in front, hover peeking behind). Other tiles are a single tilted photo that crossfades on hover. Title and subtitle sit as plain text on the graph paper under the image. Activating a tile opens the inspect sheet. The red stamp is the only category label.
+Selected first: ZipNN, Klafi, RifTrade. Even mode is a 3-column equal-tile grid (2 on phone). Uneven mode is masonry with varying heights. Cards is a 4-column paper lineup. The layout switch lives in the Debug bar and persists in `localStorage` (`board-layout`) only after an explicit choice and is applied before first paint. A missing or invalid stored value always renders Even, including the switch `aria-checked` state. Klafi, RifTrade, and Hold’emle *are* fanned photo stacks (cover in front, hover peeking behind). Other tiles are a single tilted photo that crossfades on hover. Title and subtitle sit as plain text on the graph paper under the image. Activating a tile opens the inspect sheet. The red stamp is the only category label.
 
 ### 3.2 Work
 
@@ -125,7 +128,7 @@ Omitted on purpose: `Test`, `my-fork`, `vllm` fork, `clawdchan`, `Better-Minimal
 
 ### 3.5 About
 
-Duotone portrait (real `images/profile/guy-girmonsky.jpg`), the existing bio, a catalog timeline of dated project facts only, selected writing, then the GitHub year. Career-role dates live as non-rendering TODOs in `js/timeline.js`.
+Duotone portrait (real `images/profile/guy-girmonsky.jpg`), the Riftbound/Collectr line, a plain dated catalog list (no boxes), then the GitHub year. Career-role dates live as non-rendering TODOs in `js/timeline.js`. The IBM role and first-person bio now sit in the first-fold intro, not here. The About link list that repeated the board is gone.
 
 ---
 
@@ -137,52 +140,58 @@ Warm scrapbook. Photographs lie on a faint graph-paper wash — no outer white c
 
 ### 4.2 Color
 
+All colour is CSS custom properties. No stray hex/rgb on components.
+
 | Token | Hex | Use |
 |---|---|---|
-| `--paper` | `#FFFFFF` | Inspect sheet, type knockouts, switch pill |
 | `--board` | `#F6F3EC` | Page ground |
-| `--ink` | `#191512` | Type (warm, not pure black) |
-| `--mute` | `#5C564E` | Lede, captions, tags |
-| `--wash` | `#F1EEE8` | Tile placeholder |
-| `--line` | `#E4DFD6` | Masthead / About rules |
-| `--grid` | `rgb(25 21 18 / 0.055)` | Graph-paper lines |
-
-The tiles carry their own brand color. The page stays warm paper, not black, not Jackie red.
+| `--paper` | `#FFFFFF` | Inspect sheet and dock only |
+| `--ink` | `#191512` | Type |
+| `--mute` | `#5C564E` | Captions, debug, secondary |
+| `--line` | `#E4DFD6` | Rules |
+| `--stamp` | `#B42318` | The only page accent: stamps, hover/focus ring, PR-day marker |
+| `--wash` | `#F1EEE8` | Placeholders |
+| `--cal-1`–`--cal-4` | ink at 15/35/60/100% | Now calendar heat |
+| `--hue-rust` `#8B4030` · `--hue-teal` `#3D6B64` · `--hue-olive` `#5A6238` · `--hue-plum` `#6B3F5C` · `--hue-ochre` `#7A5420` · `--hue-slate` `#3D5270` | Cards only; muted, AA on paper, reused, no adjacent repeats |
 
 ### 4.3 Type
 
-- **Display:** Fraunces, self-hosted variable (`fonts/fraunces-latin-wght.woff2`), weight 500. Wordmark, compact chapter titles, About, pulse heading.
-- **UI / body / meta:** Helvetica Neue / Helvetica / Arial.
+- **Display:** Fraunces 500. Name and headings only.
+- **Everything else:** Helvetica Neue / Helvetica / Arial 400/600. No mono.
 
-Scale (desktop):
+Scale (desktop / phone where it splits):
 
-- Wordmark: 20px Fraunces
-- Role: 10px uppercase sans
-- Chapter title: clamp 26–34px Fraunces
-- About title: clamp 38–64px Fraunces, with space below so it does not overlap the portrait
-- Tile title: 15px
-- Body: 17px / 1.55
-- Opening lede: 13px
-- Meta / tags: 10–12px, tags uppercase 0.1em tracking
+- Name: 40 / 32
+- h2: 32 / 26
+- h3: 20
+- Lede / intro: 18 / 17
+- Body: 16
+- Tile title: 16 / 600
+- Caption: 14
+- Label: 12 uppercase, one tracking (`--track-label: 0.08em`)
 
-### 4.4 Layout
+Nothing under 12px.
 
-- Masthead: sticky, ~52px, full width. Wordmark + role only. No top link row.
-- Page measure: ~1240px
-- Gutter: 24px desktop, 16px phone
-- Board: Even = CSS grid, equal 16/10 tiles, 3 columns (2 on phone). Uneven = masonry columns, varying heights. No outer card. Caption is title + detail only, set as plain text on the board — no grey tag.
-- Cards (also in the layout switch): a third board, ArtCraft-lineup flavoured. Work / Games / Projects each get a small mono-caps header (`01 / WORK`) and a flat 4-column grid (3 / 2 / 1 as the page narrows) of paper cards with 1px dividers, no tilt or shadow. Number tab, category from `detail`, cover, icon, split name, `blurb`, existing stamps/status/venues, and an Explore control that opens the inspect sheet. Each item has two tones in `js/data.js`: a vivid `accent` for the number tab, icon ground, and first-card top edge (white or ink on it, whichever meets AA), and an `accentInk` darkened for the coloured half of the name and status tags on paper. Icons are either a stored cover crop (`icon.crop`) of the most recognisable detail, or initials on the accent (`icon.initials`) when the cover is text, a diagram, or unreadable at 56px. System grotesk (`Helvetica Neue` / Arial, already `--sans`) for card names and icon initials; system `ui-monospace` / Menlo / Consolas for labels — no new webfonts. The last Projects cell points at GitHub with existing footer copy.
-- Layout switch: paper Even | Uneven | Cards pill above the board. Radiogroup. Default Even (HTML `data-layout="even"` plus a pre-paint script). Stored as `board-layout`. Linkable as `?layout=cards` (also `even` / `uneven`). Invalid keys are dropped.
-- Dock: the only navigation. Fixed bottom-center pill (Work / Games / Projects / About / Contact). Hidden while the inspect sheet is open. Respects `safe-area-inset-bottom`. Extra page/footer padding so it does not cover the last lines. `:focus-visible` ring. Active item fills ink.
-- Stacked tiles (Klafi, RifTrade, Hold’emle only): the fanned stack *is* the tile. Cover in front, second shot peeking behind. The whole stack — rest tilt and hover fan — stays inside the image well above the caption. Title and subtitle are always fully visible; `.meta` also paints above the photos. Hover/focus fans a little more. A small row of 6px ink dots (the old reel-dot size and ring, adapted to graph paper) sits on the board under the photos — one per picture, none on single-photo tiles. Dots stay level (they are not tilted with the print). The active dot is the front photo; it updates on swipe in both directions. Activating a dot (24px hit, `aria-label` “Photo 2 of 3”, `aria-current` on the active one, keyboard-focusable) slides that photo forward and does not open the sheet. Click or tap on the stack itself opens the inspect sheet. Focus ring sits on the front photo. On touch (and mouse drag), a horizontal swipe of ~40px on the stack brings the next (left) or previous (right) photo to the front with a short slide; vertical drags still scroll (`touch-action: pan-y`), a tap opens the sheet at the photo currently in front, and a swipe never also opens it.
-- Tilt: deterministic `nth-child` rotations of about ±0.8–1.6deg plus a few pixels of offset. Not `Math.random()`.
-- Photo corners: 0 (prints, not app chrome)
-- Red file stamp: top-right on the front image. Text is derived from `js/data.js` (`section`, `status`, `detail`/`blurb`): WORK, PLAY, DAILY, PRINT, TOOL, or SHELF. Same `#b42318` outline stamp as the earlier desk catalog.
-- Portrait: 168px (120px on phone), duotone via `#portrait-ink`, in About only
+### 4.4 Space, radius, shadow
 
-The first fold on ~1280×800 must include the masthead, the layout switch, and about five to six tiles. No oversized flagship. About sits after the board.
+Spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 80. Radius 0 except the dock pill and photo dots. Cards icons use one extra radius (`--radius-icon`). One print shadow, one float shadow.
 
-### 4.5 Motion
+### 4.5 Layout
+
+- Debug bar: collapsible chip at the very top. Holds layout, strip, and Descriptions. Mute type, line border, 12px labels, no black fills, 44px targets on touch. Persists in `debug-open`. Must not un-hide on strip paint. Not part of the page hierarchy.
+- Masthead: sticky name (Fraunces 40/32) + Contact. Role lives in the intro, not under the name.
+- Intro (first fold): role + one-line bio + email/GitHub, all from existing About copy. On phone the first tile starts within ~200px of the top, excluding the debug bar.
+- Page measure: ~1240px. About/Contact use a single ~720px column.
+- Gutter: 24 desktop, 16 phone.
+- Board: Even = 3-col 16/10 prints (2 on phone). Uneven = masonry. Title + one subtitle. One stamp per print: WORK / PLAY / TOOL only.
+- Cards: same palette discipline. Six reused hues. 12px sans labels. Square cards; icons keep `--radius-icon`. Max 3 tags (mark, status, one venue). 4 / 3 / 2 columns; 2-col compact on phone.
+- Dock: only nav. 44px targets. Page bottom padding = dock height + safe area.
+- Stacks: same as before. Dot *hit* is 44×44; the visible dot stays small.
+- Stamp: `--stamp`, 12px label style. WORK / PLAY / TOOL.
+
+The first fold on ~1280×800 is name, intro, and the first board row. About sits after the board.
+
+### 4.6 Motion
 
 | Token | Value |
 |---|---|
@@ -234,11 +243,11 @@ Activating a tile opens a paper dialog. Content comes from the record: cover, ti
 
 ### Masthead
 
-Sticky paper bar. Fraunces wordmark + uppercase “Research & games.” No top links. No calendar. The dock is the only navigation.
+Sticky board bar. Fraunces wordmark (40/32) plus a Contact jump. Role lives in the intro, not under the name. No calendar. The dock is the only navigation. Debug tools sit in a collapsed chip above the masthead.
 
 ### Opening (Current)
 
-A one-line lede and “One system, one game, one useful thing.” then the scrapbook. Not a single plate. Not a wider flagship.
+Role, one-line bio, and email/GitHub — split from the existing About paragraph — then the scrapbook. Not a single plate. Not a wider flagship.
 
 ### Chapters
 
@@ -247,7 +256,7 @@ A one-line lede and “One system, one game, one useful thing.” then the scrap
 
 ### About
 
-Full-width About heading with space below, then two columns. Left: duotone portrait + sourced bio. Right: catalog timeline (dated project facts only) and paper links. Pulse calendar underneath. On a phone the 53-week board scales to the About measure so the latest week stays on-screen; no page-level horizontal scroll. The heading must not overlap the portrait.
+Single ~720px column. Duotone portrait, the Riftbound/Collectr line, a plain dated catalog list (rules, no boxes), then the GitHub year. The IBM role and first-person bio live in the first-fold intro. The About link list that repeated the board is gone. On a phone the 53-week board scales to the About measure so the latest week stays on-screen; no page-level horizontal scroll.
 
 ### Footer
 
