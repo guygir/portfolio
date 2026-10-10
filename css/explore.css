@@ -61,6 +61,7 @@ body.explore {
 .explore-hero {
   position: relative;
   margin: 0 0 var(--space-32);
+  padding-right: 104px;
 }
 
 .explore-kicker {
@@ -281,23 +282,25 @@ html[data-style="sketch"] .mark-3 {
 
 .bubble {
   max-width: 28em;
+  padding: var(--space-16) var(--space-24);
 }
 
 html[data-style="sketch"] .bubble::before {
-  border-radius: 28px 18px 26px 8px;
+  border-radius: 46% 38% 42% 36% / 40% 48% 36% 44%;
   filter: url("#ink-rough-strong");
 }
 
 html[data-style="sketch"] .bubble::after {
   content: "";
   position: absolute;
-  left: 22px;
-  bottom: -8px;
-  width: 16px;
-  height: 12px;
+  left: 28px;
+  bottom: -7px;
+  width: 18px;
+  height: 14px;
   border-left: 2px solid var(--ink);
   border-bottom: 2px solid var(--ink);
-  transform: rotate(-18deg);
+  border-radius: 0 0 0 10px;
+  transform: rotate(-22deg);
   filter: url("#ink-rough-strong");
   pointer-events: none;
 }
@@ -385,17 +388,17 @@ html[data-style="sketch"] .flow-step::before {
 }
 
 .fp-doodle { width: min(100%, 280px); }
-.tensor-doodle { width: min(100%, 168px); }
-.bits-doodle { width: min(100%, 300px); }
-.huff-doodle { width: min(100%, 160px); }
-.disk-doodle { width: min(100%, 168px); margin-top: var(--space-12); }
+.tensor-doodle { width: min(100%, 176px); }
+.bits-doodle { width: min(100%, 320px); }
+.huff-doodle { width: min(100%, 176px); }
+.disk-doodle { width: min(100%, 200px); margin-top: var(--space-12); }
 .bars-doodle { width: min(100%, 280px); margin-top: var(--space-16); }
 
 .doodle text,
 .fp-doodle text {
   fill: var(--ink);
   font-family: var(--hand);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .doodle-caption {
@@ -550,6 +553,10 @@ html[data-hand="1"] .note-sources li {
 }
 
 @media (max-width: 780px) {
+  .explore-hero {
+    padding-right: 76px;
+  }
+
   .explore-hero h1 { font-size: 40px; }
 
   .explore-sticker {
@@ -586,6 +593,10 @@ html[data-hand="1"] .note-sources li {
 }
 
 @media (max-width: 360px) {
+  .explore-hero {
+    padding-right: 64px;
+  }
+
   .explore-hero h1 { font-size: 34px; }
 
   .explore-sticker {
