@@ -143,10 +143,14 @@
   }
 
   function pieceHTML(item) {
+    const explore = item.explore
+      ? '<span class="tile-explore" data-explore="' + esc(item.explore) + '">Explore ' + esc(item.title) + " ↗</span>"
+      : "";
     const meta =
       '<span class="meta">' +
         "<strong>" + esc(item.title) + "</strong>" +
         "<small>" + esc(item.detail || item.blurb) + "</small>" +
+        explore +
       "</span>";
     const body = '<span class="reveal-shift">' + shotHTML(item) + meta + "</span>";
     if (isStack(item)) {
@@ -300,7 +304,7 @@
           nameHTML(item) +
           '<small class="card-blurb">' + esc(item.blurb) + "</small>" +
           '<span class="card-tags">' + tags + "</span>" +
-          '<span class="card-explore">Explore ' + esc(item.title) + " ↗</span>" +
+          '<span class="card-explore"' + (item.explore ? ' data-explore="' + esc(item.explore) + '"' : "") + ">Explore " + esc(item.title) + " ↗</span>" +
         "</span>" +
       "</button>"
     );
@@ -727,6 +731,12 @@
     gallery.dataset.bound = "1";
 
     gallery.addEventListener("click", (event) => {
+      const go = event.target.closest("[data-explore]");
+      if (go && gallery.contains(go) && go.getAttribute("data-explore")) {
+        event.preventDefault();
+        location.href = go.getAttribute("data-explore");
+        return;
+      }
       const dot = event.target.closest(".stack-dot");
       if (dot && gallery.contains(dot)) {
         event.preventDefault();
@@ -945,9 +955,17 @@
     document.getElementById("sheet-detail").textContent = item.detail || kindOf(item);
     document.getElementById("sheet-story").textContent = item.story || item.blurb;
     const enter = document.getElementById("sheet-enter");
-    if (item.href) {
+    if (item.explore) {
+      enter.hidden = false;
+      enter.href = item.explore;
+      enter.removeAttribute("target");
+      enter.removeAttribute("rel");
+      enter.textContent = "Explore " + item.title;
+    } else if (item.href) {
       enter.hidden = false;
       enter.href = item.href;
+      enter.target = "_blank";
+      enter.rel = "noopener noreferrer";
       enter.textContent = "Open project";
     } else {
       enter.hidden = true;

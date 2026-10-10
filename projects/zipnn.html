@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" class="explore">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ZipNN — explore</title>
+    <meta name="description" content="A sketchnote on ZipNN, lossless compression for AI model data." />
+    <meta name="theme-color" content="#F6F3EC" />
+    <link rel="preload" href="../fonts/kalam-latin-700.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="stylesheet" href="../css/styles.css?v=20261010a" />
+    <link rel="stylesheet" href="../css/explore.css?v=20261010a" />
+  </head>
+  <body class="explore">
+    <svg class="sr-filters" aria-hidden="true">
+      <filter id="ink-rough" x="-4%" y="-4%" width="108%" height="108%" color-interpolation-filters="sRGB">
+        <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="4" result="n" />
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="1.6" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+
+    <a class="skip" href="#note">Skip to note</a>
+
+    <main class="explore-page" id="note">
+      <a class="explore-back" href="../index.html">← Back to the board</a>
+
+      <header class="explore-hero">
+        <p class="explore-kicker">IEEE CLOUD 2025 · IBM Research</p>
+        <h1>ZipNN</h1>
+        <p class="explore-sub">
+          Lossless compression built for AI model data.
+          <svg viewBox="0 0 320 16" aria-hidden="true">
+            <path class="draw-line" d="M4 9 C 40 4, 90 13, 150 8 S 250 4, 316 11" />
+          </svg>
+        </p>
+        <figure class="explore-sticker">
+          <img src="../images/covers/zipnn.jpg" alt="" width="160" height="160" />
+        </figure>
+      </header>
+
+      <div class="explore-grid">
+        <article class="note">
+          <p class="note-num" aria-hidden="true">1</p>
+          <h2><span class="mark mark-1">Why this matters</span></h2>
+          <p>
+            As models grow, their size burdens the infrastructure that stores and
+            moves them — more network, more storage.
+          </p>
+          <p>
+            One paper example: Mistral at 14.5&nbsp;GB with 2.77&nbsp;million
+            monthly Hugging Face downloads is about 40&nbsp;PB of transfer in a
+            month.
+          </p>
+          <p>
+            Distillation, pruning, and quantization make a smaller model by
+            throwing information away. ZipNN is the other kind of compression:
+            a compact form plus a decompressor that returns the original weights.
+          </p>
+        </article>
+
+        <article class="note">
+          <p class="note-num" aria-hidden="true">2</p>
+          <h2><span class="mark mark-2">What we built</span></h2>
+          <p>
+            ZipNN is a lossless compressor tailored to neural-network tensors.
+            An open library sits at
+            <a href="https://github.com/zipnn/zipnn">github.com/zipnn/zipnn</a>
+            (pip install zipnn) and can keep models compressed on
+            disk for Hugging Face, Safetensors, and vLLM.
+          </p>
+          <p>
+            The paper
+            <cite>ZipNN: Lossless Compression for AI Models</cite>
+            lists Guy Girmonsky among the authors, with an IBM Research
+            affiliation, and the catalog places the work at IEEE CLOUD 2025.
+          </p>
+          <p class="aside">
+            Not a solo build note — Guy is a listed co-author. The claims below
+            are the paper’s and the repo’s, not a personal contribution split.
+          </p>
+        </article>
+
+        <article class="note note-flow">
+          <p class="note-num" aria-hidden="true">3</p>
+          <h2><span class="mark mark-3">How it works</span></h2>
+          <p>
+            Model weights are arrays of floating-point numbers. The exponent
+            bits are highly skewed; the fraction often is not. ZipNN rearranges
+            those bytes and spends entropy coding where it pays.
+          </p>
+          <ol class="sr-only">
+            <li>Start from model weights (BF16 / FP32 tensors).</li>
+            <li>Split bytes: extract the exponent, group the rest.</li>
+            <li>Huffman / entropy-code the skewed bytes; skip incompressible parts.</li>
+            <li>Store the compact form; decompress to the original weights.</li>
+          </ol>
+          <div class="flow" aria-hidden="true">
+            <div class="flow-step">
+              <strong>1 · Weights</strong>
+              <span>Tensors of BF16 / FP32 parameters</span>
+            </div>
+            <svg class="flow-arrow" viewBox="0 0 28 28"><path class="draw-line" d="M4 14 H22 M16 8 L22 14 L16 20" /></svg>
+            <div class="flow-step">
+              <strong>2 · Split bytes</strong>
+              <span>Exponent out; remaining bytes grouped</span>
+            </div>
+            <svg class="flow-arrow" viewBox="0 0 28 28"><path class="draw-line" d="M4 14 H22 M16 8 L22 14 L16 20" /></svg>
+            <div class="flow-step">
+              <strong>3 · Entropy code</strong>
+              <span>Huffman on skewed bytes; skip the rest</span>
+            </div>
+            <svg class="flow-arrow" viewBox="0 0 28 28"><path class="draw-line" d="M4 14 H22 M16 8 L22 14 L16 20" /></svg>
+            <div class="flow-step">
+              <strong>4 · Store / load</strong>
+              <span>Compact on disk; original after inflate</span>
+            </div>
+          </div>
+          <svg class="fp-doodle" viewBox="0 0 280 56" aria-hidden="true">
+            <rect x="2" y="14" width="36" height="28" fill="none" stroke="currentColor" stroke-width="2" rx="6" />
+            <rect x="46" y="14" width="88" height="28" fill="var(--marker-1)" stroke="currentColor" stroke-width="2" rx="6" />
+            <rect x="142" y="14" width="136" height="28" fill="var(--marker-2)" stroke="currentColor" stroke-width="2" rx="6" />
+            <text x="20" y="33">±</text>
+            <text x="90" y="33">exponent</text>
+            <text x="210" y="33">fraction</text>
+          </svg>
+        </article>
+
+        <article class="note">
+          <p class="note-num" aria-hidden="true">4</p>
+          <h2><span class="mark mark-1">Results</span></h2>
+          <ul>
+            <li>Often about 33% smaller; at times over 50% (clean models, e.g. RoBERTa around 55%).</li>
+            <li>Typical: BF16 ≈ 33% saved; regular FP32 ≈ 17%.</li>
+            <li>On Llama 3, more than 17% better space than vanilla compression, and 62% faster compress / decompress.</li>
+            <li>With several workers: up to 80&nbsp;GB/s inflate, 13&nbsp;GB/s deflate.</li>
+            <li>The paper estimates over an exabyte a year of Hugging Face hub traffic if methods like this were applied.</li>
+          </ul>
+          <p class="aside">
+            README single-thread BF16 check: ZipNN left 66.3% of the file; Zstd left 78.3%. LZ4 and Snappy left 100%.
+          </p>
+        </article>
+
+        <article class="note">
+          <p class="note-num" aria-hidden="true">5</p>
+          <h2><span class="mark mark-2">What it is not</span></h2>
+          <ul>
+            <li>Not quantization, pruning, or distillation — those do not restore the original weights.</li>
+            <li>Not an inference-format shrink. It stores a compact blob; you decompress to run.</li>
+            <li>Regular FP32 models save less, because the exponent is only a quarter of the bits.</li>
+            <li>LZ-only tools (LZ4, Snappy) usually find no repeated multi-byte runs in tensors.</li>
+            <li>The published library is CPU today; the README says GPU work is on the way.</li>
+          </ul>
+        </article>
+
+        <aside class="note note-bottom">
+          <h2><span class="mark mark-3">Bottom line</span></h2>
+          <p>
+            Same weights, smaller files. ZipNN is lossless compression for AI
+            model data — IBM Research, IEEE CLOUD 2025.
+          </p>
+          <p class="explore-links">
+            <a href="https://arxiv.org/abs/2411.05239">Paper (arXiv)</a>
+            <a href="https://github.com/zipnn/zipnn">Repo</a>
+            <a href="https://research.ibm.com/publications/a-lossless-compression-for-ai-models">IEEE CLOUD 2025</a>
+          </p>
+        </aside>
+
+        <section class="note note-sources">
+          <h2>Sources</h2>
+          <ol>
+            <li id="src-data">
+              Catalog entry:
+              <a href="../js/data.js">js/data.js</a>
+              (title, blurb, IBM Research · IEEE CLOUD 2025, repo URL).
+            </li>
+            <li id="src-paper">
+              Moshik Hershcovitch et al.,
+              <cite>ZipNN: Lossless Compression for AI Models</cite>,
+              arXiv:2411.05239.
+              <a href="https://arxiv.org/abs/2411.05239">https://arxiv.org/abs/2411.05239</a>
+            </li>
+            <li id="src-ibm">
+              IBM Research publication record for CLOUD 2025.
+              <a href="https://research.ibm.com/publications/a-lossless-compression-for-ai-models">research.ibm.com/…/a-lossless-compression-for-ai-models</a>
+            </li>
+            <li id="src-repo">
+              ZipNN README,
+              <a href="https://github.com/zipnn/zipnn">https://github.com/zipnn/zipnn</a>
+            </li>
+          </ol>
+        </section>
+      </div>
+    </main>
+    <script>
+      (function () {
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          document.documentElement.classList.add("ink-draw");
+        }
+      })();
+    </script>
+  </body>
+</html>
