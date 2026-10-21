@@ -28,7 +28,7 @@
         document.documentElement.setAttribute("data-debug", debug);
       })();
     </script>
-    <link rel="stylesheet" href="css/styles.css?v=20261010a" />
+    <link rel="stylesheet" href="css/styles.css?v=20261021a" />
   </head>
   <body data-view="current">
     <a class="skip" href="#gallery">Skip to work</a>
@@ -68,10 +68,37 @@
         <p class="intro-links">
           <a href="mailto:guygir@gmail.com">guygir@gmail.com</a>
           <a href="https://github.com/guygir">GitHub</a>
+          <span class="intro-cv">
+            <a href="assets/Guy_Girmonsky_CV.pdf">CV (PDF)</a>
+            <span class="intro-updated">Updated Oct 2026</span>
+          </span>
+          <a href="https://scholar.google.co.il/citations?view_op=list_works&amp;hl=en&amp;user=_VMWNfcAAAAJ">Google Scholar</a>
         </p>
       </section>
 
       <div id="gallery"></div>
+
+      <section id="pubs">
+        <h2 class="reveal">Publications &amp; Patent</h2>
+        <article class="pub pub-patent">
+          <p class="pub-kind">Patent</p>
+          <h3>Efficient Exponent Compression for Large AI Models</h3>
+          <p>US app. 19/365,918, 2025</p>
+        </article>
+        <ul class="pub-list">
+          <li>
+            <cite>SkyStore: Cost-Optimized Object Storage Across Regions and Clouds</cite>
+            <span class="pub-venue">VLDB 2025</span>
+            <a href="https://arxiv.org/abs/2502.20818">Paper</a>
+          </li>
+          <li>
+            <cite>ZipNN: Lossless Compression for AI Models</cite>
+            <span class="pub-venue">IEEE CLOUD 2025</span>
+            <a href="https://arxiv.org/abs/2411.05239">Paper</a>
+            <a href="projects/zipnn.html">Explore ZipNN</a>
+          </li>
+        </ul>
+      </section>
 
       <section id="about">
         <h2 class="reveal">About</h2>
@@ -86,7 +113,7 @@
             </p>
           </div>
           <div class="journey" id="journey">
-            <h3>From the catalog</h3>
+            <h3>Timeline</h3>
             <ol class="timeline" id="timeline"></ol>
           </div>
         </div>
@@ -117,6 +144,11 @@
         <p><a href="mailto:guygir@gmail.com">guygir@gmail.com</a></p>
         <ul>
           <li><a href="https://github.com/guygir">GitHub</a></li>
+          <li>
+            <a href="assets/Guy_Girmonsky_CV.pdf">CV (PDF)</a>
+            <span class="intro-updated">Updated Oct 2026</span>
+          </li>
+          <li><a href="https://scholar.google.co.il/citations?view_op=list_works&amp;hl=en&amp;user=_VMWNfcAAAAJ">Google Scholar</a></li>
           <li><a href="https://guygir.itch.io">itch.io</a></li>
           <li><a href="https://huggingface.co/Guygir">Hugging Face</a></li>
         </ul>
@@ -158,6 +190,7 @@
         <h2 id="sheet-title"></h2>
         <p class="sheet-detail" id="sheet-detail"></p>
         <p class="sheet-story" id="sheet-story"></p>
+        <p class="sheet-talk" id="sheet-talk" hidden></p>
         <div class="sheet-bar">
           <button type="button" id="sheet-prev">Prev</button>
           <a id="sheet-enter" target="_blank" rel="noopener noreferrer">Open</a>
@@ -167,10 +200,10 @@
       </article>
     </div>
 
-    <script src="js/data.js?v=20261010a"></script>
-    <script src="js/timeline.js?v=20261010a"></script>
+    <script src="js/data.js?v=20261021a"></script>
+    <script src="js/timeline.js?v=20261021a"></script>
     <script src="js/activity.js?v=20261010a"></script>
-    <script src="js/app.js?v=20261010a"></script>
+    <script src="js/app.js?v=20261021a"></script>
     <script src="js/pulse.js?v=20261010a"></script>
     <script src="js/strips.js?v=20261010a"></script>
   </body>

@@ -779,16 +779,30 @@
     });
   }
 
+  function slidesChip(record) {
+    if (!record || !Object.prototype.hasOwnProperty.call(record, "slides")) return "";
+    if (record.slides) {
+      return '<a class="slides-link" href="' + esc(record.slides) + '">Slides</a>';
+    }
+    return '<span class="slides-soon">Slides (coming soon)</span>';
+  }
+
   function renderTimeline() {
     const list = document.getElementById("timeline");
     if (!list || !window.TIMELINE) return;
     const rows = (window.TIMELINE.entries || []).filter((row) => row && !row.todo && row.render !== false);
     list.innerHTML = rows.map((row) => (
-      '<li class="reveal">' +
+      '<li class="reveal"' + (row.title === "Scheduling Games" ? ' id="thesis"' : "") + ">" +
         '<span class="when">' + esc(row.year) + "</span>" +
         '<span class="what">' +
           "<strong>" + esc(row.title) + "</strong>" +
           "<small>" + esc(row.detail) + "</small>" +
+          (row.talk || Object.prototype.hasOwnProperty.call(row, "slides")
+            ? '<span class="talk-line">' +
+                (row.talk ? '<span class="talk-text">' + esc(row.talk) + "</span>" : "") +
+                slidesChip(row) +
+              "</span>"
+            : "") +
         "</span>" +
       "</li>"
     )).join("");
@@ -954,6 +968,18 @@
     document.getElementById("sheet-title").textContent = item.title;
     document.getElementById("sheet-detail").textContent = item.detail || kindOf(item);
     document.getElementById("sheet-story").textContent = item.story || item.blurb;
+    const talk = document.getElementById("sheet-talk");
+    if (talk) {
+      if (item.talk || Object.prototype.hasOwnProperty.call(item, "slides")) {
+        talk.hidden = false;
+        talk.innerHTML =
+          (item.talk ? '<span class="talk-text">' + esc(item.talk) + "</span>" : "") +
+          slidesChip(item);
+      } else {
+        talk.hidden = true;
+        talk.textContent = "";
+      }
+    }
     const enter = document.getElementById("sheet-enter");
     if (item.explore) {
       enter.hidden = false;

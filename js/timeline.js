@@ -1,10 +1,25 @@
 window.TIMELINE = {
   entries: [
     {
+      year: "2024–",
+      title: "IBM Research",
+      detail: "Research student 2024–25. Research Engineer since 2026. AI platforms.",
+      source: "CV; index.html intro",
+    },
+    {
+      year: "2023–",
+      title: "Reichman University, M.Sc. CS",
+      detail: "M.Sc. in Computer Science, in progress.",
+      source: "CV; index.html intro",
+    },
+    {
       year: "2026",
       title: "Scheduling Games",
-      detail: "Israel AGT Day · Reichman · Unpublished",
-      source: "js/data.js (iagt.detail)",
+      detail: "Thesis (in progress): Scheduling Games with Strategic Job Durations (Algorithmic Game Theory), advisor Tami Tamir. Talk at Israel AGT Day 2026. ISTRC 2025–26 scholarship.",
+      talk: "Talk at Israel AGT Day 2026",
+      // TODO: when the AGT Day 2026 deck exists, set slides to "assets/agt-day-2026.pptx"
+      slides: null,
+      source: "js/data.js (iagt)",
     },
     {
       year: "2026",
@@ -22,57 +37,33 @@ window.TIMELINE = {
       year: "2025",
       title: "SkyStore",
       detail: "IBM Research · VLDB 2025",
-      source: "js/data.js (skystore.detail); index.html About links",
+      source: "js/data.js (skystore.detail)",
     },
     {
       year: "2023",
       title: "Club Tech",
-      detail: "Unity games: Emotions, Matching.",
-      source: "js/data.js (emotions.detail, matching.detail); index.html About copy",
+      detail: "Shipped two Unity games.",
+      source: "CV; js/data.js (emotions.detail, matching.detail); index.html intro",
     },
     {
-      year: "2023",
-      title: "University coursework",
-      detail: "Seam Carving, People Analytics, HW Checker.",
-      source: "js/data.js (seam.detail, people.detail, hwcheck.detail)",
+      year: "2021–23",
+      title: "Research & Teaching Assistant, TAU",
+      detail: "Computational Models and Complexity.",
+      source: "CV",
     },
     {
-      year: "2023",
-      title: "HRCC",
-      detail: "Research files · 2023",
-      source: "js/data.js (hrcc.detail)",
+      year: "2019–23",
+      title: "Tel Aviv University, B.Sc.",
+      detail: "Computer Science and Mathematics.",
+      source: "CV",
+    },
+    {
+      year: "2015–18",
+      title: "Military service",
+      detail: "Search and Rescue course with excellence. Commander’s course; commander and sergeant of recruits.",
+      source: "CV",
     },
   ],
 
-  // Career role slots. render: false — do not show until Guy fills dates.
-  roles: [
-    {
-      render: false,
-      todo: true,
-      title: "Research engineer, AI platforms, IBM",
-      dates: "",
-      note: "TODO: start / end (or Present). Sourced role only: index.html About, DESIGN.md.",
-    },
-    {
-      render: false,
-      todo: true,
-      title: "Hybrid-cloud storage, IBM",
-      dates: "",
-      note: "TODO: start / end. Sourced as previous role: index.html About.",
-    },
-    {
-      render: false,
-      todo: true,
-      title: "M.Sc. student",
-      dates: "",
-      note: "TODO: program, school, years. Sourced as current study: index.html About.",
-    },
-    {
-      render: false,
-      todo: true,
-      title: "Club Tech (Unity games)",
-      dates: "2023",
-      note: "TODO: confirm employment vs contract and full date range. Year sourced from Emotions/Matching details.",
-    },
-  ],
+  roles: [],
 };

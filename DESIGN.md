@@ -91,14 +91,15 @@ Masthead
   wordmark + Contact
 
 Intro (first fold)
-  Role + one-line bio + email / GitHub
+  Role + one-line bio + email / GitHub / CV (PDF) / Google Scholar
 
 Dock (fixed, only nav)
   Work / Games / Projects / About / Contact
 
 Current
   Scrapbook (ZipNN, Klafi, RifTrade first)
-  About (portrait, Riftbound line, plain dated list, pulse)
+  Publications & Patent (patent first, then SkyStore and ZipNN)
+  About (portrait, Riftbound line, dated life/catalog timeline, pulse)
   Contact
 
 Games / Projects
@@ -128,7 +129,7 @@ Omitted on purpose: `Test`, `my-fork`, `vllm` fork, `clawdchan`, `Better-Minimal
 
 ### 3.5 About
 
-Duotone portrait (real `images/profile/guy-girmonsky.jpg`), the Riftbound/Collectr line, a plain dated catalog list (no boxes), then the GitHub year. Career-role dates live as non-rendering TODOs in `js/timeline.js`. The IBM role and first-person bio now sit in the first-fold intro, not here. The About link list that repeated the board is gone.
+Duotone portrait (real `images/profile/guy-girmonsky.jpg`), the Riftbound/Collectr line, a dated timeline (IBM, Reichman, TAU, military, Club Tech, plus catalog years), then the GitHub year. No GPAs. The IBM role and first-person bio sit in the first-fold intro. The About link list that repeated the board is gone.
 
 ---
 
@@ -213,9 +214,9 @@ The first fold on ~1280×800 is name, intro, and the first board row. About sits
 - Experimental moving strips (review only, `?strip=`): a temporary comparison of Games / Activity / Categories / Keywords marquees. Keyword families stay ink chips. Project strips (Games, and the Work / Games / Projects category ribbons) use each tile’s board rectangle — 16/10 paper/shadow print, cover crop, title plus an optional one-line `blurb` from `js/data.js` (fallback `detail`) clamped to two lines. Photo stacks (Klafi, RifTrade, Hold’emle, or any `images` array) show every shot as consecutive prints. Activity keeps the text ticker, a cover thumb when the repo maps to a catalog item, and the same short `blurb` under the name when Descriptions is on. A Descriptions switch (default on, `?desc=0/1`) sits next to the preview control. Edges fade into the paper; pause on hover/focus. Not part of the shipped catalog. `prefers-reduced-motion` shows a static row. Remove via `window.STRIP_PREVIEW` / `js/strips.js`.
 - Phone: no rest tilt. 2 columns, then 1 column under 340px. Tile subtitles wrap in full; no ellipsis.
 
-### 4.7 Explore page (ZipNN prototype)
+### 4.7 Explore pages (ZipNN, llm-d)
 
-A standalone sketchnote at `projects/zipnn.html`, opened from ZipNN’s “Explore ZipNN ↗” control and the inspect-sheet action. Not the catalog surface. Back link returns to `index.html`.
+Standalone notes at `projects/zipnn.html` and `projects/llmd.html`, opened from each tile’s Explore control and the inspect-sheet action. Not the catalog surface. Back link returns to `index.html`.
 
 - Ground, type colour, and accent stay `--board` / `--ink` / `--mute` / `--stamp`.
 - At most three soft marker tints, used only as highlight washes: `--marker-1` `#F3E3A3`, `--marker-2` `#C9DCC4`, `--marker-3` `#F0C9B0`. Ink on those washes is the text colour (AA).
@@ -226,7 +227,8 @@ A standalone sketchnote at `projects/zipnn.html`, opened from ZipNN’s “Explo
 - Panels: 2 columns from 780px, one column on phone. The how-it-works flow is a row on desktop and a column on phone.
 - 44px targets on the back link, debug controls, and source/paper/repo links.
 - Optional ink-line draw-on; `prefers-reduced-motion` shows the lines already drawn and flattens rotation.
-- Copy is sourced from `js/data.js`, arXiv:2411.05239, and the ZipNN README. The paper lists Guy Girmonsky among the authors. No invented role split.
+- ZipNN copy is sourced from `js/data.js`, arXiv:2411.05239, the ZipNN README, and the CV: Guy added streaming, delta compression, and multithreading. Paper: IEEE CLOUD 2025. Related work: patent US app. 19/365,918 (2025). The paper lists Guy Girmonsky among the authors. No invented role split.
+- llm-d copy is sourced from `js/data.js` and the CV only: KV-cache PVC Evictor, chat preprocessing, multimodal cache-affinity scorer; TCAP award for leadership of the llm-d open-source project.
 
 ---
 
@@ -249,7 +251,7 @@ Activating a tile opens a paper dialog. Content comes from the record: cover, ti
 - Focus moves into the sheet. Tab cycles inside it. Esc, the dim, and Close put it away and return focus to the tile.
 - Prev / Next walk the tiles currently on the board.
 - If the project is a stack, the sheet shows the current picture at `object-fit: contain` with a thumbnail row underneath. Arrow keys and a horizontal swipe on the large image step the pictures (wrapping), keeping the thumbnail selection in sync. No dots.
-- The primary action is the existing `href`, labeled **Open project**. ZipNN is the exception: the sheet action goes to `projects/zipnn.html` and is labeled **Explore ZipNN**.
+- The primary action is the existing `href`, labeled **Open project**. ZipNN and llm-d are the exceptions: the sheet action goes to `projects/zipnn.html` / `projects/llmd.html` and is labeled **Explore ZipNN** / **Explore llm-d**.
 - Reduced motion: no extra sheet animation; stamps sit flat.
 
 ---
@@ -262,7 +264,7 @@ Sticky board bar. Fraunces wordmark (40/32) plus a Contact jump. Role lives in t
 
 ### Opening (Current)
 
-Role, one-line bio, and email/GitHub — split from the existing About paragraph — then the scrapbook. Not a single plate. Not a wider flagship.
+Role, one-line bio, and email / GitHub / CV (PDF, Updated Oct 2026) / Google Scholar — then the scrapbook. Not a single plate. Not a wider flagship. No phone number.
 
 ### Chapters
 
@@ -271,7 +273,9 @@ Role, one-line bio, and email/GitHub — split from the existing About paragraph
 
 ### About
 
-Single ~720px column. Duotone portrait, the Riftbound/Collectr line, a plain dated catalog list (rules, no boxes), then the GitHub year. The IBM role and first-person bio live in the first-fold intro. The About link list that repeated the board is gone. On a phone the 53-week board scales to the About measure so the latest week stays on-screen; no page-level horizontal scroll.
+Single ~720px column. Duotone portrait, the Riftbound/Collectr line, a dated timeline (military 2015–18; TAU B.Sc. 2019–23; RA/TA 2021–23; Reichman M.Sc. 2023–; IBM Research 2024–; Club Tech two Unity games; catalog years), then the GitHub year. No GPAs. The IBM role and first-person bio live in the first-fold intro. Publications & Patent sits above About: patent US app. 19/365,918 (2025) first, then SkyStore (VLDB 2025) and ZipNN (IEEE CLOUD 2025). On a phone the 53-week board scales to the About measure so the latest week stays on-screen; no page-level horizontal scroll.
+
+The Scheduling Games (`iagt`) row and inspect sheet show “Talk at Israel AGT Day 2026” plus a muted, non-link `Slides (coming soon)` chip. `js/data.js` keeps `slides: null` with a TODO to `assets/agt-day-2026.pptx`.
 
 ### Footer
 
