@@ -3,7 +3,7 @@ window.TIMELINE = {
     {
       year: "2024–",
       title: "IBM Research",
-      detail: "Research student 2024–25. Research Engineer since 2026. AI platforms.",
+      detail: "Research student 2024–25. Research Engineer since 2026. AI platforms. TCAP award for leadership of the llm-d open-source project.",
       source: "CV; index.html intro",
     },
     {
