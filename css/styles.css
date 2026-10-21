@@ -829,6 +829,7 @@ img.layer,
 .pub-list a {
   display: inline-flex;
   align-items: center;
+  min-width: 44px;
   min-height: 44px;
   color: var(--ink);
   font-size: var(--type-caption);
