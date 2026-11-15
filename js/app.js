@@ -375,7 +375,7 @@
   function pacedHTML() {
     const active = featuredFirst(window.ITEMS.filter((item) => item.status === "active"));
     const research = active.filter(isResearch);
-    const work = active.filter((item) => item.section === "work" && !isResearch(item));
+    const work = active.filter((item) => item.section === "work");
     const play = active.filter((item) => item.section === "games");
     const tool = active.filter((item) => item.section === "projects");
     const stamps = [

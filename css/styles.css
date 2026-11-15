@@ -2272,6 +2272,7 @@ html[data-layout="paced"] .paced-dock {
 html[data-layout="paced"] .paced-dock a {
   display: inline-flex;
   align-items: center;
+  min-width: 44px;
   min-height: 44px;
   color: var(--mute);
   font-size: var(--type-label);
@@ -2302,7 +2303,7 @@ html[data-layout="paced"] .intro {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-height: calc(100svh - var(--mast) - 44px);
+  min-height: calc(100svh - 120px);
   max-width: 42em;
   margin: 0 auto;
   padding: var(--space-80) var(--gutter) var(--space-80);
@@ -2339,7 +2340,7 @@ html[data-layout="paced"] .paced-stamps {
   align-items: center;
   justify-content: center;
   gap: var(--space-24) var(--space-48);
-  min-height: calc(100svh - 44px);
+  min-height: 100svh;
   padding: var(--space-80) var(--gutter);
 }
 
@@ -2463,6 +2464,11 @@ html[data-layout="paced"] #contact li {
   padding: var(--space-16) 0;
 }
 
+html[data-layout="paced"] .timeline li:last-child,
+html[data-layout="paced"] .pub-list li:last-child {
+  border: 0;
+}
+
 html[data-layout="paced"] .timeline {
   position: relative;
   padding-left: var(--space-24);
@@ -2480,6 +2486,8 @@ html[data-layout="paced"] .timeline::before {
 
 html[data-layout="paced"] .timeline li {
   grid-template-columns: 72px minmax(0, 1fr);
+  border-top: 0;
+  border-bottom: 0;
 }
 
 html[data-layout="paced"] footer,
@@ -2501,8 +2509,18 @@ html[data-layout="paced"] #contact { display: none; }
   }
 
   html[data-layout="paced"] .paced-stamps {
-    gap: var(--space-16) var(--space-24);
-    min-height: calc(100svh - 44px);
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: var(--space-8);
+    min-height: 100svh;
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+
+  html[data-layout="paced"] .paced-stamp {
+    min-width: 44px;
+    min-height: 72px;
+    padding: var(--space-8) 0;
   }
 
   html[data-layout="paced"] .intro {
