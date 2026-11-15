@@ -39,7 +39,7 @@
   }
 
   function parseLayout(value) {
-    if (value === "uneven" || value === "cards") return value;
+    if (value === "uneven" || value === "cards" || value === "paced") return value;
     return value === "even" ? "even" : "";
   }
 
@@ -77,7 +77,12 @@
     persistLayoutUrl(next);
   }
 
+  function isResearch(item) {
+    return !!(item && item.research);
+  }
+
   function stampOf(item) {
+    if (isResearch(item)) return "RESEARCH";
     if (item.section === "work") return "WORK";
     if (item.section === "games") return "PLAY";
     return "TOOL";
@@ -341,6 +346,64 @@
     return '<div class="board">' + items.map(pieceHTML).join("") + "</div>";
   }
 
+  function pacedTileHTML(item) {
+    return (
+      '<button type="button" class="piece tile paced-tile reveal" data-item="' + item.id + '" aria-haspopup="dialog">' +
+        '<span class="reveal-shift">' +
+          '<span class="shot">' +
+            '<img src="' + esc(item.cover) + '" alt="" width="1600" height="1000">' +
+          "</span>" +
+          '<span class="meta">' +
+            "<strong>" + esc(item.title) + "</strong>" +
+            "<small>" + esc(item.blurb || item.detail) + "</small>" +
+          "</span>" +
+        "</span>" +
+      "</button>"
+    );
+  }
+
+  function pacedSectionHTML(id, label, items) {
+    if (!items.length) return "";
+    return (
+      '<section class="paced-section" id="paced-' + id + '">' +
+        '<h2 class="paced-label reveal">' + esc(label) + "</h2>" +
+        '<div class="board paced-board">' + items.map(pacedTileHTML).join("") + "</div>" +
+      "</section>"
+    );
+  }
+
+  function pacedHTML() {
+    const active = featuredFirst(window.ITEMS.filter((item) => item.status === "active"));
+    const research = active.filter(isResearch);
+    const work = active.filter((item) => item.section === "work" && !isResearch(item));
+    const play = active.filter((item) => item.section === "games");
+    const tool = active.filter((item) => item.section === "projects");
+    const stamps = [
+      { id: "work", label: "Work", count: work.length },
+      { id: "play", label: "Play", count: play.length },
+      { id: "tool", label: "Tool", count: tool.length },
+      { id: "research", label: "Research", count: research.length },
+    ].filter((stamp) => stamp.count);
+    const stampRow =
+      '<nav class="paced-stamps" id="paced-stamps" aria-label="Categories">' +
+        stamps.map((stamp) => (
+          '<a class="paced-stamp" href="#paced-' + stamp.id + '">' +
+            '<span class="paced-stamp-mark">' + esc(stamp.label) + "</span>" +
+            '<span class="paced-stamp-count">' + stamp.count + "</span>" +
+          "</a>"
+        )).join("") +
+      "</nav>";
+    return (
+      '<section class="opening paced-opening" id="opening">' +
+        stampRow +
+        pacedSectionHTML("work", "Work", work) +
+        pacedSectionHTML("play", "Play", play) +
+        pacedSectionHTML("tool", "Tool", tool) +
+        pacedSectionHTML("research", "Research", research) +
+      "</section>"
+    );
+  }
+
   function ledeHTML() {
     return "";
   }
@@ -385,6 +448,7 @@
   }
 
   function currentHTML() {
+    if (currentLayout() === "paced") return pacedHTML();
     const active = window.ITEMS.filter((item) => item.status === "active");
     if (currentLayout() === "cards") {
       const work = featuredFirst(active.filter((item) => item.section === "work"));
@@ -408,6 +472,7 @@
   }
 
   function isolatedHTML() {
+    if (currentLayout() === "paced") return pacedHTML();
     const items = window.ITEMS.filter((item) => item.section === filter);
     const parts = splitStatus(items);
     const title = filter === "work" ? "Work" : filter === "games" ? "Games" : "Projects";
@@ -453,7 +518,7 @@
   }
 
   function applyBoardLayout(board) {
-    if (currentLayout() === "cards") return;
+    if (currentLayout() === "cards" || currentLayout() === "paced") return;
     const pieces = piecesInReadingOrder(board);
     if (!pieces.length) return;
     board.replaceChildren();
@@ -481,7 +546,7 @@
     writeLayout(parsed);
     syncSwitch();
     const apply = function () {
-      if (from === "cards" || parsed === "cards") render();
+      if (from === "cards" || parsed === "cards" || from === "paced" || parsed === "paced") render();
       else {
         layoutBoards();
         assignRevealStagger();
@@ -547,7 +612,7 @@
       const group = event.target.closest(".layout-switch");
       if (group && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
         event.preventDefault();
-        const order = ["even", "uneven", "cards"];
+        const order = ["even", "uneven", "cards", "paced"];
         const i = order.indexOf(currentLayout());
         const dir = event.key === "ArrowRight" ? 1 : -1;
         setLayout(order[(i + dir + order.length) % order.length]);
@@ -818,6 +883,9 @@
       if (window.matchMedia("(max-width: 1279px)").matches) return 3;
       return 4;
     }
+    if (currentLayout() === "paced") {
+      return window.matchMedia("(max-width: 780px)").matches ? 1 : 3;
+    }
     if (window.matchMedia("(max-width: 340px)").matches) return 1;
     if (window.matchMedia("(max-width: 780px)").matches) return 2;
     return 3;
@@ -909,6 +977,24 @@
     [gallery, about, contact].forEach((el) => {
       if (el) io.observe(el);
     });
+    const pacedDock = document.getElementById("paced-dock");
+    if (pacedDock && !pacedDock.dataset.bound) {
+      pacedDock.dataset.bound = "1";
+      pacedDock.addEventListener("click", (event) => {
+        const link = event.target.closest("a[href^='#']");
+        if (!link) return;
+        if (currentLayout() === "paced" && filter !== "current") apply("current", { silent: true });
+      });
+    }
+    if (!document.documentElement.dataset.pacedJumps) {
+      document.documentElement.dataset.pacedJumps = "1";
+      document.addEventListener("click", (event) => {
+        if (currentLayout() !== "paced") return;
+        const link = event.target.closest("a[href^='#paced-'], a[href='#about'], a[href='#gallery']");
+        if (!link) return;
+        if (filter !== "current") apply("current", { silent: true });
+      });
+    }
     dock.addEventListener("click", (event) => {
       const link = event.target.closest("[data-dock]");
       if (!link) return;

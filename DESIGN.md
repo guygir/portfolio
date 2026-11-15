@@ -111,7 +111,7 @@ Games / Projects
 
 ### 3.1 Current / opening
 
-Selected first: ZipNN, Klafi, RifTrade. Even mode is a 3-column equal-tile grid (2 on phone). Uneven mode is masonry with varying heights. Cards is a 4-column paper lineup. The layout switch lives in the Debug bar and persists in `localStorage` (`board-layout`) only after an explicit choice and is applied before first paint. A missing or invalid stored value always renders Even, including the switch `aria-checked` state. Klafi, RifTrade, and Hold’emle *are* fanned photo stacks (cover in front, hover peeking behind). Other tiles are a single tilted photo that crossfades on hover. Title and subtitle sit as plain text on the graph paper under the image. Activating a tile opens the inspect sheet. The red stamp is the only category label.
+Selected first: ZipNN, Klafi, RifTrade. Even mode is a 3-column equal-tile grid (2 on phone). Uneven mode is masonry with varying heights. Cards is a 4-column paper lineup. Paced (`?layout=paced`) is a one-screen-at-a-time preview: intro, then WORK / PLAY / TOOL / RESEARCH stamps, then untilted category rows, then Publications & Patent, then a thin About timeline. The layout switch lives in the Debug bar and persists in `localStorage` (`board-layout`) only after an explicit choice and is applied before first paint. A missing or invalid stored value always renders Even, including the switch `aria-checked` state. Klafi, RifTrade, and Hold’emle *are* fanned photo stacks (cover in front, hover peeking behind) except in Paced, where tiles stay untilted. Other tiles are a single tilted photo that crossfades on hover. Title and subtitle sit as plain text on the graph paper under the image. Activating a tile opens the inspect sheet. The red stamp is the only category label.
 
 ### 3.2 Work
 
@@ -186,7 +186,8 @@ Spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 80. Radius 0 except the dock pil
 - Gutter: 24 desktop, 16 phone.
 - Board: Even = 3-col 16/10 prints (2 on phone). Uneven = masonry. Title + one subtitle. One stamp per print: WORK / PLAY / TOOL only.
 - Cards: same palette discipline. Six reused hues. 12px sans labels. Square cards; icons keep `--radius-icon`. Max 3 tags (mark, status, one venue). 4 / 3 / 2 columns; 2-col compact on phone.
-- Dock: only nav. 44px targets. Page bottom padding = dock height + safe area.
+- Paced (preview): first viewport is intro only (~100svh). Next viewport is one row of WORK / PLAY / TOOL / RESEARCH stamps (RESEARCH groups existing `research: true` catalog entries: ZipNN, SkyStore, Scheduling Games, EV Charging; the patent stays in Publications & Patent). Each category is its own untilted 3-col (1-col phone) row with image, name, blurb. Sections are separated by whitespace (80/48), not boxes. The floating dock is replaced by a pinned plain-text row: WORK, ABOUT, CV, EMAIL, GITHUB. Content fades into `--board` just above that row. Strip preview is hidden. Reduced motion keeps the fade, with no extra motion.
+- Dock: only nav (Even / Uneven / Cards). 44px targets. Page bottom padding = dock height + safe area.
 - Stacks: same as before. Dot *hit* is 44×44; the visible dot stays small.
 - Stamp: `--stamp`, 12px label style. WORK / PLAY / TOOL.
 

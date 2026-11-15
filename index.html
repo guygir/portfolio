@@ -14,10 +14,10 @@
         try {
           var params = new URLSearchParams(location.search);
           var query = params.get("layout");
-          if (query === "uneven" || query === "cards" || query === "even") layout = query;
+          if (query === "uneven" || query === "cards" || query === "paced" || query === "even") layout = query;
           else {
             var stored = localStorage.getItem("board-layout");
-            if (stored === "uneven" || stored === "cards") layout = stored;
+            if (stored === "uneven" || stored === "cards" || stored === "paced") layout = stored;
             else if (stored && stored !== "even") localStorage.removeItem("board-layout");
           }
           var dq = params.get("debug");
@@ -28,7 +28,7 @@
         document.documentElement.setAttribute("data-debug", debug);
       })();
     </script>
-    <link rel="stylesheet" href="css/styles.css?v=20261021a" />
+    <link rel="stylesheet" href="css/styles.css?v=20261115a" />
   </head>
   <body data-view="current">
     <a class="skip" href="#gallery">Skip to work</a>
@@ -41,6 +41,7 @@
           <button type="button" role="radio" data-layout="even" aria-checked="true">Even</button>
           <button type="button" role="radio" data-layout="uneven" aria-checked="false">Uneven</button>
           <button type="button" role="radio" data-layout="cards" aria-checked="false">Cards</button>
+          <button type="button" role="radio" data-layout="paced" aria-checked="false">Paced</button>
         </div>
         <div id="strip-preview" class="debug-group">
           <span class="debug-label">Strip</span>
@@ -178,6 +179,14 @@
       <a href="#contact" data-dock="contact">Contact</a>
     </nav>
 
+    <nav class="paced-dock" id="paced-dock" aria-label="Page">
+      <a href="#gallery">Work</a>
+      <a href="#about">About</a>
+      <a href="assets/Guy_Girmonsky_CV.pdf">CV</a>
+      <a href="mailto:guygir@gmail.com">Email</a>
+      <a href="https://github.com/guygir">GitHub</a>
+    </nav>
+
     <div class="inspect" id="inspect" hidden>
       <button type="button" class="inspect-dim" data-close tabindex="-1" aria-label="Close"></button>
       <article class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
@@ -200,10 +209,10 @@
       </article>
     </div>
 
-    <script src="js/data.js?v=20261021a"></script>
+    <script src="js/data.js?v=20261115a"></script>
     <script src="js/timeline.js?v=20261021a"></script>
     <script src="js/activity.js?v=20261010a"></script>
-    <script src="js/app.js?v=20261021a"></script>
+    <script src="js/app.js?v=20261115a"></script>
     <script src="js/pulse.js?v=20261010a"></script>
     <script src="js/strips.js?v=20261010a"></script>
   </body>

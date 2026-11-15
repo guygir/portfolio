@@ -1040,6 +1040,29 @@ body {
   padding-bottom: calc(var(--dock-h) + var(--space-32) + env(safe-area-inset-bottom, 0px));
 }
 
+html[data-layout="paced"] body {
+  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+}
+
+html[data-layout="paced"] body::after {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 15;
+  height: calc(88px + env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--board) 68%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-layout="paced"] body::after {
+    height: calc(72px + env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(to bottom, transparent, var(--board) 80%);
+  }
+}
+
 #about p {
   margin: 0 0 var(--space-16);
   max-width: 36em;
@@ -2220,5 +2243,277 @@ html[data-layout="cards"] .card-tile:focus-visible {
 
   html[data-layout="cards"] .card-blurb {
     -webkit-line-clamp: 2;
+  }
+}
+
+/* Paced layout — calm one-screen-at-a-time. Existing layouts unchanged. */
+.paced-dock { display: none; }
+
+html[data-layout="paced"] .dock { display: none; }
+
+html[data-layout="paced"] .paced-dock {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-8) var(--space-16);
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 16;
+  min-height: 44px;
+  padding: var(--space-8) var(--gutter) calc(var(--space-12) + env(safe-area-inset-bottom, 0px));
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+html[data-layout="paced"] .paced-dock a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--mute);
+  font-size: var(--type-label);
+  font-weight: var(--weight-600);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+html[data-layout="paced"] .paced-dock a:hover,
+html[data-layout="paced"] .paced-dock a:focus-visible {
+  color: var(--ink);
+}
+
+html[data-layout="paced"] .masthead {
+  position: static;
+  background: transparent;
+  border-bottom: 0;
+}
+
+html[data-layout="paced"] .mast-contact { display: none; }
+
+html[data-layout="paced"] .wordmark {
+  font-size: var(--type-name);
+}
+
+html[data-layout="paced"] .intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100svh - var(--mast) - 44px);
+  max-width: 42em;
+  margin: 0 auto;
+  padding: var(--space-80) var(--gutter) var(--space-80);
+}
+
+html[data-layout="paced"] .intro-role {
+  font-family: var(--display);
+  font-size: var(--type-h2);
+  font-weight: var(--weight-500);
+  letter-spacing: var(--track-display);
+  line-height: 1.2;
+}
+
+html[data-layout="paced"] .intro-bio {
+  max-width: 28em;
+  margin-bottom: var(--space-32);
+}
+
+html[data-layout="paced"] .strip-mount { display: none; }
+
+html[data-layout="paced"] #gallery {
+  max-width: var(--page);
+  margin: 0 auto;
+}
+
+html[data-layout="paced"] .paced-opening {
+  max-width: none;
+  padding: 0;
+}
+
+html[data-layout="paced"] .paced-stamps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-24) var(--space-48);
+  min-height: calc(100svh - 44px);
+  padding: var(--space-80) var(--gutter);
+}
+
+html[data-layout="paced"] .paced-stamp {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 88px;
+  min-height: 88px;
+  padding: var(--space-12);
+  color: var(--stamp);
+  text-decoration: none;
+}
+
+html[data-layout="paced"] .paced-stamp-mark {
+  font-size: var(--type-label);
+  font-weight: var(--weight-600);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+html[data-layout="paced"] .paced-stamp-count {
+  margin-top: var(--space-8);
+  color: var(--mute);
+  font-size: var(--type-caption);
+}
+
+html[data-layout="paced"] .paced-section {
+  padding: var(--space-80) var(--gutter);
+}
+
+html[data-layout="paced"] .paced-label {
+  margin: 0 0 var(--space-32);
+  color: var(--mute);
+  font-family: var(--sans);
+  font-size: var(--type-label);
+  font-weight: var(--weight-600);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+html[data-layout="paced"] .paced-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-48) var(--space-24);
+}
+
+html[data-layout="paced"] .paced-tile {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+html[data-layout="paced"] .paced-tile .shot {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--wash);
+  transform: none;
+  box-shadow: none;
+}
+
+html[data-layout="paced"] .paced-tile .shot img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+html[data-layout="paced"] .paced-tile .meta {
+  display: block;
+  margin-top: var(--space-12);
+}
+
+html[data-layout="paced"] .paced-tile .meta strong {
+  display: block;
+  font-size: var(--type-tile);
+  font-weight: var(--weight-600);
+}
+
+html[data-layout="paced"] .paced-tile .meta small {
+  display: block;
+  margin-top: var(--space-4);
+  color: var(--mute);
+  font-size: var(--type-caption);
+  line-height: 1.4;
+}
+
+html[data-layout="paced"] #pubs,
+html[data-layout="paced"] #about,
+html[data-layout="paced"] #contact {
+  max-width: 720px;
+  padding-top: var(--space-80);
+  padding-bottom: var(--space-80);
+  border: 0;
+}
+
+html[data-layout="paced"] #pubs h2,
+html[data-layout="paced"] #about h2,
+html[data-layout="paced"] #contact h2,
+html[data-layout="paced"] .journey h3 {
+  font-family: var(--sans);
+  font-size: var(--type-label);
+  font-weight: var(--weight-600);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+html[data-layout="paced"] .pub-patent,
+html[data-layout="paced"] .pub-list li,
+html[data-layout="paced"] .timeline li,
+html[data-layout="paced"] #contact li {
+  border: 0;
+  padding: var(--space-16) 0;
+}
+
+html[data-layout="paced"] .timeline {
+  position: relative;
+  padding-left: var(--space-24);
+}
+
+html[data-layout="paced"] .timeline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: var(--space-8);
+  bottom: var(--space-8);
+  width: 1px;
+  background: var(--ink-16);
+}
+
+html[data-layout="paced"] .timeline li {
+  grid-template-columns: 72px minmax(0, 1fr);
+}
+
+html[data-layout="paced"] footer,
+html[data-layout="paced"] .pulse,
+html[data-layout="paced"] #contact { display: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  html[data-layout="paced"] .paced-tile:hover .shot,
+  html[data-layout="paced"] .paced-tile:focus-visible .shot {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 780px) {
+  html[data-layout="paced"] .paced-board {
+    grid-template-columns: 1fr;
+    gap: var(--space-48);
+  }
+
+  html[data-layout="paced"] .paced-stamps {
+    gap: var(--space-16) var(--space-24);
+    min-height: calc(100svh - 44px);
+  }
+
+  html[data-layout="paced"] .intro {
+    min-height: calc(100svh - 44px);
+    padding-top: var(--space-48);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-layout="paced"] .paced-tile .shot,
+  html[data-layout="paced"] .paced-stamp {
+    transform: none;
   }
 }
