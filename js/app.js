@@ -82,7 +82,7 @@
   }
 
   function stampOf(item) {
-    if (isResearch(item)) return "RESEARCH";
+    if (currentLayout() === "paced" && isResearch(item)) return "RESEARCH";
     if (item.section === "work") return "WORK";
     if (item.section === "games") return "PLAY";
     return "TOOL";
@@ -379,20 +379,22 @@
     const play = active.filter((item) => item.section === "games");
     const tool = active.filter((item) => item.section === "projects");
     const stamps = [
-      { id: "work", label: "Work", count: work.length },
-      { id: "play", label: "Play", count: play.length },
-      { id: "tool", label: "Tool", count: tool.length },
-      { id: "research", label: "Research", count: research.length },
-    ].filter((stamp) => stamp.count);
+      work.length && { id: "work", label: "WORK" },
+      play.length && { id: "play", label: "PLAY" },
+      tool.length && { id: "tool", label: "TOOL" },
+      research.length && { id: "research", label: "RESEARCH" },
+    ].filter(Boolean);
     const stampRow =
-      '<nav class="paced-stamps" id="paced-stamps" aria-label="Categories">' +
-        stamps.map((stamp) => (
-          '<a class="paced-stamp" href="#paced-' + stamp.id + '">' +
-            '<span class="paced-stamp-mark">' + esc(stamp.label) + "</span>" +
-            '<span class="paced-stamp-count">' + stamp.count + "</span>" +
-          "</a>"
-        )).join("") +
-      "</nav>";
+      '<section class="paced-stamps" id="paced-stamps">' +
+        '<h2 class="paced-label">Projects</h2>' +
+        '<nav class="paced-stamp-row" aria-label="Categories">' +
+          stamps.map((stamp) => (
+            '<a class="paced-stamp" href="#paced-' + stamp.id + '">' +
+              '<span class="stamp">' + esc(stamp.label) + "</span>" +
+            "</a>"
+          )).join("") +
+        "</nav>" +
+      "</section>";
     return (
       '<section class="opening paced-opening" id="opening">' +
         stampRow +
@@ -960,6 +962,17 @@
     });
   }
 
+  function setPacedDock(key) {
+    const pacedDock = document.getElementById("paced-dock");
+    if (!pacedDock) return;
+    pacedDock.querySelectorAll("a").forEach((link) => {
+      const on = !!key && link.dataset.paced === key;
+      link.classList.toggle("on", on);
+      if (on) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
+    });
+  }
+
   function bindDock() {
     if (!dock || dock.dataset.bound) return;
     dock.dataset.bound = "1";
@@ -985,6 +998,22 @@
         if (!link) return;
         if (currentLayout() === "paced" && filter !== "current") apply("current", { silent: true });
       });
+      const pubs = document.getElementById("pubs");
+      const about = document.getElementById("about");
+      const intro = document.getElementById("intro");
+      const pacedIO = new IntersectionObserver((entries) => {
+        if (currentLayout() !== "paced") return;
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        if (visible.target.id === "about" || visible.target.id === "pubs") setPacedDock("about");
+        else setPacedDock("work");
+      }, { rootMargin: "-22% 0px -48% 0px", threshold: [0.1, 0.25, 0.5] });
+      [intro, gallery, pubs, about].forEach((el) => {
+        if (el) pacedIO.observe(el);
+      });
+      setPacedDock("work");
     }
     if (!document.documentElement.dataset.pacedJumps) {
       document.documentElement.dataset.pacedJumps = "1";

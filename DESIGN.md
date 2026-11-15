@@ -186,10 +186,10 @@ Spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 80. Radius 0 except the dock pil
 - Gutter: 24 desktop, 16 phone.
 - Board: Even = 3-col 16/10 prints (2 on phone). Uneven = masonry. Title + one subtitle. One stamp per print: WORK / PLAY / TOOL only.
 - Cards: same palette discipline. Six reused hues. 12px sans labels. Square cards; icons keep `--radius-icon`. Max 3 tags (mark, status, one venue). 4 / 3 / 2 columns; 2-col compact on phone.
-- Paced (preview): first viewport is intro only (~100svh). Next viewport is one row of WORK / PLAY / TOOL / RESEARCH stamps (RESEARCH groups existing `research: true` catalog entries: ZipNN, SkyStore, Scheduling Games, EV Charging; the patent stays in Publications & Patent). Each category is its own untilted 3-col (1-col phone) row with image, name, blurb. Sections are separated by whitespace (80/48), not boxes. The floating dock is replaced by a pinned plain-text row: WORK, ABOUT, CV, EMAIL, GITHUB. Content fades into `--board` just above that row. Strip preview is hidden. Reduced motion keeps the fade, with no extra motion.
+- Paced (preview): first viewport is intro only (~100svh). Next viewport is a labelled PROJECTS row of the same red `.stamp` tags used on tiles (WORK / PLAY / TOOL plus RESEARCH), scaled up, each a 44px jump link. RESEARCH groups existing `research: true` catalog entries: ZipNN, SkyStore, Scheduling Games, EV Charging; the patent stays in Publications & Patent. Each category is its own untilted 3-col (1-col phone) row with image, name, blurb. Sections are separated by whitespace (80/48), not boxes. The floating dock is replaced by a pinned, centered cluster of 12px wide-tracked links: WORK, ABOUT, CV, EMAIL, GITHUB. Hover goes to `--ink` with underline; the in-view section is `--ink`. A ~120px `--board` gradient covers the grid so content vanishes before the links. Strip preview is hidden. Reduced motion keeps the fade and flattens stamp lift.
 - Dock: only nav (Even / Uneven / Cards). 44px targets. Page bottom padding = dock height + safe area.
 - Stacks: same as before. Dot *hit* is 44×44; the visible dot stays small.
-- Stamp: `--stamp`, 12px label style. WORK / PLAY / TOOL.
+- Stamp: `--stamp`, 12px label style. WORK / PLAY / TOOL. Paced reuses that same tag (border, rotation, ink, paper wash), scaled up on the PROJECTS screen, and adds RESEARCH in the identical style.
 
 The first fold on ~1280×800 is name, intro, and the first board row. About sits after the board.
 

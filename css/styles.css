@@ -1041,7 +1041,7 @@ body {
 }
 
 html[data-layout="paced"] body {
-  padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px));
+  padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
 }
 
 html[data-layout="paced"] body::after {
@@ -1051,16 +1051,9 @@ html[data-layout="paced"] body::after {
   right: 0;
   bottom: 0;
   z-index: 15;
-  height: calc(88px + env(safe-area-inset-bottom, 0px));
+  height: calc(120px + env(safe-area-inset-bottom, 0px));
   pointer-events: none;
-  background: linear-gradient(to bottom, transparent, var(--board) 68%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html[data-layout="paced"] body::after {
-    height: calc(72px + env(safe-area-inset-bottom, 0px));
-    background: linear-gradient(to bottom, transparent, var(--board) 80%);
-  }
+  background: linear-gradient(to bottom, transparent 0%, var(--board) 58%, var(--board) 100%);
 }
 
 #about p {
@@ -2253,31 +2246,36 @@ html[data-layout="paced"] .dock { display: none; }
 
 html[data-layout="paced"] .paced-dock {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  flex-wrap: nowrap;
+  justify-content: center;
   align-items: center;
-  gap: var(--space-8) var(--space-16);
+  gap: var(--space-32);
   position: fixed;
-  left: 0;
-  right: 0;
+  left: 50%;
   bottom: 0;
   z-index: 16;
+  width: min(720px, calc(100% - 2 * var(--gutter)));
   min-height: 44px;
-  padding: var(--space-8) var(--gutter) calc(var(--space-12) + env(safe-area-inset-bottom, 0px));
+  padding: var(--space-8) 0 calc(var(--space-12) + env(safe-area-inset-bottom, 0px));
   background: transparent;
   border: 0;
   box-shadow: none;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 html[data-layout="paced"] .paced-dock a {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   min-width: 44px;
   min-height: 44px;
   color: var(--mute);
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, "Liberation Mono", monospace;
   font-size: var(--type-label);
-  font-weight: var(--weight-600);
-  letter-spacing: 0.18em;
+  font-weight: var(--weight-400);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   text-decoration: none;
 }
@@ -2285,6 +2283,18 @@ html[data-layout="paced"] .paced-dock a {
 html[data-layout="paced"] .paced-dock a:hover,
 html[data-layout="paced"] .paced-dock a:focus-visible {
   color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+html[data-layout="paced"] .paced-dock a.on {
+  color: var(--ink);
+}
+
+body.inspect-open .paced-dock,
+html[data-layout="paced"] body.inspect-open::after {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 html[data-layout="paced"] .masthead {
@@ -2336,37 +2346,42 @@ html[data-layout="paced"] .paced-opening {
 
 html[data-layout="paced"] .paced-stamps {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-24) var(--space-48);
+  gap: var(--space-48);
   min-height: 100svh;
   padding: var(--space-80) var(--gutter);
 }
 
-html[data-layout="paced"] .paced-stamp {
-  display: inline-flex;
-  flex-direction: column;
+html[data-layout="paced"] .paced-stamps .paced-label {
+  margin: 0;
+  text-align: center;
+}
+
+html[data-layout="paced"] .paced-stamp-row {
+  display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
-  min-width: 88px;
-  min-height: 88px;
+  gap: var(--space-32) var(--space-48);
+}
+
+html[data-layout="paced"] .paced-stamp {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
   padding: var(--space-12);
-  color: var(--stamp);
   text-decoration: none;
+  transition: transform var(--dur-ui) var(--ease-out);
 }
 
-html[data-layout="paced"] .paced-stamp-mark {
-  font-size: var(--type-label);
-  font-weight: var(--weight-600);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-html[data-layout="paced"] .paced-stamp-count {
-  margin-top: var(--space-8);
-  color: var(--mute);
-  font-size: var(--type-caption);
+html[data-layout="paced"] .paced-stamp .stamp {
+  position: static;
+  font-size: var(--type-tile);
+  padding: var(--space-8) var(--space-16);
 }
 
 html[data-layout="paced"] .paced-section {
@@ -2500,6 +2515,11 @@ html[data-layout="paced"] #contact { display: none; }
     transform: none;
     box-shadow: none;
   }
+
+  html[data-layout="paced"] .paced-stamp:hover,
+  html[data-layout="paced"] .paced-stamp:focus-visible {
+    transform: translateY(-4px) scale(1.06);
+  }
 }
 
 @media (max-width: 780px) {
@@ -2509,18 +2529,34 @@ html[data-layout="paced"] #contact { display: none; }
   }
 
   html[data-layout="paced"] .paced-stamps {
-    flex-wrap: nowrap;
-    justify-content: space-between;
-    gap: var(--space-8);
+    gap: var(--space-32);
     min-height: 100svh;
     padding-left: var(--gutter);
     padding-right: var(--gutter);
   }
 
+  html[data-layout="paced"] .paced-stamp-row {
+    gap: var(--space-8) var(--space-12);
+  }
+
   html[data-layout="paced"] .paced-stamp {
     min-width: 44px;
-    min-height: 72px;
-    padding: var(--space-8) 0;
+    min-height: 44px;
+    padding: var(--space-8) var(--space-4);
+  }
+
+  html[data-layout="paced"] .paced-stamp .stamp {
+    font-size: var(--type-label);
+    padding: var(--space-4) var(--space-8);
+  }
+
+  html[data-layout="paced"] .paced-dock {
+    gap: var(--space-12);
+    width: calc(100% - 2 * var(--gutter));
+  }
+
+  html[data-layout="paced"] .paced-dock a {
+    letter-spacing: 0.12em;
   }
 
   html[data-layout="paced"] .intro {
@@ -2529,9 +2565,26 @@ html[data-layout="paced"] #contact { display: none; }
   }
 }
 
+@media (max-width: 360px) {
+  html[data-layout="paced"] .paced-dock {
+    gap: var(--space-8);
+  }
+
+  html[data-layout="paced"] .paced-dock a {
+    letter-spacing: var(--track-label);
+  }
+
+  html[data-layout="paced"] .paced-stamp-row {
+    gap: var(--space-4) var(--space-8);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html[data-layout="paced"] .paced-tile .shot,
-  html[data-layout="paced"] .paced-stamp {
+  html[data-layout="paced"] .paced-stamp,
+  html[data-layout="paced"] .paced-stamp:hover,
+  html[data-layout="paced"] .paced-stamp:focus-visible {
     transform: none;
+    transition: none;
   }
 }
