@@ -158,7 +158,7 @@ All colour is CSS custom properties. No stray hex/rgb on components.
 ### 4.3 Type
 
 - **Display:** Fraunces 500. Name and headings only.
-- **Everything else:** Helvetica Neue / Helvetica / Arial 400/600. No mono.
+- **Everything else:** Helvetica Neue / Helvetica / Arial 400/600. No mono. Paced margin notes are the exception: self-hosted Kalam 700 italic, `--hand-note`, ~18px, never a system cursive stack.
 
 Scale (desktop / phone where it splits):
 
@@ -190,6 +190,7 @@ Spacing scale: 4 / 8 / 12 / 16 / 24 / 32 / 48 / 80. Radius 0 except the dock pil
 - Dock: only nav (Even / Uneven / Cards). 44px targets. Page bottom padding = dock height + safe area.
 - Stacks: same as before. Dot *hit* is 44×44; the visible dot stays small.
 - Stamp: `--stamp`, 12px label style. WORK / PLAY / TOOL. Paced reuses that same tag (border, rotation, ink, paper wash), scaled up on the PROJECTS screen, and adds RESEARCH in the identical style.
+- Paced margin notes (preview only): handwritten wayfinding in self-hosted Kalam 700 (`--hand-note`), never system cursive. One short italic line ~18px, weight 600, colour `--stamp` `#B42318`, rotated ~8°. An inline SVG arrow (viewBox `72 0 48 48`, 48×48, stroke currentColor 1.8, round caps/joins) sits in the note. The note *is* the control — a 44px link to the same action, absolutely positioned next to its target. Max one note per screen, and only when it points at a real action (intro CV, stamps). A 1.8s ease-in-out nudge runs only under `prefers-reduced-motion: no-preference`. On phones, flip/reposition so it stays in the viewport, or hide extras that would crowd.
 
 The first fold on ~1280×800 is name, intro, and the first board row. About sits after the board.
 

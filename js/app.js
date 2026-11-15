@@ -372,6 +372,20 @@
     );
   }
 
+  function marginNoteHTML(text, href, extraClass) {
+    return (
+      '<a class="margin-note' + (extraClass ? " " + extraClass : "") + '" href="' + esc(href) + '" tabindex="-1" aria-hidden="true">' +
+        '<span class="margin-note-motion">' +
+          '<svg class="margin-note-arrow" viewBox="72 0 48 48" width="48" height="48" aria-hidden="true">' +
+            '<path d="M79 12C103-2 117 13 105 39" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>' +
+            '<path d="M98 30Q103 35 105 39L113 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>' +
+          "</svg>" +
+        "</span>" +
+        '<span class="margin-note-text">' + esc(text) + "</span>" +
+      "</a>"
+    );
+  }
+
   function pacedHTML() {
     const active = featuredFirst(window.ITEMS.filter((item) => item.status === "active"));
     const research = active.filter(isResearch);
@@ -388,10 +402,13 @@
       '<section class="paced-stamps" id="paced-stamps">' +
         '<h2 class="paced-label">Projects</h2>' +
         '<nav class="paced-stamp-row" aria-label="Categories">' +
-          stamps.map((stamp) => (
-            '<a class="paced-stamp" href="#paced-' + stamp.id + '">' +
-              '<span class="stamp">' + esc(stamp.label) + "</span>" +
-            "</a>"
+          stamps.map((stamp, i) => (
+            '<span class="paced-stamp-anchor">' +
+              '<a class="paced-stamp" href="#paced-' + stamp.id + '">' +
+                '<span class="stamp">' + esc(stamp.label) + "</span>" +
+              "</a>" +
+              (i === 0 ? marginNoteHTML("start here", "#paced-" + stamp.id, "margin-note--stamps") : "") +
+            "</span>"
           )).join("") +
         "</nav>" +
       "</section>";
